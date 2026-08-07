@@ -750,10 +750,93 @@ p{margin:0;}
 }
 
 /* ============================================================
+   HOME — SHOWREEL (video placeholder)
+   ============================================================ */
+.showreel{ padding:0 0 100px; position:relative; background:#fff; }
+.showreel .eyebrow{ color:var(--brass); }
+.showreel .eyebrow::before{ background:var(--brass); }
+.showreel h2{ font-size:clamp(1.9rem,3.6vw,2.7rem); color:var(--ink); margin:16px 0 34px; max-width:16ch; }
+.showreel-frame{
+  position:relative;
+  aspect-ratio:16/9;
+  width:100%;
+  border-radius:20px;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(22,159,219,.35), transparent 55%),
+    radial-gradient(ellipse at 80% 85%, rgba(0,68,113,.55), transparent 60%),
+    var(--ink-800);
+  cursor:pointer;
+  isolation:isolate;
+}
+.showreel-frame::before{
+  content:"";
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size:34px 34px;
+}
+.showreel-grid{ position:absolute; inset:0; }
+.showreel-video{ position:absolute; inset:0; width:100%; height:100%; border:0; object-fit:cover; display:block; }
+.showreel-play{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:88px; height:88px; border-radius:50%;
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.35);
+  backdrop-filter:blur(6px);
+  display:flex; align-items:center; justify-content:center;
+  color:#fff;
+  transition:transform .35s var(--ease-out-soft), background .3s var(--ease);
+  z-index:2;
+}
+.showreel-play svg{ width:28px; height:28px; margin-left:4px; }
+.showreel-play::after{
+  content:""; position:absolute; inset:-1px; border-radius:50%;
+  border:1px solid rgba(255,255,255,.25);
+  animation:showreelPulse 2.6s var(--ease-out-soft) infinite;
+}
+@keyframes showreelPulse{
+  0%{ transform:scale(1); opacity:.9; }
+  100%{ transform:scale(1.55); opacity:0; }
+}
+.showreel-frame:hover .showreel-play, .showreel-frame:focus-visible .showreel-play{
+  transform:translate(-50%,-50%) scale(1.08);
+  background:var(--brass);
+}
+.showreel-tag{
+  position:absolute; left:24px; bottom:22px; z-index:2;
+  font-family:var(--font-mono); font-size:12px; letter-spacing:.08em;
+  color:rgba(255,255,255,.85);
+  background:rgba(3,20,35,.5);
+  border:1px solid rgba(255,255,255,.15);
+  padding:6px 14px; border-radius:100px;
+}
+.showreel-corner{ position:absolute; width:22px; height:22px; z-index:2; opacity:.75; }
+.showreel-corner::before,.showreel-corner::after{ content:""; position:absolute; background:var(--brass-soft); }
+.showreel-corner.tl{ top:18px; left:18px; }
+.showreel-corner.tr{ top:18px; right:18px; }
+.showreel-corner.bl{ bottom:18px; left:18px; }
+.showreel-corner.br{ bottom:18px; right:18px; }
+.showreel-corner::before{ width:16px; height:2px; top:0; left:0; }
+.showreel-corner::after{ width:2px; height:16px; top:0; left:0; }
+.showreel-corner.tr::before{ left:auto; right:0; }
+.showreel-corner.tr::after{ left:auto; right:0; }
+.showreel-corner.bl::before{ top:auto; bottom:0; }
+.showreel-corner.bl::after{ top:auto; bottom:0; }
+.showreel-corner.br::before{ top:auto; bottom:0; left:auto; right:0; }
+.showreel-corner.br::after{ top:auto; bottom:0; left:auto; right:0; }
+@media (max-width:720px){
+  .showreel{ padding-bottom:70px; }
+  .showreel-play{ width:64px; height:64px; }
+  .showreel-play svg{ width:20px; height:20px; }
+}
+
+/* ============================================================
    HOME — WHO WE ARE
    ============================================================ */
 .who-hero{
-  padding: calc(var(--header-h) + 90px) 0 40px;
+  padding: 90px 0 40px;
   background:
     linear-gradient(rgba(6,30,50,.035) 1px, transparent 1px),
     linear-gradient(90deg, rgba(6,30,50,.035) 1px, transparent 1px),
@@ -784,17 +867,32 @@ p{margin:0;}
 .clients .eyebrow{ color:var(--brass-soft); }
 .clients .eyebrow::before{ background:var(--brass-soft); }
 .clients h2{ color:#fff; font-size:clamp(1.9rem,3.6vw,2.7rem); margin-top:18px; max-width:16ch; }
-.clients-grid{
-  display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:1px;
-  margin-top:60px; background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden;
+.clients-marquee{
+  margin-top:60px;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.08); border-radius:14px;
+  background:rgba(255,255,255,.03);
+  -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+}
+.clients-track{
+  display:flex; align-items:stretch; width:max-content;
+  animation: clientsScroll 28s linear infinite;
+}
+.clients-marquee:hover .clients-track{ animation-play-state:paused; }
+@keyframes clientsScroll{
+  0%{ transform:translateX(0); }
+  100%{ transform:translateX(-50%); }
 }
 .client-logo{
-  background:var(--ink-800); padding:34px 20px; display:flex; flex-direction:column;
+  background:transparent; padding:34px 40px; display:flex; flex-direction:column;
   align-items:center; justify-content:center; text-align:center; gap:6px; min-height:120px;
-  transition:background .3s var(--ease);
+  flex-shrink:0; width:220px;
+  border-right:1px solid rgba(255,255,255,.08);
+  transition:background .3s var(--ease), transform .3s var(--ease-out-soft);
 }
-.client-logo:hover{ background:var(--ink-700); }
+.client-logo:hover{ background:var(--ink-700); transform:translateY(-3px); }
 .client-logo .mark{
   font-family:var(--font-display); font-weight:700; font-size:19px; letter-spacing:.01em;
   color:rgba(255,255,255,.82); text-transform:uppercase; line-height:1.1;
@@ -802,6 +900,9 @@ p{margin:0;}
 .client-logo .sector{
   font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--brass-soft); opacity:.75;
+}
+@media (prefers-reduced-motion: reduce){
+  .clients-track{ animation:none; }
 }
 
 /* ============================================================
@@ -951,7 +1052,7 @@ p{margin:0;}
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="Index.html#gallery">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a class="nav-link" href="Services.html">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown" id="servicesDropdown"></div>
         </li>
         <li class="nav-item">
@@ -974,7 +1075,7 @@ p{margin:0;}
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <ul>
     <li><a href="#top">Home</a></li>
-    <li><a href="Index.html#gallery">Services</a></li>
+    <li><a href="Services.html">Services</a></li>
     <li><a href="Index.html#gallery">Gallery</a></li>
     <li><a href="Index.html#gallery">Portfolio</a></li>
   </ul>
@@ -990,6 +1091,52 @@ p{margin:0;}
 </nav>
 
 <main id="top">
+
+  <!-- ============================================================
+       HERO — FOX BUILD (scroll-scrubbed intro animation)
+       ============================================================ -->
+  <section class="fox-build" id="foxBuild" aria-label="Intro animation: the Fox mark being built">
+    <div class="fox-build-headline container" id="fbHeadline">
+      <span class="eyebrow reveal">Gallery - Fox Advertising</span>
+      <h1 class="reveal">Work built to fill <em>rooms</em>,<br>not just pages.</h1>
+      <p class="lede reveal">Twenty-eight projects across seven disciplines - the physical output of a studio that designs for exhibition halls, shelves, and hands, as much as for screens.</p>
+      <p class="hero-meta reveal">28 Projects &nbsp;·&nbsp; <strong>7</strong> Disciplines &nbsp;·&nbsp; 2023-2025 &nbsp;·&nbsp; Cairo, Egypt</p>
+    </div>
+
+    <div class="fox-build-stage">
+      <div class="fox-build-camera" id="fbCamera">
+        <div class="fb-stage-label" id="fbStageLabel" aria-hidden="true">Begin</div>
+        <div class="fb-progress-rail" aria-hidden="true"><div class="fb-progress-fill" id="fbProgressFill"></div></div>
+
+        <div class="fb-rig" id="fbRig">
+          <img class="fb-frame" id="fbF1" src="../fox-frame-01-begin.png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF2" src="../fox-frame-02-construct%20(1).png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF3" src="../fox-frame-03-refine.png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF4" src="../fox-frame-04-defined%20(1).png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF5" src="../fox-frame-05-ignited%20(1).png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF6" src="../fox-frame-06-refining.png" alt="" aria-hidden="true">
+          <img class="fb-frame" id="fbF7" src="../fox-frame-07-structured.png" alt="" aria-hidden="true">
+          <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SHOWREEL — video placeholder
+       ============================================================ -->
+  <section class="showreel" id="showreel">
+    <div class="container">
+      <span class="eyebrow reveal">Showreel</span>
+      <h2 class="reveal">See the work in motion.</h2>
+      <div class="showreel-frame reveal" id="showreelFrame" aria-label="Fox Advertising showreel">
+        <video class="showreel-video" src="../Images/Video/fox%20video%20jan%202021.mp4" controls playsinline preload="metadata">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
 
   <!-- ============================================================
        WHO WE ARE
@@ -1028,12 +1175,20 @@ p{margin:0;}
       <span class="eyebrow reveal">Trusted by</span>
       <h2 class="reveal">Our Clients</h2>
 
-      <div class="clients-grid">
-        <div class="client-logo reveal"><span class="mark">Penta Pharma Egypt</span><span class="sector">Healthcare partner</span></div>
-        <div class="client-logo reveal"><span class="mark">Pharco Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
-        <div class="client-logo reveal"><span class="mark">Mitsubishi Power</span><span class="sector">Energy</span></div>
-        <div class="client-logo reveal"><span class="mark">Banque Misr</span><span class="sector">Banking</span></div>
-        <div class="client-logo reveal"><span class="mark">Tabuk Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+      <div class="clients-marquee reveal" id="clientsMarquee">
+        <div class="clients-track" id="clientsTrack">
+          <div class="client-logo"><span class="mark">Penta Pharma Egypt</span><span class="sector">Healthcare partner</span></div>
+          <div class="client-logo"><span class="mark">Pharco Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+          <div class="client-logo"><span class="mark">Mitsubishi Power</span><span class="sector">Energy</span></div>
+          <div class="client-logo"><span class="mark">Banque Misr</span><span class="sector">Banking</span></div>
+          <div class="client-logo"><span class="mark">Tabuk Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+          <!-- duplicated set for a seamless loop -->
+          <div class="client-logo" aria-hidden="true"><span class="mark">Penta Pharma Egypt</span><span class="sector">Healthcare partner</span></div>
+          <div class="client-logo" aria-hidden="true"><span class="mark">Pharco Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+          <div class="client-logo" aria-hidden="true"><span class="mark">Mitsubishi Power</span><span class="sector">Energy</span></div>
+          <div class="client-logo" aria-hidden="true"><span class="mark">Banque Misr</span><span class="sector">Banking</span></div>
+          <div class="client-logo" aria-hidden="true"><span class="mark">Tabuk Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -1130,7 +1285,7 @@ p{margin:0;}
         <h4>Studio</h4>
         <ul>
           <li><a href="#who">About us</a></li>
-          <li><a href="Index.html#gallery">Services</a></li>
+          <li><a href="Services.html">Services</a></li>
           <li><a href="#clients">Our clients</a></li>
           <li><a href="Index.html#gallery">Portfolio</a></li>
         </ul>
@@ -1337,6 +1492,106 @@ p{margin:0;}
   }
 
   document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+
+<!-- ============================================================
+     FOX BUILD — pinned scroll-scrubbed intro
+     Crossfades through 7 supplied frames (begin → construct →
+     refine → defined → ignited → refining → structured). No run
+     cycle — this is a build-up only. Every visual state is a pure
+     function of scroll progress through the pinned section;
+     scrubbing up rewinds cleanly. Unpins at 100%, then the headline
+     does a normal (non-scrubbed) reveal-on-scroll.
+     ============================================================ -->
+<script>
+(function(){
+  "use strict";
+
+  var section = document.getElementById("foxBuild");
+  if(!section) return;
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduced) return; // CSS fallback shows a static logo instead
+
+  var camera      = document.getElementById("fbCamera");
+  var ground      = document.getElementById("fbGround");
+  var headline    = document.getElementById("fbHeadline");
+  var stageLabel  = document.getElementById("fbStageLabel");
+  var progressFill= document.getElementById("fbProgressFill");
+
+  var frames = [
+    { el: document.getElementById("fbF1"), name: "Begin" },
+    { el: document.getElementById("fbF2"), name: "Construct" },
+    { el: document.getElementById("fbF3"), name: "Refine" },
+    { el: document.getElementById("fbF4"), name: "Defined" },
+    { el: document.getElementById("fbF5"), name: "Ignited" },
+    { el: document.getElementById("fbF6"), name: "Refining" },
+    { el: document.getElementById("fbF7"), name: "Structured" }
+  ];
+
+  /* Frames occupy the first 87.5% of the scrub; the remaining
+     12.5% crossfades the last frame into the logo lock. */
+  var FRAMES_END = 0.875;
+  var STEP = FRAMES_END / frames.length;
+  var OVERLAP = STEP * 0.35; // crossfade width between adjacent frames
+
+  function lerp(a,b,t){ return a + (b-a) * t; }
+  function clamp01(v){ return v<0 ? 0 : v>1 ? 1 : v; }
+  function smooth(t){ t = clamp01(t); return t*t*(3 - 2*t); }
+  function band(p, start, end){ return clamp01((p - start) / (end - start)); }
+
+  var lockedLogo = false;
+
+  function update(){
+    var scrollable = section.offsetHeight - window.innerHeight;
+    if(scrollable <= 0) return;
+    var rect = section.getBoundingClientRect();
+    var p = clamp01((-rect.top) / scrollable);
+
+    /* slow continuous push-in across the whole sequence to build tension */
+    camera.style.transform = "scale(" + lerp(1, 1.035, smooth(p)) + ")";
+
+    var activeName = frames[0].name;
+    frames.forEach(function(frame, i){
+      var start = i * STEP;
+      var end = start + STEP;
+      var opacity = smooth(band(p, start - OVERLAP, start)) -
+                    smooth(band(p, end - OVERLAP, end));
+      /* first frame is fully visible at p=0 */
+      if(i === 0){ opacity = 1 - smooth(band(p, end - OVERLAP, end)); }
+      opacity = clamp01(opacity);
+      frame.el.style.opacity = opacity.toFixed(3);
+      if(opacity > 0.5) activeName = frame.name;
+    });
+
+    /* ground shadow settles in once the fox is fully structured */
+    ground.style.opacity = smooth(band(p, FRAMES_END - STEP, FRAMES_END)).toFixed(3);
+
+    /* the sequence ends on the structured fox frame */
+    if(p >= .97 && !lockedLogo){ lockedLogo = true; }
+    if(p < .965 && lockedLogo){ lockedLogo = false; }
+
+    if(headline){
+      headline.style.opacity = p < FRAMES_END ? "1" : (1 - smooth(band(p, FRAMES_END, 1))).toFixed(3);
+      headline.style.transform = "translateY(-50%)";
+    }
+
+    if(stageLabel) stageLabel.textContent = p >= FRAMES_END - OVERLAP ? "Brand" : activeName;
+    if(progressFill) progressFill.style.height = (p * 100).toFixed(1) + "%";
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(!ticking){
+      requestAnimationFrame(function(){ update(); ticking = false; });
+      ticking = true;
+    }
+  }
+  window.addEventListener("scroll", onScroll, { passive:true });
+  window.addEventListener("resize", onScroll, { passive:true });
+  window.addEventListener("load", update);
+  update();
 })();
 </script>
 </body>

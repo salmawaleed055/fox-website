@@ -865,7 +865,7 @@ small fixed logo top-left (visible on desktop) -->
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#top">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a class="nav-link" href="Services.html">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown" id="servicesDropdown"></div>
         </li>
         <li class="nav-item is-active">
@@ -888,7 +888,7 @@ small fixed logo top-left (visible on desktop) -->
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <ul>
     <li><a href="Home.html#top">Home</a></li>
-    <li><a href="#gallery">Services</a></li>
+    <li><a href="Services.html">Services</a></li>
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#gallery">Portfolio</a></li>
   </ul>
@@ -1013,7 +1013,7 @@ small fixed logo top-left (visible on desktop) -->
         <h4>Studio</h4>
         <ul>
           <li><a href="Home.html#who">About us</a></li>
-          <li><a href="#gallery">Services</a></li>
+          <li><a href="Services.html">Services</a></li>
           <li><a href="Home.html#clients">Our clients</a></li>
           <li><a href="#gallery">Portfolio</a></li>
         </ul>
@@ -1121,11 +1121,6 @@ small fixed logo top-left (visible on desktop) -->
     { cat:"display-stands", title:"Counter Display Unit", client:"Nile Botanicals", year:"2023", size:"sm", desc:"A recyclable cardboard counter unit for the skincare line, flat-packed for cheap nationwide shipping." }
   ];
 
-  // assign stable ids + seeds
-  ITEMS.forEach(function(it, i){
-    it.id = i;
-    it.seed = 1000 + i * 37;
-  });
 
   /* ============================================================
      SEEDED RANDOM
@@ -1281,6 +1276,10 @@ small fixed logo top-left (visible on desktop) -->
     are relative to this HTML file (../Images/...). */
   var IMAGE_POOLS = {
     "exhibitions-events": [
+      "../Images/Exhibition/_MG_2224.webp",
+      "../Images/Exhibition/_MG_2788.webp",
+      "../Images/Exhibition/_MG_8948.webp",
+      "../Images/Exhibition/_MG_8956.webp",
       "../Images/Exhibition/0.webp",
       "../Images/Exhibition/1.webp",
       "../Images/Exhibition/2.webp",
@@ -1288,14 +1287,45 @@ small fixed logo top-left (visible on desktop) -->
       "../Images/Exhibition/4.webp",
       "../Images/Exhibition/5.webp",
       "../Images/Exhibition/6.webp",
-      "../Images/Exhibition/6A6A8043.webp",
-      "../Images/Exhibition/15_1.webp",
       "../Images/Exhibition/06.webp",
-      "../Images/Exhibition/_MG_2224.webp",
-      "../Images/Exhibition/_MG_2788.webp",
-      "../Images/Exhibition/_MG_8948.webp",
-      "../Images/Exhibition/_MG_8956.webp",
-      "../Images/Exhibition/6A6A8043 (1).webp"
+      "../Images/Exhibition/6A6A8043.webp",
+      "../Images/Exhibition/6A6A8043 (1).webp",
+      "../Images/Exhibition/6A6A8097.webp",
+      "../Images/Exhibition/6A6A8120.webp",
+      "../Images/Exhibition/6A6A9508-Enhanced-NR.webp",
+      "../Images/Exhibition/6A6A9817-Enhanced-NR.webp",
+      "../Images/Exhibition/8_1.webp",
+      "../Images/Exhibition/15_1.webp",
+      "../Images/Exhibition/a2c6908e-8717-4970-b9da-903cb129758c.webp",
+      "../Images/Exhibition/backdrop.webp",
+      "../Images/Exhibition/e1.webp",
+      "../Images/Exhibition/IMG_0127.webp",
+      "../Images/Exhibition/IMG_1612.webp",
+      "../Images/Exhibition/IMG_2524.webp",
+      "../Images/Exhibition/IMG_2938.webp",
+      "../Images/Exhibition/IMG_2962.webp",
+      "../Images/Exhibition/IMG_3174.webp",
+      "../Images/Exhibition/IMG_3475.webp",
+      "../Images/Exhibition/IMG_3484.webp",
+      "../Images/Exhibition/IMG_3487.webp",
+      "../Images/Exhibition/IMG_3490.webp",
+      "../Images/Exhibition/IMG_3496.webp",
+      "../Images/Exhibition/IMG_3581.webp",
+      "../Images/Exhibition/IMG_8193.webp",
+      "../Images/Exhibition/IMG_9576.webp",
+      "../Images/Exhibition/IMG_9582.webp",
+      "../Images/Exhibition/IMG_9593.webp",
+      "../Images/Exhibition/IMG_9937.webp",
+      "../Images/Exhibition/IMG_20171101_112346.webp",
+      "../Images/Exhibition/IMG_20171101_130727.webp",
+      "../Images/Exhibition/IMG-20170516-WA0006.webp",
+      "../Images/Exhibition/Option-1_Page_24.webp",
+      "../Images/Exhibition/pfizer booth-4.webp",
+      "../Images/Exhibition/PHOTO-2025-07-23-15-50-38.webp",
+      "../Images/Exhibition/PP0A2324.webp",
+      "../Images/Exhibition/PP0A2407.webp",
+      "../Images/Exhibition/PP0A2447.webp",
+      "../Images/Exhibition/PP0A2723.webp"
     ],
     "branding": [
       "../Images/Branding/Branding_0000_33.webp"
@@ -1312,7 +1342,32 @@ small fixed logo top-left (visible on desktop) -->
       "../Images/Creative Concepts/concept_0008_10.webp"
     ]
   };
+    // Expand items: show ALL images in the exhibitions-events pool as their own gallery card
+  (function(){
+    var pool = IMAGE_POOLS["exhibitions-events"] || [];
+    var existingImages = {};
+    ITEMS.forEach(function(it){ if(it.image) existingImages[it.image] = true; });
 
+    pool.forEach(function(src, idx){
+      if(existingImages[src]) return; // skip images already used by a curated item above
+      var sizes = ["sm","md","lg"];
+      ITEMS.push({
+        cat: "exhibitions-events",
+        title: "Exhibition Build " + (idx + 1),
+        client: "Fox Advertising",
+        year: "",
+        size: sizes[idx % sizes.length],
+        desc: "Exhibition and event build photography from the Fox Advertising archive.",
+        image: src
+      });
+    });
+  })();
+
+  // assign stable ids + seeds
+  ITEMS.forEach(function(it, i){
+    it.id = i;
+    it.seed = 1000 + i * 37;
+  });
   function renderArt(item){
     // If the item explicitly declares an image, use it first.
     if(item && item.image){
