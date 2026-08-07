@@ -24,13 +24,35 @@
       --slate-dim: #46597A;
       --paper: #F3F8FF;
       --paper-dim: #B6CBE4;
+      --verdigris: #169FDB;
+      --bg: #FFFFFF;
+      --text: #0A1F38;
       --font-display: 'Space Grotesk', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
       --ease: cubic-bezier(.16, .84, .44, 1);
       --ease-out: cubic-bezier(.22, .61, .36, 1);
+      --ease-out-soft: cubic-bezier(.22, .61, .36, 1);
       --header-h: 84px;
       --container: 1320px;
+    }
+
+    /* dark theme */
+    [data-theme="dark"] {
+      --ink: #7fd9fb;
+      --ink-800: #b0e4ff;
+      --ink-700: #caeefe;
+      --ink-line: #2a6f8f;
+      --brass: #4fc3ff;
+      --brass-soft: #a3dcff;
+      --rust: #4fc3ff;
+      --verdigris: #4fc3ff;
+      --slate: #9ab0cc;
+      --slate-dim: #7a93b3;
+      --paper: #1a2a3a;
+      --paper-dim: #2d4055;
+      --bg: #0b1724;
+      --text: #eaf3fc;
     }
     /* -------------------------------------------------------------
        RESET & BASE
@@ -57,13 +79,15 @@
     }
     body {
       margin: 0;
-      background: #ffffff;
-      color: var(--ink);
+      background: var(--bg);
+      color: var(--text);
       font-family: var(--font-body);
       font-size: 16px;
       line-height: 1.55;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      position: relative;
+      transition: background 0.3s, color 0.3s;
     }
     img,
     svg {
@@ -135,6 +159,97 @@
       height: 1.5px;
       background: var(--brass);
     }
+
+    /* ===== Theme toggle ===== */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg);
+      border: 1px solid var(--ink-line);
+      border-radius: 100px;
+      padding: 4px 12px 4px 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .theme-toggle:hover {
+      border-color: var(--brass);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .theme-toggle .toggle-track {
+      width: 36px;
+      height: 20px;
+      background: var(--slate-dim);
+      border-radius: 100px;
+      position: relative;
+      transition: background 0.3s;
+      flex-shrink: 0;
+    }
+    .theme-toggle .toggle-thumb {
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.3s cubic-bezier(.34,1.56,.64,1), background 0.3s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    [data-theme="dark"] .theme-toggle .toggle-track {
+      background: var(--brass);
+    }
+    [data-theme="dark"] .theme-toggle .toggle-thumb {
+      transform: translateX(16px);
+      background: #0b1724;
+    }
+    .theme-toggle .label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      opacity: 0.7;
+    }
+    .header-actions .theme-toggle {
+      margin-right: 4px;
+    }
+
+    /* ===== STARS (dark mode only) ===== */
+    .stars-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    [data-theme="dark"] .stars-container {
+      opacity: 1;
+    }
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255,255,240,0.6);
+      animation: twinkle var(--dur, 3s) ease-in-out infinite alternate;
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.5s cubic-bezier(.22,.61,.36,1);
+    }
+    .star.double-clicked {
+      background: #ffb347;
+      box-shadow: 0 0 18px #ffaa33, 0 0 40px #ff8822;
+      animation-duration: 0.6s;
+      transform: scale(1.9);
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.2; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
     .reveal {
       opacity: 0;
       transform: translateY(28px);
@@ -151,7 +266,7 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: var(--ink);
+      background: #032f46;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -193,6 +308,14 @@
     .site-header.is-scrolled {
       height: 64px;
       background: rgba(255, 255, 255, .98);
+    }
+    [data-theme="dark"] .site-header {
+      background: rgba(11,23,36,0.94);
+      border-bottom-color: rgba(255,255,255,0.06);
+    }
+    [data-theme="dark"] .site-header.is-scrolled {
+      background: rgba(11,23,36,0.98);
+      border-color: rgba(255,255,255,0.08);
     }
     .nav-inner {
       width: 100%;
@@ -1032,6 +1155,9 @@
 </head>
 <body>
 
+  <!-- STARS CONTAINER (dark mode) -->
+  <div class="stars-container" id="starsContainer" aria-hidden="true"></div>
+
   <!-- LOADER -->
   <div class="loader" id="loader" aria-hidden="true">
     <svg class="loader-mark" viewBox="0 0 40 40" fill="none" width="52" height="52">
@@ -1074,6 +1200,10 @@
       </nav>
 
       <div class="header-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light theme">
+          <span class="toggle-track"><span class="toggle-thumb"></span></span>
+          <span class="label" id="themeLabel">Light</span>
+        </button>
         <a class="btn-talk" href="#contact">Let's talk</a>
         <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
           <span></span><span></span><span></span>
