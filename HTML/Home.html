@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gallery — Fox Advertising | Exhibitions, Branding &amp; Print Work</title>
-<meta name="description" content="The Fox Advertising gallery: exhibitions &amp; events, creative concepts, branding, packaging, giveaways, print and display work — 28 projects, seven disciplines.">
+<title>Fox Advertising | Healthcare &amp; Pharma Marketing Agency, Cairo</title>
+<meta name="description" content="Fox Advertising is a full-service advertising agency with 15+ years of experience delivering 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets.">
 <meta name="theme-color" content="#0A1F38">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -748,16 +748,102 @@ p{margin:0;}
   .lightbox-panel{ grid-template-columns:1fr; overflow-y:auto; }
   .lightbox-art{ min-height:220px; }
 }
+
+/* ============================================================
+   HOME — WHO WE ARE
+   ============================================================ */
+.who-hero{
+  padding: calc(var(--header-h) + 90px) 0 40px;
+  background:
+    linear-gradient(rgba(6,30,50,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(6,30,50,.035) 1px, transparent 1px),
+    #FFFFFF;
+  background-size:36px 36px, 36px 36px, 100% 100%;
+  position:relative;
+}
+.who-hero .eyebrow{ color:var(--brass); }
+.who-hero .eyebrow::before{ background:var(--brass); }
+.who-hero h1{
+  font-size:clamp(2.6rem, 6.4vw, 5rem);
+  line-height:.98; margin:22px 0 46px; max-width:14ch;
+  color:var(--ink);
+}
+.who-copy{ max-width:980px; }
+.who-row{
+  display:grid; grid-template-columns:56px 1fr; gap:26px; align-items:flex-start;
+  padding:30px 0; border-top:1px solid rgba(6,30,50,0.08);
+}
+.who-row:first-child{ border-top:1px solid rgba(6,30,50,0.08); }
+.who-row .who-icon{ width:52px; height:auto; margin-top:2px; }
+.who-row p{ font-size:17px; line-height:1.72; color:rgba(6,30,50,0.78); max-width:76ch; }
+
+/* ============================================================
+   HOME — OUR CLIENTS
+   ============================================================ */
+.clients{ background:var(--ink-800); padding:100px 0; position:relative; }
+.clients .eyebrow{ color:var(--brass-soft); }
+.clients .eyebrow::before{ background:var(--brass-soft); }
+.clients h2{ color:#fff; font-size:clamp(1.9rem,3.6vw,2.7rem); margin-top:18px; max-width:16ch; }
+.clients-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:1px;
+  margin-top:60px; background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.08); border-radius:14px; overflow:hidden;
+}
+.client-logo{
+  background:var(--ink-800); padding:34px 20px; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; text-align:center; gap:6px; min-height:120px;
+  transition:background .3s var(--ease);
+}
+.client-logo:hover{ background:var(--ink-700); }
+.client-logo .mark{
+  font-family:var(--font-display); font-weight:700; font-size:19px; letter-spacing:.01em;
+  color:rgba(255,255,255,.82); text-transform:uppercase; line-height:1.1;
+}
+.client-logo .sector{
+  font-family:var(--font-mono); font-size:9.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--brass-soft); opacity:.75;
+}
+
+/* ============================================================
+   HOME — CONTACT
+   ============================================================ */
+.contact{ padding:100px 0 120px; border-top:1px solid rgba(6,30,50,0.06); }
+.contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start; }
+.contact-info h2{ font-size:clamp(2rem,4.2vw,3rem); color:var(--ink); margin:18px 0 18px; max-width:12ch; }
+.contact-info .lede{ color:rgba(6,30,50,0.72); max-width:44ch; margin-bottom:38px; font-size:16px; line-height:1.6; }
+.contact-detail{ display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; font-size:15px; color:rgba(6,30,50,0.85); }
+.contact-detail svg{ width:18px; height:18px; flex-shrink:0; margin-top:2px; color:var(--brass); }
+.contact-detail a{ text-decoration:none; color:inherit; }
+.contact-detail a:hover{ color:var(--brass); }
+.contact-map{ margin-top:34px; border-radius:14px; overflow:hidden; border:1px solid rgba(6,30,50,0.08); }
+.contact-map iframe{ width:100%; height:280px; border:0; display:block; filter:grayscale(0.15); }
+
+.contact-form{ display:flex; flex-direction:column; gap:24px; }
+.form-field{ display:flex; flex-direction:column; gap:8px; }
+.form-field label{
+  font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  color:rgba(6,30,50,0.5);
+}
+.form-field input, .form-field textarea{
+  width:100%; border:0; border-bottom:1px solid rgba(6,30,50,0.16); background:transparent;
+  padding:10px 2px; font-family:var(--font-body); font-size:15px; color:var(--ink);
+  transition:border-color .25s var(--ease);
+}
+.form-field input:focus, .form-field textarea:focus{ outline:none; border-color:var(--brass); }
+.form-field textarea{ resize:vertical; min-height:110px; }
+.form-note{ font-size:12.5px; color:rgba(6,30,50,0.5); }
+.form-status{ font-family:var(--font-mono); font-size:12.5px; color:var(--brass); min-height:1em; }
+
+@media (max-width:880px){
+  .who-row{ grid-template-columns:1fr; }
+  .who-row .who-icon{ width:40px; }
+  .contact-grid{ grid-template-columns:1fr; gap:54px; }
+}
 </style>
 </head>
 <body>
 
-<a class="skip-link" href="#gallery">Skip to gallery</a>
-
-small fixed logo top-left (visible on desktop) -->
-<!-- <a href="#top" class="logo-top-left" aria-hidden="true">
-  <img src="../Images/Logo.svg" alt="" width="40" height="40">
-</a>
+<a class="skip-link" href="#who">Skip to content</a>
 
 <div class="loader" id="loader" aria-hidden="true">
   <svg class="loader-mark" viewBox="0 0 40 40" fill="none">
@@ -844,7 +930,7 @@ small fixed logo top-left (visible on desktop) -->
      ============================================================ -->
 <header class="site-header" id="siteHeader">
   <div class="nav-inner">
-    <a href="Home.html#top" class="brand" aria-label="Fox Advertising, home">
+    <a href="#top" class="brand" aria-label="Fox Advertising, home">
       <span class="brand-mark" aria-hidden="true">
         <img src="../Images/Logo.svg" alt="Fox Advertising logo" width="48" height="48">
       </span>
@@ -856,28 +942,28 @@ small fixed logo top-left (visible on desktop) -->
 
     <nav class="primary-nav" aria-label="Primary">
       <ul>
-        <li class="nav-item">
-          <a class="nav-link" href="Home.html#top">Home <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+        <li class="nav-item is-active">
+          <a class="nav-link" href="#top">Home <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown">
-            <a href="Home.html#who">About us <span class="dot"></span></a>
-            <a href="Home.html#clients">Our clients <span class="dot"></span></a>
-            <a href="Home.html#contact">Contact us <span class="dot"></span></a>
+            <a href="#who">About us <span class="dot"></span></a>
+            <a href="#clients">Our clients <span class="dot"></span></a>
+            <a href="#contact">Contact us <span class="dot"></span></a>
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#top">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a class="nav-link" href="Index.html#gallery">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown" id="servicesDropdown"></div>
         </li>
-        <li class="nav-item is-active">
-          <a class="nav-link" href="#gallery">Gallery <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+        <li class="nav-item">
+          <a class="nav-link" href="Index.html#gallery">Gallery <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown" id="galleryDropdown"></div>
         </li>
-        <li class="nav-item"><a class="nav-link" href="#gallery">Portfolio</a></li>
+        <li class="nav-item"><a class="nav-link" href="Index.html#gallery">Portfolio</a></li>
       </ul>
     </nav>
 
     <div class="header-actions">
-      <a class="btn-talk" href="Home.html#contact">Let's talk</a>
+      <a class="btn-talk" href="#contact">Let's talk</a>
       <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
         <span></span><span></span><span></span>
       </button>
@@ -887,10 +973,16 @@ small fixed logo top-left (visible on desktop) -->
 
 <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
   <ul>
-    <li><a href="Home.html#top">Home</a></li>
-    <li><a href="#gallery">Services</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#gallery">Portfolio</a></li>
+    <li><a href="#top">Home</a></li>
+    <li><a href="Index.html#gallery">Services</a></li>
+    <li><a href="Index.html#gallery">Gallery</a></li>
+    <li><a href="Index.html#gallery">Portfolio</a></li>
+  </ul>
+  <h3>Jump to</h3>
+  <ul class="sub">
+    <li><a href="#who">About us</a></li>
+    <li><a href="#clients">Our clients</a></li>
+    <li><a href="#contact">Contact us</a></li>
   </ul>
   <h3>Browse the gallery</h3>
   <ul class="sub" id="mobileGalleryLinks"></ul>
@@ -900,95 +992,120 @@ small fixed logo top-left (visible on desktop) -->
 <main id="top">
 
   <!-- ============================================================
-       HERO
+       WHO WE ARE
        ============================================================ -->
-  <section class="fox-build" id="foxBuild" aria-label="Intro animation: the Fox mark being built">
-    <div class="fox-build-headline container" id="fbHeadline">
-      <span class="eyebrow reveal">Gallery — Fox Advertising</span>
-      <h1 class="reveal">Work built to fill <em>rooms</em>,<br>not just pages.</h1>
-      <p class="lede reveal">Twenty-eight projects across seven disciplines — the physical output of a studio that designs for exhibition halls, shelves, and hands, as much as for screens.</p>
-      <p class="hero-meta reveal">28 Projects &nbsp;·&nbsp; <strong>7</strong> Disciplines &nbsp;·&nbsp; 2023–2025 &nbsp;·&nbsp; Cairo, Egypt</p>
-    </div>
-
-    <div class="fox-build-stage">
-      <div class="fox-build-camera" id="fbCamera">
-        <div class="fb-stage-label" id="fbStageLabel" aria-hidden="true">Begin</div>
-        <div class="fb-progress-rail" aria-hidden="true"><div class="fb-progress-fill" id="fbProgressFill"></div></div>
-
-        <div class="fb-rig" id="fbRig">
-          <img class="fb-frame" id="fbF1" src="../fox-frame-01-begin.png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF2" src="../fox-frame-02-construct%20(1).png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF3" src="../fox-frame-03-refine.png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF4" src="../fox-frame-04-defined%20(1).png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF5" src="../fox-frame-05-ignited%20(1).png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF6" src="../fox-frame-06-refining.png" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF7" src="../fox-frame-07-structured.png" alt="" aria-hidden="true">
-          <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       FILTER BAR
-       ============================================================ -->
-  <nav class="filter-bar" aria-label="Filter gallery by discipline">
-    <div class="filter-scroll" id="filterScroll" role="group" aria-label="Gallery filters"></div>
-  </nav>
-  <p class="results-status" id="resultsStatus" role="status" aria-live="polite"></p>
-
-  <!-- ============================================================
-       GALLERY
-       ============================================================ -->
-  <section class="gallery" id="gallery">
+  <section class="who-hero" id="who">
     <div class="container">
-      <div class="gallery-grid" id="galleryGrid"></div>
-    </div>
-  </section>
+      <span class="eyebrow reveal">Fox Advertising</span>
+      <h1 class="reveal">Who we are?</h1>
 
-  <!-- ============================================================
-       APPROACH STRIP
-       ============================================================ -->
-  <section class="approach">
-    <div class="container approach-grid">
-      <div>
-        <span class="eyebrow reveal">How the work gets made</span>
-        <h2 class="reveal" style="margin-top:18px;">From brief to build, without losing the idea along the way.</h2>
-      </div>
-      <div class="approach-list">
-        <div class="approach-item reveal">
-          <span class="approach-num">01</span>
-          <div><h3>Concept</h3><p>Every project starts as a single sentence a client could repeat back — then a sketch, a mood, a material.</p></div>
+      <div class="who-copy">
+        <div class="who-row reveal">
+          <img class="who-icon" src="../Images/Logo.svg" alt="" aria-hidden="true">
+          <p>We are a full-service advertising agency with more than 15 years of experience, specializing in 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets.</p>
         </div>
-        <div class="approach-item reveal">
-          <span class="approach-num">02</span>
-          <div><h3>Design &amp; engineering</h3><p>Identity, structure, and print files are developed together, so nothing breaks when it leaves the screen.</p></div>
+        <div class="who-row reveal">
+          <img class="who-icon" src="../Images/Logo.svg" alt="" aria-hidden="true">
+          <p>Our strength lies in combining medical accuracy with creative excellence. Through carefully crafted marketing strategies, we help our clients raise visibility, engage healthcare professionals and patients, generate demand, and ultimately support business growth.</p>
         </div>
-        <div class="approach-item reveal">
-          <span class="approach-num">03</span>
-          <div><h3>Production &amp; build</h3><p>In-house fabrication and a trusted print network turn files into booths, boxes, and stands on schedule.</p></div>
+        <div class="who-row reveal">
+          <img class="who-icon" src="../Images/Logo.svg" alt="" aria-hidden="true">
+          <p>From the first meeting to the final execution, we ensure every project is delivered with precision, creativity, and compliance with global healthcare standards.</p>
         </div>
-        <div class="approach-item reveal">
-          <span class="approach-num">04</span>
-          <div><h3>On-site delivery</h3><p>We install, style, and strike — then hand back a space or shelf that matches the render.</p></div>
+        <div class="who-row reveal">
+          <img class="who-icon" src="../Images/Logo.svg" alt="" aria-hidden="true">
+          <p>With a truly global presence, we partner with clients around the world to define effective strategies, strengthen brand identity, and execute targeted campaigns that drive meaningful connections and lasting impact in the healthcare industry.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============================================================
-       CTA
+       OUR CLIENTS
        ============================================================ -->
-  <section class="cta">
+  <section class="clients" id="clients">
     <div class="container">
-      <span class="eyebrow reveal" style="justify-content:center;">Start a project</span>
-      <h2 class="reveal" style="margin-top:18px;">Got something that needs building?</h2>
-      <p class="reveal">Tell us what you're launching, and which room, shelf, or stand it needs to live on.</p>
-      <a class="btn-large reveal" href="Home.html#contact">
-        Let's talk
-        <svg viewBox="0 0 16 16" fill="none"><path d="M1 8h14M9 2l6 6-6 6" stroke="currentColor" stroke-width="1.6"/></svg>
-      </a>
+      <span class="eyebrow reveal">Trusted by</span>
+      <h2 class="reveal">Our Clients</h2>
+
+      <div class="clients-grid">
+        <div class="client-logo reveal"><span class="mark">Penta Pharma Egypt</span><span class="sector">Healthcare partner</span></div>
+        <div class="client-logo reveal"><span class="mark">Pharco Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+        <div class="client-logo reveal"><span class="mark">Mitsubishi Power</span><span class="sector">Energy</span></div>
+        <div class="client-logo reveal"><span class="mark">Banque Misr</span><span class="sector">Banking</span></div>
+        <div class="client-logo reveal"><span class="mark">Tabuk Pharmaceuticals</span><span class="sector">Pharmaceuticals</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section class="contact" id="contact">
+    <div class="container contact-grid">
+      <div class="contact-info">
+        <span class="eyebrow reveal">Contact us</span>
+        <h2 class="reveal">Have a project?<br>Get in touch!</h2>
+        <p class="lede reveal">From the initial meeting until the projects are complete, marketing is at the core of all that we do.</p>
+
+        <div class="reveal">
+          <div class="contact-detail">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M10 18s6-5.5 6-10a6 6 0 1 0-12 0c0 4.5 6 10 6 10Z"/><circle cx="10" cy="8" r="2.2"/></svg>
+            <span>22, El Tayaran Street, Nasr City, Cairo, Egypt</span>
+          </div>
+          <div class="contact-detail">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L13 12l5 2v3a2 2 0 0 1-2 2C9.6 19 1 10.4 1 5a2 2 0 0 1 2-2Z"/></svg>
+            <a href="tel:+20222600432">+2 2260 0432 / +2 2260 9024</a>
+          </div>
+          <div class="contact-detail">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="5" width="14" height="10" rx="2"/><path d="M3 6l7 5 7-5"/></svg>
+            <a href="mailto:fox@foxadv.net">fox@foxadv.net</a>
+          </div>
+          <div class="contact-detail">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L13 12l5 2v3a2 2 0 0 1-2 2C9.6 19 1 10.4 1 5a2 2 0 0 1 2-2Z"/></svg>
+            <a href="https://wa.me/201002333140" target="_blank" rel="noopener noreferrer">WhatsApp +2 01002 333 140</a>
+          </div>
+          <div class="contact-detail">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L13 12l5 2v3a2 2 0 0 1-2 2C9.6 19 1 10.4 1 5a2 2 0 0 1 2-2Z"/></svg>
+            <a href="https://wa.me/966503205736" target="_blank" rel="noopener noreferrer">WhatsApp +966 50 320 5736</a>
+          </div>
+        </div>
+
+        <div class="contact-map reveal">
+          <iframe src="https://www.google.com/maps?q=22+El+Tayaran+Street,+Nasr+City,+Cairo,+Egypt&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Fox Advertising location map"></iframe>
+        </div>
+      </div>
+
+      <form class="contact-form reveal" id="contactForm">
+        <div class="form-field">
+          <label for="cfName">Name</label>
+          <input id="cfName" name="name" type="text" required autocomplete="name">
+        </div>
+        <div class="form-field">
+          <label for="cfEmail">Email address</label>
+          <input id="cfEmail" name="email" type="email" required autocomplete="email">
+        </div>
+        <div class="form-field">
+          <label for="cfPhone">Phone</label>
+          <input id="cfPhone" name="phone" type="tel" autocomplete="tel">
+        </div>
+        <div class="form-field">
+          <label for="cfSubject">Subject</label>
+          <input id="cfSubject" name="subject" type="text">
+        </div>
+        <div class="form-field">
+          <label for="cfMessage">How can we help you?</label>
+          <textarea id="cfMessage" name="message" required></textarea>
+        </div>
+        <div>
+          <button class="btn-large" type="submit">
+            Get in touch
+            <svg viewBox="0 0 16 16" fill="none"><path d="M1 8h14M9 2l6 6-6 6" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+          <p class="form-status" id="formStatus"></p>
+          <p class="form-note">This opens your email app with the message pre-filled to fox@foxadv.net.</p>
+        </div>
+      </form>
     </div>
   </section>
 
@@ -1002,7 +1119,7 @@ small fixed logo top-left (visible on desktop) -->
     <div class="footer-top">
       <div class="footer-brand">
         <img src="../Images/Logo.svg" width="36" height="36" alt="FOX Advertising logo" aria-hidden="true">
-        <p>An advertising and production studio in Cairo, building exhibitions, brands, and print work for the physical world.</p>
+        <p>A full-service advertising agency in Cairo delivering 360° marketing solutions for pharmaceutical and healthcare companies worldwide.</p>
         <div class="footer-social" id="footerSocial"></div>
       </div>
       <div class="footer-col">
@@ -1012,18 +1129,18 @@ small fixed logo top-left (visible on desktop) -->
       <div class="footer-col">
         <h4>Studio</h4>
         <ul>
-          <li><a href="Home.html#who">About us</a></li>
-          <li><a href="#gallery">Services</a></li>
-          <li><a href="Home.html#clients">Our clients</a></li>
-          <li><a href="#gallery">Portfolio</a></li>
+          <li><a href="#who">About us</a></li>
+          <li><a href="Index.html#gallery">Services</a></li>
+          <li><a href="#clients">Our clients</a></li>
+          <li><a href="Index.html#gallery">Portfolio</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li><a href="Home.html#contact">Contact us</a></li>
-          <li><a href="#gallery">Preview portfolio</a></li>
-          <li><a href="#gallery">Download portfolio</a></li>
+          <li><a href="#contact">Contact us</a></li>
+          <li><a href="mailto:fox@foxadv.net">fox@foxadv.net</a></li>
+          <li><a href="tel:+20222600432">+2 2260 0432</a></li>
         </ul>
       </div>
     </div>
@@ -1034,313 +1151,35 @@ small fixed logo top-left (visible on desktop) -->
   </div>
 </footer>
 
-<!-- ============================================================
-     LIGHTBOX
-     ============================================================ -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lbTitle" hidden>
-  <div class="lightbox-panel">
-    <div class="lightbox-art" id="lightboxArt"></div>
-    <div class="lightbox-body">
-      <span class="lightbox-cat" id="lbCat"></span>
-      <h3 class="lightbox-title" id="lbTitle"></h3>
-      <p class="lightbox-client" id="lbClient"></p>
-      <p class="lightbox-desc" id="lbDesc"></p>
-      <ul class="lightbox-services" id="lbServices"></ul>
-      <div class="lightbox-nav">
-        <button class="lb-btn" id="lbPrev" aria-label="Previous project">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M10 2 4 8l6 6" stroke="currentColor" stroke-width="1.6"/></svg>
-        </button>
-        <button class="lb-btn" id="lbNext" aria-label="Next project">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M6 2l6 6-6 6" stroke="currentColor" stroke-width="1.6"/></svg>
-        </button>
-      </div>
-      <p class="lightbox-counter" id="lbCounter"></p>
-    </div>
-  </div>
-  <button class="lightbox-close" id="lbClose" aria-label="Close">
-    <svg viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2 2 14" stroke="currentColor" stroke-width="1.6"/></svg>
-  </button>
-</div>
-
 <script>
 (function(){
   "use strict";
 
   /* ============================================================
-     DATA
+     CATEGORY DATA (kept in sync with Index.html — used only to
+     build the Services / Gallery nav dropdowns and footer links
+     that point over to the gallery page)
      ============================================================ */
   var CATEGORY_ORDER = ["exhibitions-events","creative-concepts","branding","packaging","giveaways","printing-materials","display-stands"];
-
-  var CATEGORY_META = {
-    "exhibitions-events":  { label:"Exhibitions & Events", accent:"brass", services:["Spatial design","Fabrication drawings","On-site build & strike"] },
-    "creative-concepts":   { label:"Creative Concepts",    accent:"verdigris", services:["Concept development","Mood & narrative","Client presentation"] },
-    "branding":            { label:"Branding",             accent:"rust", services:["Identity strategy","Logo & mark system","Brand guidelines"] },
-    "packaging":           { label:"Packaging",            accent:"brass", services:["Structural design","Dieline engineering","Print-ready artwork"] },
-    "giveaways":           { label:"Giveaways",             accent:"verdigris", services:["Product sourcing","Custom branding","Kitting & fulfilment"] },
-    "printing-materials":  { label:"Printing materials",   accent:"rust", services:["Layout & typesetting","Print production","Finishing & binding"] },
-    "display-stands":      { label:"Display Stands",       accent:"brass", services:["Structural engineering","Portable fabrication","Graphics production"] }
+  var CATEGORY_LABEL = {
+    "exhibitions-events":  "Exhibitions & Events",
+    "creative-concepts":   "Creative Concepts",
+    "branding":            "Branding",
+    "packaging":           "Packaging",
+    "giveaways":           "Giveaways",
+    "printing-materials":  "Printing materials",
+    "display-stands":      "Display Stands"
   };
 
-  var ACCENT_HEX = { brass:"#4C8DFF", rust:"#2C5FA8", verdigris:"#5FD6E8" };
-
-  var ITEMS = [
-    // Exhibitions & Events
-    { cat:"exhibitions-events", title:"Nile Motor Show Pavilion", client:"Delta Auto Group", year:"2025", size:"lg", desc:"A 180m² pavilion built around a rotating turntable stage, engineered for a five-day build and same-day strike.", image:"../Images/Exhibition/_MG_2224.webp" },
-    { cat:"exhibitions-events", title:"Cairo ICT Expo Booth", client:"Horizon Telecom", year:"2024", size:"md", desc:"An open-plan booth with a suspended LED canopy that turned a standard aisle position into the fair's busiest stop.", image:"../Images/Exhibition/06.webp" },
-    { cat:"exhibitions-events", title:"Red Sea Tourism Fair Stand", client:"Coral Coast Resorts", year:"2025", size:"sm", desc:"A reef-inspired stand in curved timber and backlit fabric, bringing the coastline indoors for four trade days.", image:"../Images/Exhibition/1.webp" },
-    { cat:"exhibitions-events", title:"Pharma Congress Exhibit", client:"MedNile Pharmaceuticals", year:"2023", size:"md", desc:"A modular clinical-grade exhibit with private meeting pods, rebuilt twice a year for two different congress halls.", image:"../Images/Exhibition/2.webp" },
-    // Creative Concepts
-    { cat:"creative-concepts", title:"\u201CDesert Bloom\u201D Campaign Concept", client:"Oasis Beverages", year:"2025", size:"sm", desc:"A concept platform pairing arid landscapes with condensation macro photography, built to flex across five flavours." },
-    { cat:"creative-concepts", title:"Ramadan Lantern Story Concept", client:"Sahara Retail Group", year:"2024", size:"lg", desc:"A seasonal narrative built around handmade fanous lanterns, extended across in-store, social, and out-of-home." },
-    { cat:"creative-concepts", title:"\u201CMotion of the Nile\u201D Film Concept", client:"Cairo Metro Co.", year:"2024", size:"sm", desc:"A transit-line story treatment mapping the metro's route onto the river it runs beside, shot boards and score." },
-    { cat:"creative-concepts", title:"Founders' Wall Concept", client:"Falcon Tech Hub", year:"2023", size:"md", desc:"A concept for a physical timeline wall turning six years of milestones into a walk-through office story." },
-    // Branding
-    { cat:"branding", title:"Full Identity", client:"Karma Coffee Roasters", year:"2025", size:"md", desc:"A roastery identity built on a single hand-drawn bean mark, extended across bags, cups, and a small fleet of vans.", image:"../Images/Branding/Branding_0000_33.webp" },
-    { cat:"branding", title:"Retail Rebrand", client:"Horizon Bank Retail", year:"2024", size:"sm", desc:"A retail-banking rebrand softening a legacy mark into a warmer wordmark built for branch signage and mobile alike." },
-    { cat:"branding", title:"Identity System", client:"Luxor Real Estate Group", year:"2024", size:"lg", desc:"A modular identity for a multi-project developer, letting each community carry its own mark within one family." },
-    { cat:"branding", title:"Visual Identity", client:"Nomad Outdoor Gear", year:"2023", size:"sm", desc:"A rugged identity built around a compass-derived mark, tested for embroidery, tags, and low-fi trailhead signage." },
-    // Packaging
-    { cat:"packaging", title:"Bottle & Carton System", client:"Oasis Mineral Water", year:"2025", size:"sm", desc:"A shelf system across four SKUs, with a wordmark that reads at speed from a moving supermarket trolley." },
-    { cat:"packaging", title:"Snack Range Packaging", client:"Delta Foods", year:"2024", size:"md", desc:"A twelve-flavour snack range unified by one colour-coded grid, designed to shelf-block at a glance." },
-    { cat:"packaging", title:"Gift Box Series", client:"Karma Coffee Roasters", year:"2024", size:"sm", desc:"A seasonal gift box series with a fold that reveals the roast story before the bag inside." },
-    { cat:"packaging", title:"Cosmetics Line Packaging", client:"Nile Botanicals", year:"2023", size:"lg", desc:"Botanical-led packaging for a nine-product skincare line, balancing shelf presence with refill sustainability." },
-    // Giveaways
-    { cat:"giveaways", title:"Executive Gift Kit", client:"Horizon Bank Retail", year:"2025", size:"lg", desc:"A leather-and-brass gift kit for top-tier clients, produced in a run of two hundred numbered sets." },
-    { cat:"giveaways", title:"Trade Show Swag Set", client:"Falcon Tech Hub", year:"2024", size:"sm", desc:"A booth giveaway set designed to survive a conference bag: notebook, cable roll, and a reusable bottle." },
-    { cat:"giveaways", title:"Eco Merchandise Collection", client:"Coral Coast Resorts", year:"2024", size:"md", desc:"A merchandise line in recycled ocean-plastic weave, sold at the resort as souvenirs that fund reef clean-ups." },
-    { cat:"giveaways", title:"Conference Welcome Kit", client:"MedNile Pharmaceuticals", year:"2023", size:"sm", desc:"A delegate welcome kit meeting medical-congress compliance rules while still feeling like a gift, not a form." },
-    // Printing materials
-    { cat:"printing-materials", title:"Annual Report", client:"Horizon Bank Retail", year:"2025", size:"sm", desc:"A ninety-six-page annual report translating a year of numbers into a calm, chart-led reading rhythm." },
-    { cat:"printing-materials", title:"Menu & Table Collateral", client:"Karma Coffee Roasters", year:"2024", size:"sm", desc:"A full table system — menus, order pads, coasters — printed on the same stock as the coffee bags." },
-    { cat:"printing-materials", title:"Brochure Suite", client:"Luxor Real Estate Group", year:"2024", size:"lg", desc:"A brochure suite for three residential launches, sharing one grid so sales teams could swap inserts fast." },
-    { cat:"printing-materials", title:"Business Stationery", client:"Nomad Outdoor Gear", year:"2023", size:"md", desc:"A stationery suite on uncoated stock, letterpress-deboss on the cards to match the brand's tactile mark." },
-    // Display Stands
-    { cat:"display-stands", title:"Roll-Up Banner System", client:"Delta Auto Group", year:"2025", size:"md", desc:"A five-banner touring set built to survive forty stops on a regional dealership roadshow." },
-    { cat:"display-stands", title:"Modular POS Stand", client:"Delta Foods", year:"2024", size:"lg", desc:"A snap-together counter stand rolled out to six hundred stores without a single tool required." },
-    { cat:"display-stands", title:"X-Stand Collection", client:"Sahara Retail Group", year:"2024", size:"sm", desc:"A seasonal X-stand collection swapped four times a year to match the retail calendar." },
-    { cat:"display-stands", title:"Counter Display Unit", client:"Nile Botanicals", year:"2023", size:"sm", desc:"A recyclable cardboard counter unit for the skincare line, flat-packed for cheap nationwide shipping." }
-  ];
-
-  // assign stable ids + seeds
-  ITEMS.forEach(function(it, i){
-    it.id = i;
-    it.seed = 1000 + i * 37;
-  });
-
-  /* ============================================================
-     SEEDED RANDOM
-     ============================================================ */
-  function makeRng(seed){
-    var s = seed >>> 0;
-    return function(){
-      s ^= s << 13; s >>>= 0;
-      s ^= s >>> 17;
-      s ^= s << 5; s >>>= 0;
-      return s / 4294967296;
-    };
-  }
-
-  /* ============================================================
-     GENERATIVE EXHIBIT ART
-     One motif family per discipline; seeded jitter keeps every
-     card unique while staying visually related to its category.
-     ============================================================ */
-  function svgWrap(inner, accent){
-    return '<svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
-      '<rect width="400" height="300" fill="#0F2942"/>'+
-      '<rect width="400" height="300" fill="url(#grad'+accent+')" opacity="0.5"/>'+
-      '<defs><radialGradient id="grad'+accent+'" cx="30%" cy="20%" r="80%">'+
-        '<stop offset="0%" stop-color="'+ACCENT_HEX[accent]+'" stop-opacity="0.16"/>'+
-        '<stop offset="100%" stop-color="'+ACCENT_HEX[accent]+'" stop-opacity="0"/>'+
-      '</radialGradient></defs>'+
-      inner +
-      '</svg>';
-  }
-
-  function boothArt(r, a){ // exhibitions & events: isometric pavilion
-    var hex = ACCENT_HEX[a];
-    var w = 90 + r()*40, h = 60 + r()*30, x = 60 + r()*60, y = 150 + r()*30;
-    var flag = 40 + r()*20;
-    return svgWrap(
-      '<g stroke="'+hex+'" stroke-width="2" fill="none" opacity="0.9">'+
-      '<path d="M'+x+' '+y+' L'+(x+w)+' '+y+' L'+(x+w+40)+' '+(y-40)+' L'+(x+40)+' '+(y-40)+' Z"/>'+
-      '<line x1="'+(x+40)+'" y1="'+(y-40)+'" x2="'+(x+40)+'" y2="'+(y-40-h)+'"/>'+
-      '<line x1="'+(x+w+40)+'" y1="'+(y-40)+'" x2="'+(x+w+40)+'" y2="'+(y-40-h)+'"/>'+
-      '<path d="M'+(x+40)+' '+(y-40-h)+' L'+(x+w+40)+' '+(y-40-h)+' L'+(x+w+80)+' '+(y-80-h)+' L'+(x+80)+' '+(y-80-h)+' Z"/>'+
-      '<line x1="'+(x+30)+'" y1="'+(y-90-h)+'" x2="'+(x+30)+'" y2="'+(y-120-h-flag*0)+'"/>'+
-      '</g>'+
-      '<circle cx="330" cy="60" r="3" fill="'+hex+'"/>'+
-      '<line x1="330" y1="60" x2="290" y2="140" stroke="'+hex+'" stroke-width="1" opacity="0.4"/>'+
-      '<line x1="330" y1="60" x2="360" y2="150" stroke="'+hex+'" stroke-width="1" opacity="0.4"/>'
-    , a);
-  }
-
-  function conceptArt(r, a){ // creative concepts: idea burst / moodboard swatches
-    var hex = ACCENT_HEX[a];
-    var cx = 140 + r()*80, cy = 130 + r()*60;
-    var rays = "";
-    var n = 8;
-    for(var i=0;i<n;i++){
-      var ang = (i/n) * Math.PI*2 + r();
-      var len = 40 + r()*70;
-      rays += '<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+Math.cos(ang)*len)+'" y2="'+(cy+Math.sin(ang)*len)+'" stroke="'+hex+'" stroke-width="1.5" opacity="0.5"/>';
-    }
-    return svgWrap(
-      rays +
-      '<circle cx="'+cx+'" cy="'+cy+'" r="26" fill="none" stroke="'+hex+'" stroke-width="2"/>'+
-      '<circle cx="'+cx+'" cy="'+cy+'" r="6" fill="'+hex+'"/>'+
-      '<rect x="300" y="40" width="46" height="30" rx="4" fill="none" stroke="'+hex+'" stroke-width="1.5" opacity="0.7"/>'+
-      '<rect x="300" y="82" width="30" height="20" rx="3" fill="'+hex+'" opacity="0.25"/>'
-    , a);
-  }
-
-  function brandArt(r, a){ // branding: monogram exploration grid
-    var hex = ACCENT_HEX[a];
-    var out = "";
-    var cols = 3, rows = 2, cell = 70, ox = 60, oy = 70;
-    for(var i=0;i<cols;i++){
-      for(var j=0;j<rows;j++){
-        var cx = ox + i*cell + cell/2, cy = oy + j*cell + cell/2;
-        if(r() > 0.5){
-          out += '<circle cx="'+cx+'" cy="'+cy+'" r="'+(16+r()*8)+'" fill="none" stroke="'+hex+'" stroke-width="2" opacity="'+(0.4+r()*0.5)+'"/>';
-        } else {
-          out += '<rect x="'+(cx-16)+'" y="'+(cy-16)+'" width="32" height="32" fill="none" stroke="'+hex+'" stroke-width="2" opacity="'+(0.4+r()*0.5)+'" transform="rotate('+(r()*45)+' '+cx+' '+cy+')"/>';
-        }
-      }
-    }
-    return svgWrap(out, a);
-  }
-
-  function packArt(r, a){ // packaging: isometric carton
-    var hex = ACCENT_HEX[a];
-    var x = 150 + r()*40, y = 100 + r()*30, s = 70 + r()*30;
-    return svgWrap(
-      '<g stroke="'+hex+'" stroke-width="2" fill="none">'+
-      '<path d="M'+x+' '+y+' L'+(x+s)+' '+(y-s*0.5)+' L'+(x+s*2)+' '+y+' L'+(x+s)+' '+(y+s*0.5)+' Z" opacity="0.8"/>'+
-      '<line x1="'+x+'" y1="'+y+'" x2="'+x+'" y2="'+(y+s)+'"/>'+
-      '<line x1="'+(x+s*2)+'" y1="'+y+'" x2="'+(x+s*2)+'" y2="'+(y+s)+'"/>'+
-      '<line x1="'+(x+s)+'" y1="'+(y+s*0.5)+'" x2="'+(x+s)+'" y2="'+(y+s*1.5)+'"/>'+
-      '<path d="M'+x+' '+(y+s)+' L'+(x+s)+' '+(y+s*1.5)+' L'+(x+s*2)+' '+(y+s)+'" opacity="0.6"/>'+
-      '<line x1="'+(x+s*0.5)+'" y1="'+(y-s*0.25)+'" x2="'+(x+s*0.5)+'" y2="'+(y+s*0.75)+'" opacity="0.4"/>'+
-      '</g>'
-    , a);
-  }
-
-  function giveawayArt(r, a){ // giveaways: scattered product grid
-    var hex = ACCENT_HEX[a];
-    var out = "";
-    for(var i=0;i<6;i++){
-      var cx = 60 + r()*280, cy = 50 + r()*200, rad = 10 + r()*16;
-      out += '<circle cx="'+cx+'" cy="'+cy+'" r="'+rad+'" fill="'+(i%2===0?hex:'none')+'" opacity="'+(i%2===0?0.28:0.7)+'" stroke="'+hex+'" stroke-width="1.5"/>';
-    }
-    return svgWrap(out, a);
-  }
-
-  function printArt(r, a){ // print materials: stacked sheets
-    var hex = ACCENT_HEX[a];
-    var out = "";
-    var x = 130 + r()*30, y = 90 + r()*20, w = 140, h = 100;
-    for(var i=0;i<4;i++){
-      var off = i*8;
-      out += '<rect x="'+(x+off)+'" y="'+(y-off)+'" width="'+w+'" height="'+h+'" fill="'+(i===3?hex:'#0F2942')+'" opacity="'+(i===3?0.22:1)+'" stroke="'+hex+'" stroke-width="1.5"/>';
-    }
-    out += '<line x1="'+(x+20)+'" y1="'+(y+20-24)+'" x2="'+(x+w-20)+'" y2="'+(y+20-24)+'" stroke="'+hex+'" stroke-width="1.5" opacity="0.6"/>';
-    out += '<line x1="'+(x+20)+'" y1="'+(y+38-24)+'" x2="'+(x+w-50)+'" y2="'+(y+38-24)+'" stroke="'+hex+'" stroke-width="1.5" opacity="0.4"/>';
-    return svgWrap(out, a);
-  }
-
-  function standArt(r, a){ // display stands: roll-up / x-stand
-    var hex = ACCENT_HEX[a];
-    var x = 170 + r()*40, topY = 40 + r()*20, botY = 220 + r()*20, w = 70 + r()*20;
-    return svgWrap(
-      '<g stroke="'+hex+'" stroke-width="2" fill="none">'+
-      '<rect x="'+(x-w/2)+'" y="'+topY+'" width="'+w+'" height="'+(botY-topY-30)+'" rx="4" opacity="0.85"/>'+
-      '<line x1="'+(x-w/2-10)+'" y1="'+(botY-20)+'" x2="'+(x+w/2+10)+'" y2="'+(botY-20)+'"/>'+
-      '<line x1="'+(x-w/2-10)+'" y1="'+(botY-20)+'" x2="'+(x-w/2+20)+'" y2="'+botY+'"/>'+
-      '<line x1="'+(x+w/2+10)+'" y1="'+(botY-20)+'" x2="'+(x+w/2-20)+'" y2="'+botY+'"/>'+
-      '<line x1="'+(x-10)+'" y1="'+(topY+30)+'" x2="'+(x+10)+'" y2="'+(topY+30)+'" opacity="0.5"/>'+
-      '<line x1="'+(x-16)+'" y1="'+(topY+55)+'" x2="'+(x+16)+'" y2="'+(topY+55)+'" opacity="0.4"/>'+
-      '</g>'
-    , a);
-  }
-
-  var MOTIFS = {
-    "exhibitions-events": boothArt,
-    "creative-concepts": conceptArt,
-    "branding": brandArt,
-    "packaging": packArt,
-    "giveaways": giveawayArt,
-    "printing-materials": printArt,
-    "display-stands": standArt
-  };
-
-  /* IMAGE POOLS
-     A small lookup of real images in the repository. When an image
-     is available for an item's category the gallery will use it;
-     otherwise the generative SVG motif remains the fallback. Paths
-    are relative to this HTML file (../Images/...). */
-  var IMAGE_POOLS = {
-    "exhibitions-events": [
-      "../Images/Exhibition/0.webp",
-      "../Images/Exhibition/1.webp",
-      "../Images/Exhibition/2.webp",
-      "../Images/Exhibition/3.webp",
-      "../Images/Exhibition/4.webp",
-      "../Images/Exhibition/5.webp",
-      "../Images/Exhibition/6.webp",
-      "../Images/Exhibition/6A6A8043.webp",
-      "../Images/Exhibition/15_1.webp",
-      "../Images/Exhibition/06.webp",
-      "../Images/Exhibition/_MG_2224.webp",
-      "../Images/Exhibition/_MG_2788.webp",
-      "../Images/Exhibition/_MG_8948.webp",
-      "../Images/Exhibition/_MG_8956.webp",
-      "../Images/Exhibition/6A6A8043 (1).webp"
-    ],
-    "branding": [
-      "../Images/Branding/Branding_0000_33.webp"
-    ],
-    "creative-concepts": [
-      "../Images/Creative Concepts/concept_0000_1.webp",
-      "../Images/Creative Concepts/concept_0001_2.webp",
-      "../Images/Creative Concepts/concept_0002_3.webp",
-      "../Images/Creative Concepts/concept_0003_4.webp",
-      "../Images/Creative Concepts/concept_0004_5.webp",
-      "../Images/Creative Concepts/concept_0005_6.webp",
-      "../Images/Creative Concepts/concept_0006_7.webp",
-      "../Images/Creative Concepts/concept_0007_9.webp",
-      "../Images/Creative Concepts/concept_0008_10.webp"
-    ]
-  };
-
-  function renderArt(item){
-    // If the item explicitly declares an image, use it first.
-    if(item && item.image){
-      return '<img src="'+item.image+'" alt="'+(item.title || '')+'" loading="lazy"/>';
-    }
-    var rng = makeRng(item.seed);
-    var accent = CATEGORY_META[item.cat].accent;
-    var pool = IMAGE_POOLS[item.cat] || [];
-    if(pool.length){
-      // pick a stable image from the pool using the item's seed
-      var idx = Math.floor(rng() * pool.length);
-      var src = pool[idx];
-      return '<img src="'+src+'" alt="'+(item.title || '')+'" loading="lazy"/>';
-    }
-    return MOTIFS[item.cat](rng, accent);
-  }
-
-  /* ============================================================
-     BUILD: NAV DROPDOWNS
-     ============================================================ */
   function buildNavDropdowns(){
     var servicesHtml = "", galleryHtml = "", mobileHtml = "", footerHtml = "";
     CATEGORY_ORDER.forEach(function(slug){
-      var label = CATEGORY_META[slug].label;
-      servicesHtml += '<a href="#top">'+label+'<span class="dot"></span></a>';
-      galleryHtml += '<a href="#gallery" data-goto="'+slug+'">'+label+'<span class="dot"></span></a>';
-      mobileHtml += '<li><a href="#gallery" data-goto="'+slug+'">'+label+'</a></li>';
-      footerHtml += '<li><a href="#gallery" data-goto="'+slug+'">'+label+'</a></li>';
+      var label = CATEGORY_LABEL[slug];
+      var href = "Index.html#" + slug;
+      servicesHtml += '<a href="'+href+'">'+label+'<span class="dot"></span></a>';
+      galleryHtml += '<a href="'+href+'">'+label+'<span class="dot"></span></a>';
+      mobileHtml += '<li><a href="'+href+'">'+label+'</a></li>';
+      footerHtml += '<li><a href="'+href+'">'+label+'</a></li>';
     });
     document.getElementById("servicesDropdown").innerHTML = servicesHtml;
     document.getElementById("galleryDropdown").innerHTML = galleryHtml;
@@ -1349,7 +1188,7 @@ small fixed logo top-left (visible on desktop) -->
   }
 
   /* ============================================================
-     BUILD: SOCIAL ICONS
+     SOCIAL ICONS
      ============================================================ */
   var SOCIAL = [
     { name:"Facebook", href:"https://www.facebook.com/fox.advertising.agency.egy", path:'<path d="M13 3H10a4 4 0 0 0-4 4v3H4v3h2v6h3v-6h2.5l.5-3H9V7a1 1 0 0 1 1-1h3z"/>' },
@@ -1371,209 +1210,6 @@ small fixed logo top-left (visible on desktop) -->
     document.getElementById("mobileSocial").innerHTML = mobileHtml;
   }
 
-  /* ============================================================
-     BUILD: FILTER CHIPS
-     ============================================================ */
-  var state = { filter:"all" };
-
-  function countFor(slug){
-    if(slug === "all") return ITEMS.length;
-    return ITEMS.filter(function(it){ return it.cat === slug; }).length;
-  }
-
-  function buildFilterChips(){
-    var wrap = document.getElementById("filterScroll");
-    var html = '<button class="chip" data-filter="all" aria-pressed="true">All work <span class="count">'+countFor("all")+'</span></button>';
-    CATEGORY_ORDER.forEach(function(slug){
-      html += '<button class="chip" data-filter="'+slug+'" aria-pressed="false">'+CATEGORY_META[slug].label+' <span class="count">'+countFor(slug)+'</span></button>';
-    });
-    wrap.innerHTML = html;
-    wrap.addEventListener("click", function(e){
-      var btn = e.target.closest(".chip");
-      if(!btn) return;
-      applyFilter(btn.getAttribute("data-filter"), true);
-    });
-  }
-
-  /* ============================================================
-     BUILD: GALLERY GRID
-     ============================================================ */
-  function buildGrid(){
-    var grid = document.getElementById("galleryGrid");
-    var html = "";
-    ITEMS.forEach(function(item, i){
-      var meta = CATEGORY_META[item.cat];
-      html +=
-        '<button class="card reveal g-size-'+item.size+'" data-cat="'+item.cat+'" data-id="'+item.id+'" style="--stagger:'+(i%6)+'" aria-label="View project: '+item.title+', '+meta.label+', '+item.year+'">'+
-          '<span class="card-art">'+renderArt(item)+'</span>'+
-          '<span class="card-veil"></span>'+
-          '<span class="card-overlay"><span class="overlay-title">'+item.title+'</span></span>'+
-          '<span class="card-idx-cat">'+meta.label+'</span>'+
-          '<span class="card-idx">'+String(i+1).padStart(2,"0")+'</span>'+
-          '<span class="card-plaque">'+
-            '<span class="card-cat">'+meta.label+'</span>'+
-            '<span class="card-title">'+item.title+'</span>'+
-            '<span class="card-foot">'+
-              '<span class="card-year">'+item.client+' — '+item.year+'</span>'+
-              '<span class="card-view"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6"/></svg></span>'+
-            '</span>'+
-          '</span>'+
-        '</button>';
-    });
-    grid.innerHTML = html;
-
-    grid.addEventListener("click", function(e){
-      var card = e.target.closest(".card");
-      if(!card) return;
-      openLightbox(parseInt(card.getAttribute("data-id"), 10));
-    });
-
-    observeReveals();
-  }
-
-  /* ============================================================
-     FILTERING
-     ============================================================ */
-  function applyFilter(slug, updateHash){
-    state.filter = slug;
-    document.querySelectorAll(".chip").forEach(function(chip){
-      chip.setAttribute("aria-pressed", chip.getAttribute("data-filter") === slug ? "true" : "false");
-    });
-    var cards = document.querySelectorAll(".card");
-    var visibleCount = 0;
-    cards.forEach(function(card, i){
-      var match = slug === "all" || card.getAttribute("data-cat") === slug;
-      if(match){
-        card.classList.remove("is-hidden");
-        card.style.setProperty("--stagger", visibleCount % 6);
-        visibleCount++;
-      } else {
-        card.classList.add("is-hidden");
-      }
-    });
-    var label = slug === "all" ? "all work" : CATEGORY_META[slug].label;
-    document.getElementById("resultsStatus").textContent = "Showing "+visibleCount+" of "+ITEMS.length+" projects — "+label+".";
-    if(updateHash){
-      history.replaceState(null, "", slug === "all" ? "#gallery" : "#"+slug);
-    }
-  }
-
-  function gotoCategory(slug){
-    applyFilter(slug, true);
-    document.getElementById("gallery").scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  document.addEventListener("click", function(e){
-    var link = e.target.closest("[data-goto]");
-    if(!link) return;
-    e.preventDefault();
-    gotoCategory(link.getAttribute("data-goto"));
-    closeMobileNav();
-  });
-
-  /* ============================================================
-     LIGHTBOX
-     ============================================================ */
-  var lb = {
-    el: document.getElementById("lightbox"),
-    art: document.getElementById("lightboxArt"),
-    cat: document.getElementById("lbCat"),
-    title: document.getElementById("lbTitle"),
-    client: document.getElementById("lbClient"),
-    desc: document.getElementById("lbDesc"),
-    services: document.getElementById("lbServices"),
-    counter: document.getElementById("lbCounter"),
-    prev: document.getElementById("lbPrev"),
-    next: document.getElementById("lbNext"),
-    close: document.getElementById("lbClose"),
-    lastFocused: null,
-    currentId: null
-  };
-
-  function visibleItems(){
-    if(state.filter === "all") return ITEMS;
-    return ITEMS.filter(function(it){ return it.cat === state.filter; });
-  }
-
-  function openLightbox(id){
-    lb.lastFocused = document.activeElement;
-    renderLightbox(id);
-    lb.el.hidden = false;
-    requestAnimationFrame(function(){ lb.el.classList.add("is-open"); });
-    document.body.style.overflow = "hidden";
-    lb.close.focus();
-    document.addEventListener("keydown", onLightboxKeydown);
-  }
-
-  function renderLightbox(id){
-    var item = ITEMS[id];
-    var meta = CATEGORY_META[item.cat];
-    lb.currentId = id;
-    lb.art.innerHTML = renderArt(item);
-    lb.cat.textContent = meta.label;
-    lb.title.textContent = item.title;
-    lb.client.textContent = item.client + " — " + item.year;
-    lb.desc.textContent = item.desc;
-    lb.services.innerHTML = meta.services.map(function(s){
-      return '<li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="1.6"/></svg>'+s+'</li>';
-    }).join("");
-
-    var list = visibleItems();
-    var pos = list.findIndex(function(it){ return it.id === id; });
-    lb.counter.textContent = "Project "+(pos+1)+" of "+list.length+" — "+meta.label;
-
-    // If the lightbox art is an image, size the panel to the image's intrinsic width (capped).
-    var panel = lb.el.querySelector('.lightbox-panel');
-    var img = lb.art.querySelector('img');
-    if(img){
-      // temporarily set panel width to auto while we measure
-      panel.style.width = 'auto';
-      img.addEventListener('load', function(){
-        var natural = img.naturalWidth || img.width;
-        var cap = Math.min(window.innerWidth * 0.9, 1080);
-        var w = Math.min(natural, cap);
-        panel.style.width = w + 'px';
-      });
-      // if already cached and complete, trigger sizing
-      if(img.complete) img.dispatchEvent(new Event('load'));
-    } else {
-      // reset to default max width
-      panel.style.width = '';
-    }
-  }
-
-  function stepLightbox(dir){
-    var list = visibleItems();
-    var pos = list.findIndex(function(it){ return it.id === lb.currentId; });
-    var nextPos = (pos + dir + list.length) % list.length;
-    renderLightbox(list[nextPos].id);
-  }
-
-  function closeLightbox(){
-    lb.el.classList.remove("is-open");
-    document.body.style.overflow = "";
-    document.removeEventListener("keydown", onLightboxKeydown);
-    // reset any inline sizing we applied to the panel
-    var panel = lb.el.querySelector('.lightbox-panel');
-    if(panel) panel.style.width = '';
-    setTimeout(function(){ lb.el.hidden = true; }, 400);
-    if(lb.lastFocused) lb.lastFocused.focus();
-  }
-
-  function onLightboxKeydown(e){
-    if(e.key === "Escape") closeLightbox();
-    if(e.key === "ArrowRight") stepLightbox(1);
-    if(e.key === "ArrowLeft") stepLightbox(-1);
-  }
-
-  lb.close.addEventListener("click", closeLightbox);
-  lb.prev.addEventListener("click", function(){ stepLightbox(-1); });
-  lb.next.addEventListener("click", function(){ stepLightbox(1); });
-  lb.el.addEventListener("click", function(e){ if(e.target === lb.el) closeLightbox(); });
-
-  /* ============================================================
-     HERO VISUAL (large generative piece)
-     ============================================================ */
   /* ============================================================
      SCROLL REVEAL
      ============================================================ */
@@ -1659,9 +1295,31 @@ small fixed logo top-left (visible on desktop) -->
     mobileNav.classList.toggle("is-open", !open);
     document.body.style.overflow = open ? "" : "hidden";
   });
-  mobileNav.querySelectorAll("a:not([data-goto])").forEach(function(a){
+  mobileNav.querySelectorAll("a").forEach(function(a){
     a.addEventListener("click", closeMobileNav);
   });
+
+  /* ============================================================
+     CONTACT FORM — opens a pre-filled email (no backend on a
+     static site, so this is the reliable fallback)
+     ============================================================ */
+  var form = document.getElementById("contactForm");
+  var status = document.getElementById("formStatus");
+  if(form){
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var name = form.name.value.trim();
+      var email = form.email.value.trim();
+      var phone = form.phone.value.trim();
+      var subject = form.subject.value.trim() || "Website enquiry";
+      var message = form.message.value.trim();
+
+      var body = "Name: " + name + "\nEmail: " + email + (phone ? "\nPhone: " + phone : "") + "\n\n" + message;
+      var mailto = "mailto:fox@foxadv.net?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+      window.location.href = mailto;
+      status.textContent = "Opening your email app…";
+    });
+  }
 
   /* ============================================================
      INIT
@@ -1669,16 +1327,6 @@ small fixed logo top-left (visible on desktop) -->
   function init(){
     buildNavDropdowns();
     buildSocial();
-    buildFilterChips();
-    buildGrid();
-
-    var hash = location.hash.replace("#","");
-    if(CATEGORY_ORDER.indexOf(hash) !== -1){
-      applyFilter(hash, false);
-    } else {
-      applyFilter("all", false);
-    }
-
     observeReveals();
 
     window.addEventListener("load", function(){
@@ -1689,193 +1337,6 @@ small fixed logo top-left (visible on desktop) -->
   }
 
   document.addEventListener("DOMContentLoaded", init);
-})();
-</script>
-
-<!-- ============================================================
-     SCROLL FOX ANIMATION
-     The fox's position, stride and facing are all driven by
-     scroll distance rather than time — it only runs while the
-     page is being scrolled, and how far it runs (and how fast
-     its legs cycle) is tied directly to how far you've scrolled.
-     ============================================================ -->
-<script>
-(function(){
-  "use strict";
-
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-  var foxEl = document.getElementById("scrollFox");
-  if(!foxEl) return;
-
-  var foreLeg = document.getElementById("foxForeLeg");
-  var hindLeg = document.getElementById("foxHindLeg");
-  var tailGrp = document.getElementById("foxTail");
-
-  /* Waypoints plot a winding route from the hero (p:0) down to
-     the footer (p:1). x/y are viewport percentages. */
-  var waypoints = [
-    { p:0.00, x:82, y:24 },
-    { p:0.16, x:16, y:30 },
-    { p:0.34, x:80, y:50 },
-    { p:0.52, x:14, y:58 },
-    { p:0.70, x:78, y:40 },
-    { p:0.86, x:20, y:64 },
-    { p:1.00, x:70, y:80 }
-  ];
-
-  function lerp(a,b,t){ return a + (b - a) * t; }
-
-  function pathAt(progress){
-    progress = Math.max(0, Math.min(1, progress));
-    var i = 0;
-    while(i < waypoints.length - 2 && progress > waypoints[i+1].p) i++;
-    var a = waypoints[i], b = waypoints[i+1];
-    var span = (b.p - a.p) || 1;
-    var t = (progress - a.p) / span;
-    t = t*t*(3 - 2*t); // smoothstep
-    return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), dx: b.x - a.x };
-  }
-
-  var STRIDE_PX = 90; // px scrolled per full leg-cycle
-  var facing = 1;
-
-  function update(){
-    var scrollY = window.scrollY || document.documentElement.scrollTop;
-    var maxScroll = (document.documentElement.scrollHeight - window.innerHeight) || 1;
-    var progress = scrollY / maxScroll;
-
-    var pos = pathAt(progress);
-    if(Math.abs(pos.dx) > 0.001){ facing = pos.dx < 0 ? -1 : 1; }
-
-    var cycle = (scrollY / STRIDE_PX) * Math.PI * 2;
-    var strideAngle = Math.sin(cycle);
-    var bob = Math.abs(Math.cos(cycle)) * 5;
-
-    foxEl.style.left = pos.x + "vw";
-    foxEl.style.top = pos.y + "vh";
-    foxEl.style.transform =
-      "translate(-50%,-50%) scaleX(" + facing + ") translateY(" + (-bob) + "px)";
-
-    if(foreLeg) foreLeg.style.transform = "rotate(" + (strideAngle * 24) + "deg)";
-    if(hindLeg) hindLeg.style.transform = "rotate(" + (-strideAngle * 24) + "deg)";
-    if(tailGrp) tailGrp.style.transform = "rotate(" + (-strideAngle * 11) + "deg)";
-
-    foxEl.classList.add("is-visible");
-  }
-
-  var ticking = false;
-  function onFoxScroll(){
-    if(!ticking){
-      requestAnimationFrame(function(){ update(); ticking = false; });
-      ticking = true;
-    }
-  }
-
-  window.addEventListener("scroll", onFoxScroll, { passive:true });
-  window.addEventListener("resize", onFoxScroll, { passive:true });
-  window.addEventListener("load", update);
-  update();
-})();
-</script>
-
-<!-- ============================================================
-     FOX BUILD — pinned scroll-scrubbed intro
-    Crossfades through 7 supplied frames (begin → construct →
-    refine → defined → ignited → refining → structured). No run
-    cycle — this is a build-up only. Every visual state is a pure
-    function of scroll progress through the pinned section;
-    scrubbing up rewinds cleanly. Unpins at 100%, then the headline
-    does a normal (non-scrubbed) reveal-on-scroll.
-     ============================================================ -->
-<script>
-(function(){
-  "use strict";
-
-  var section = document.getElementById("foxBuild");
-  if(!section) return;
-
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(reduced) return; // CSS fallback shows a static logo instead
-
-  var camera      = document.getElementById("fbCamera");
-  var ground      = document.getElementById("fbGround");
-  var headline    = document.getElementById("fbHeadline");
-  var stageLabel  = document.getElementById("fbStageLabel");
-  var progressFill= document.getElementById("fbProgressFill");
-
-  var frames = [
-    { el: document.getElementById("fbF1"), name: "Begin" },
-    { el: document.getElementById("fbF2"), name: "Construct" },
-    { el: document.getElementById("fbF3"), name: "Refine" },
-    { el: document.getElementById("fbF4"), name: "Defined" },
-    { el: document.getElementById("fbF5"), name: "Ignited" },
-    { el: document.getElementById("fbF6"), name: "Refining" },
-    { el: document.getElementById("fbF7"), name: "Structured" }
-  ];
-
-  /* Frames occupy the first 87.5% of the scrub; the remaining
-     12.5% crossfades the last frame into the logo lock. */
-  var FRAMES_END = 0.875;
-  var STEP = FRAMES_END / frames.length;
-  var OVERLAP = STEP * 0.35; // crossfade width between adjacent frames
-
-  function lerp(a,b,t){ return a + (b-a) * t; }
-  function clamp01(v){ return v<0 ? 0 : v>1 ? 1 : v; }
-  function smooth(t){ t = clamp01(t); return t*t*(3 - 2*t); }
-  function band(p, start, end){ return clamp01((p - start) / (end - start)); }
-
-  var lockedLogo = false;
-
-  function update(){
-    var scrollable = section.offsetHeight - window.innerHeight;
-    if(scrollable <= 0) return;
-    var rect = section.getBoundingClientRect();
-    var p = clamp01((-rect.top) / scrollable);
-
-    /* slow continuous push-in across the whole sequence to build tension */
-    camera.style.transform = "scale(" + lerp(1, 1.035, smooth(p)) + ")";
-
-    var activeName = frames[0].name;
-    frames.forEach(function(frame, i){
-      var start = i * STEP;
-      var end = start + STEP;
-      var opacity = smooth(band(p, start - OVERLAP, start)) -
-                    smooth(band(p, end - OVERLAP, end));
-      /* first frame is fully visible at p=0 */
-      if(i === 0){ opacity = 1 - smooth(band(p, end - OVERLAP, end)); }
-      opacity = clamp01(opacity);
-      frame.el.style.opacity = opacity.toFixed(3);
-      if(opacity > 0.5) activeName = frame.name;
-    });
-
-    /* ground shadow settles in once the fox is fully structured */
-    ground.style.opacity = smooth(band(p, FRAMES_END - STEP, FRAMES_END)).toFixed(3);
-
-    /* the sequence ends on the structured fox frame */
-    if(p >= .97 && !lockedLogo){ lockedLogo = true; }
-    if(p < .965 && lockedLogo){ lockedLogo = false; }
-
-    if(headline){
-      headline.style.opacity = p < FRAMES_END ? "1" : (1 - smooth(band(p, FRAMES_END, 1))).toFixed(3);
-      headline.style.transform = "translateY(-50%)";
-    }
-
-    if(stageLabel) stageLabel.textContent = p >= FRAMES_END - OVERLAP ? "Brand" : activeName;
-    if(progressFill) progressFill.style.height = (p * 100).toFixed(1) + "%";
-  }
-
-  var ticking = false;
-  function onScroll(){
-    if(!ticking){
-      requestAnimationFrame(function(){ update(); ticking = false; });
-      ticking = true;
-    }
-  }
-  window.addEventListener("scroll", onScroll, { passive:true });
-  window.addEventListener("resize", onScroll, { passive:true });
-  window.addEventListener("load", update);
-  update();
 })();
 </script>
 </body>
