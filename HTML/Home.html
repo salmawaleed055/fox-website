@@ -572,6 +572,7 @@
       position: relative;
       height: 440vh;
     }
+    
     @media (max-width: 880px) {
       .fox-build-stage {
         height: 340vh;
@@ -589,6 +590,9 @@
       transition: opacity .3s var(--ease), transform .3s var(--ease);
       will-change: opacity, transform;
       pointer-events: none;
+        /* ADD THESE TWO LINES BELOW */
+      top: calc(50% + var(--header-h)/2);
+      transform: translateY(0);
     }
     .fox-build-headline .eyebrow {
       justify-content: flex-start;
