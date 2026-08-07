@@ -8,6 +8,7 @@
   <meta name="description" content="Fox Advertising is a full-service agency with 15+ years of experience delivering 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" as="image" href="Home-Frames/frame_003_no_bg.png" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     /* -------------------------------------------------------------
@@ -594,14 +595,28 @@
       <nav class="primary-nav" aria-label="Primary">
         <ul>
           <li class="nav-item is-active">
-            <a class="nav-link" href="#">Home</a>
+            <a class="nav-link" href="#">Home <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
+            <div class="nav-dropdown">
+              <a href="#who">About us <span class="dot"></span></a>
+              <a href="#clients">Our clients <span class="dot"></span></a>
+              <a href="#contact">Contact us <span class="dot"></span></a>
+            </div>
           </li>
-          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="#services">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
+            <div class="nav-dropdown" id="servicesDropdown"></div>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="gallery.html">Gallery <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
             <div class="nav-dropdown" id="galleryDropdown"></div>
           </li>
-          <li class="nav-item"><a class="nav-link" href="gallery.html">Portfolio</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
+            <div class="nav-dropdown">
+              <a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF <span class="dot"></span></a>
+              <a href="portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF <span class="dot"></span></a>
+            </div>
+          </li>
         </ul>
       </nav>
       <div class="header-actions">
@@ -618,11 +633,16 @@
   </header>
 
   <nav class="mobile-nav" id="mobileNav" aria-label="Mobile">
-    <ul><li><a href="#">Home</a></li><li><a href="#services">Services</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="gallery.html">Portfolio</a></li></ul>
+    <ul><li><a href="#">Home</a></li><li><a href="#services">Services</a></li><li><a href="gallery.html">Gallery</a></li></ul>
     <h3>Jump to</h3>
     <ul class="sub"><li><a href="#who">About us</a></li><li><a href="#clients">Our clients</a></li><li><a href="#contact">Contact us</a></li></ul>
     <h3>Browse the gallery</h3>
     <ul class="sub" id="mobileGalleryLinks"></ul>
+    <h3>Portfolio</h3>
+    <ul class="sub">
+      <li><a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF</a></li>
+      <li><a href="portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF</a></li>
+    </ul>
     <div class="mobile-social" id="mobileSocial"></div>
   </nav>
 
@@ -642,88 +662,88 @@
 
           <div class="fb-rig" id="fbRig">
             <!-- 82 frames – all responsive via object-fit: contain -->
-            <!-- <img class="fb-frame" id="fbF1" src="Home-Frames/frame_001_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF2" src="Home-Frames/frame_002_no_bg.png" alt="" aria-hidden="true" /> -->
-            <img class="fb-frame" id="fbF3" src="Home-Frames/frame_003_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF4" src="Home-Frames/frame_004_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF5" src="Home-Frames/frame_005_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF6" src="Home-Frames/frame_006_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF7" src="Home-Frames/frame_007_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF8" src="Home-Frames/frame_008_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF9" src="Home-Frames/frame_009_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF10" src="Home-Frames/frame_010_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF11" src="Home-Frames/frame_011_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF12" src="Home-Frames/frame_012_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF13" src="Home-Frames/frame_013_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF14" src="Home-Frames/frame_014_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF15" src="Home-Frames/frame_015_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF16" src="Home-Frames/frame_016_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF17" src="Home-Frames/frame_017_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF18" src="Home-Frames/frame_018_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF19" src="Home-Frames/frame_019_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF20" src="Home-Frames/frame_020_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF21" src="Home-Frames/frame_021_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF22" src="Home-Frames/frame_022_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF23" src="Home-Frames/frame_023_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF24" src="Home-Frames/frame_024_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF25" src="Home-Frames/frame_025_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF26" src="Home-Frames/frame_026_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF27" src="Home-Frames/frame_027_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF28" src="Home-Frames/frame_028_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF29" src="Home-Frames/frame_029_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF30" src="Home-Frames/frame_030_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF31" src="Home-Frames/frame_031_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF32" src="Home-Frames/frame_032_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF33" src="Home-Frames/frame_033_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF34" src="Home-Frames/frame_034_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF35" src="Home-Frames/frame_035_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF36" src="Home-Frames/frame_036_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF37" src="Home-Frames/frame_037_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF38" src="Home-Frames/frame_038_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF39" src="Home-Frames/frame_039_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF40" src="Home-Frames/frame_040_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF41" src="Home-Frames/frame_041_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF42" src="Home-Frames/frame_042_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF43" src="Home-Frames/frame_043_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF44" src="Home-Frames/frame_044_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF45" src="Home-Frames/frame_045_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF46" src="Home-Frames/frame_046_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF47" src="Home-Frames/frame_047_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF48" src="Home-Frames/frame_048_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF49" src="Home-Frames/frame_049_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF50" src="Home-Frames/frame_050_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF51" src="Home-Frames/frame_051_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF52" src="Home-Frames/frame_052_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF53" src="Home-Frames/frame_053_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF54" src="Home-Frames/frame_054_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF55" src="Home-Frames/frame_055_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF56" src="Home-Frames/frame_056_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF57" src="Home-Frames/frame_057_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF58" src="Home-Frames/frame_058_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF59" src="Home-Frames/frame_059_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF60" src="Home-Frames/frame_060_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF61" src="Home-Frames/frame_061_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF62" src="Home-Frames/frame_062_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF63" src="Home-Frames/frame_063_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF64" src="Home-Frames/frame_064_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF65" src="Home-Frames/frame_065_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF66" src="Home-Frames/frame_066_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF67" src="Home-Frames/frame_067_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF68" src="Home-Frames/frame_068_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF69" src="Home-Frames/frame_069_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF70" src="Home-Frames/frame_070_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF71" src="Home-Frames/frame_071_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF72" src="Home-Frames/frame_072_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF73" src="Home-Frames/frame_073_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF74" src="Home-Frames/frame_074_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF75" src="Home-Frames/frame_075_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF76" src="Home-Frames/frame_076_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF77" src="Home-Frames/frame_077_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF78" src="Home-Frames/frame_078_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF79" src="Home-Frames/frame_079_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF80" src="Home-Frames/frame_080_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF81" src="Home-Frames/frame_081_no_bg.png" alt="" aria-hidden="true" />
-            <img class="fb-frame" id="fbF82" src="Home-Frames/frame_082_no_bg.png" alt="" aria-hidden="true" />
+            <!-- <img class="fb-frame" id="fbF1" src="Home-Frames/frame_001_no_bg.png" fetchpriority="high" decoding="async" alt="" aria-hidden="true">
+            <img class="fb-frame" id="fbF2" src="Home-Frames/frame_002_no_bg.png" decoding="async" alt="" aria-hidden="true"> -->
+            <img class="fb-frame" id="fbF3" src="Home-Frames/frame_003_no_bg.png" fetchpriority="high" decoding="async" alt="" aria-hidden="true">
+            <img class="fb-frame" id="fbF4" src="Home-Frames/frame_004_no_bg.png" decoding="async" alt="" aria-hidden="true">
+            <img class="fb-frame" id="fbF5" data-src="Home-Frames/frame_005_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF6" data-src="Home-Frames/frame_006_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF7" data-src="Home-Frames/frame_007_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF8" data-src="Home-Frames/frame_008_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF9" data-src="Home-Frames/frame_009_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF10" data-src="Home-Frames/frame_010_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF11" data-src="Home-Frames/frame_011_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF12" data-src="Home-Frames/frame_012_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF13" data-src="Home-Frames/frame_013_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF14" data-src="Home-Frames/frame_014_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF15" data-src="Home-Frames/frame_015_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF16" data-src="Home-Frames/frame_016_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF17" data-src="Home-Frames/frame_017_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF18" data-src="Home-Frames/frame_018_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF19" data-src="Home-Frames/frame_019_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF20" data-src="Home-Frames/frame_020_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF21" data-src="Home-Frames/frame_021_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF22" data-src="Home-Frames/frame_022_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF23" data-src="Home-Frames/frame_023_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF24" data-src="Home-Frames/frame_024_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF25" data-src="Home-Frames/frame_025_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF26" data-src="Home-Frames/frame_026_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF27" data-src="Home-Frames/frame_027_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF28" data-src="Home-Frames/frame_028_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF29" data-src="Home-Frames/frame_029_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF30" data-src="Home-Frames/frame_030_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF31" data-src="Home-Frames/frame_031_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF32" data-src="Home-Frames/frame_032_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF33" data-src="Home-Frames/frame_033_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF34" data-src="Home-Frames/frame_034_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF35" data-src="Home-Frames/frame_035_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF36" data-src="Home-Frames/frame_036_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF37" data-src="Home-Frames/frame_037_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF38" data-src="Home-Frames/frame_038_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF39" data-src="Home-Frames/frame_039_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF40" data-src="Home-Frames/frame_040_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF41" data-src="Home-Frames/frame_041_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF42" data-src="Home-Frames/frame_042_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF43" data-src="Home-Frames/frame_043_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF44" data-src="Home-Frames/frame_044_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF45" data-src="Home-Frames/frame_045_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF46" data-src="Home-Frames/frame_046_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF47" data-src="Home-Frames/frame_047_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF48" data-src="Home-Frames/frame_048_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF49" data-src="Home-Frames/frame_049_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF50" data-src="Home-Frames/frame_050_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF51" data-src="Home-Frames/frame_051_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF52" data-src="Home-Frames/frame_052_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF53" data-src="Home-Frames/frame_053_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF54" data-src="Home-Frames/frame_054_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF55" data-src="Home-Frames/frame_055_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF56" data-src="Home-Frames/frame_056_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF57" data-src="Home-Frames/frame_057_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF58" data-src="Home-Frames/frame_058_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF59" data-src="Home-Frames/frame_059_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF60" data-src="Home-Frames/frame_060_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF61" data-src="Home-Frames/frame_061_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF62" data-src="Home-Frames/frame_062_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF63" data-src="Home-Frames/frame_063_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF64" data-src="Home-Frames/frame_064_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF65" data-src="Home-Frames/frame_065_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF66" data-src="Home-Frames/frame_066_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF67" data-src="Home-Frames/frame_067_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF68" data-src="Home-Frames/frame_068_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF69" data-src="Home-Frames/frame_069_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF70" data-src="Home-Frames/frame_070_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF71" data-src="Home-Frames/frame_071_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF72" data-src="Home-Frames/frame_072_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF73" data-src="Home-Frames/frame_073_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF74" data-src="Home-Frames/frame_074_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF75" data-src="Home-Frames/frame_075_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF76" data-src="Home-Frames/frame_076_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF77" data-src="Home-Frames/frame_077_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF78" data-src="Home-Frames/frame_078_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF79" data-src="Home-Frames/frame_079_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF80" data-src="Home-Frames/frame_080_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF81" data-src="Home-Frames/frame_081_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
+            <img class="fb-frame" id="fbF82" data-src="Home-Frames/frame_082_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
             <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
           </div>
         </div>
@@ -759,63 +779,63 @@
         <h2 class="reveal">Our Clients</h2>
         <div class="clients-marquee reveal">
           <div class="clients-track">
-            <div class="client-logo"><img src="clients logos/amwaj-removebg-preview.png" alt="Amwaj" /><span class="sector">Hospitality</span></div>
-            <div class="client-logo"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" /><span class="sector">Hospitality</span></div>
-            <div class="client-logo"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/cocacola.png" alt="Coca-Cola" /><span class="sector">Beverage</span></div>
-            <div class="client-logo"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" /><span class="sector">Food</span></div>
-            <div class="client-logo"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo"><img src="clients logos/jamjoon-removebg-preview.png" alt="Jamjoon Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/Menarini_Group.png" alt="Menarini Group" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/mitsubishi-removebg-preview.png" alt="Mitsubishi" /><span class="sector">Energy</span></div>
-            <div class="client-logo"><img src="clients logos/MSD.png" alt="MSD" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo"><img src="clients logos/novartis.png" alt="Novartis" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/penta-removebg-preview.png" alt="Penta Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/PFIZER.png" alt="Pfizer" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/pharco.png" alt="Pharco" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/sakan-removebg-preview.png" alt="Sakan" /><span class="sector">Real Estate</span></div>
-            <div class="client-logo"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/sanofi.png" alt="Sanofi" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/watan-removebg-preview.png" alt="Watan" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/بنك_مصر.png" alt="Banque Misr" /><span class="sector">Banking</span></div>
+            <div class="client-logo"><img src="clients logos/amwaj-removebg-preview.png" alt="Amwaj" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
+            <div class="client-logo"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
+            <div class="client-logo"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async" /><span class="sector">Beverage</span></div>
+            <div class="client-logo"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" loading="lazy" decoding="async" /><span class="sector">Food</span></div>
+            <div class="client-logo"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo"><img src="clients logos/jamjoon-removebg-preview.png" alt="Jamjoon Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/Menarini_Group.png" alt="Menarini Group" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/mitsubishi-removebg-preview.png" alt="Mitsubishi" loading="lazy" decoding="async" /><span class="sector">Energy</span></div>
+            <div class="client-logo"><img src="clients logos/MSD.png" alt="MSD" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo"><img src="clients logos/novartis.png" alt="Novartis" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/penta-removebg-preview.png" alt="Penta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/PFIZER.png" alt="Pfizer" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/pharco.png" alt="Pharco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/sakan-removebg-preview.png" alt="Sakan" loading="lazy" decoding="async" /><span class="sector">Real Estate</span></div>
+            <div class="client-logo"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/sanofi.png" alt="Sanofi" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/watan-removebg-preview.png" alt="Watan" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/بنك_مصر.png" alt="Banque Misr" loading="lazy" decoding="async" /><span class="sector">Banking</span></div>
             <!-- duplicate for seamless loop -->
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/amwaj-removebg-preview.png" alt="Amwaj" /><span class="sector">Hospitality</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" /><span class="sector">Hospitality</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/cocacola.png" alt="Coca-Cola" /><span class="sector">Beverage</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" /><span class="sector">Food</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/jamjoon-removebg-preview.png" alt="Jamjoon Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/Menarini_Group.png" alt="Menarini Group" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/mitsubishi-removebg-preview.png" alt="Mitsubishi" /><span class="sector">Energy</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/MSD.png" alt="MSD" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/novartis.png" alt="Novartis" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/penta-removebg-preview.png" alt="Penta Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/PFIZER.png" alt="Pfizer" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/pharco.png" alt="Pharco" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/sakan-removebg-preview.png" alt="Sakan" /><span class="sector">Real Estate</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/sanofi.png" alt="Sanofi" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/watan-removebg-preview.png" alt="Watan" /><span class="sector">Healthcare</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/بنك_مصر.png" alt="Banque Misr" /><span class="sector">Banking</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/amwaj-removebg-preview.png" alt="Amwaj" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async" /><span class="sector">Beverage</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" loading="lazy" decoding="async" /><span class="sector">Food</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/jamjoon-removebg-preview.png" alt="Jamjoon Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/Menarini_Group.png" alt="Menarini Group" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/mitsubishi-removebg-preview.png" alt="Mitsubishi" loading="lazy" decoding="async" /><span class="sector">Energy</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/MSD.png" alt="MSD" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/novartis.png" alt="Novartis" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/penta-removebg-preview.png" alt="Penta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/PFIZER.png" alt="Pfizer" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/pharco.png" alt="Pharco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/sakan-removebg-preview.png" alt="Sakan" loading="lazy" decoding="async" /><span class="sector">Real Estate</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/sanofi.png" alt="Sanofi" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/watan-removebg-preview.png" alt="Watan" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/بنك_مصر.png" alt="Banque Misr" loading="lazy" decoding="async" /><span class="sector">Banking</span></div>
           </div>
         </div>
       </div>
@@ -853,7 +873,7 @@
       <div class="footer-top">
         <div class="footer-brand"><img src="Images/Logo.svg" width="36" height="36" alt="FOX Advertising logo" aria-hidden="true" /><p>A full-service advertising agency in Cairo delivering 360° marketing solutions for pharmaceutical and healthcare companies worldwide.</p><div class="footer-social" id="footerSocial"></div></div>
         <div class="footer-col"><h4>Gallery</h4><ul id="footerGalleryLinks"></ul></div>
-        <div class="footer-col"><h4>Studio</h4><ul><li><a href="#who">About us</a></li><li><a href="#services">Services</a></li><li><a href="#clients">Our clients</a></li><li><a href="gallery.html">Portfolio</a></li></ul></div>
+        <div class="footer-col"><h4>Studio</h4><ul><li><a href="#who">About us</a></li><li><a href="#services">Services</a></li><li><a href="#clients">Our clients</a></li><li><a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio</a></li></ul></div>
         <div class="footer-col"><h4>Contact</h4><ul><li><a href="https://forms.gle/q3p1EoTT89jcm9KW6" target="_blank" rel="noopener noreferrer">Contact us</a></li><li><a href="mailto:fox@foxadv.net">fox@foxadv.net</a></li><li><a href="tel:+20222600432">+2 2260 0432</a></li></ul></div>
       </div>
       <div class="footer-bottom"><span>Privacy Policy &nbsp;|&nbsp; FOX © 2026. All rights reserved.</span><a href="#top" class="back-top">Back to top <svg viewBox="0 0 12 12" fill="none"><path d="M6 10V2M2 6l4-4 4 4" stroke="currentColor" stroke-width="1.4"/></svg></a></div>
@@ -876,14 +896,17 @@
       };
 
       function buildNavDropdowns() {
-        var galleryHtml = "", mobileHtml = "", footerHtml = "";
+        var servicesHtml = "", galleryHtml = "", mobileHtml = "", footerHtml = "";
         CATEGORY_ORDER.forEach(function(slug) {
           var label = CATEGORY_LABEL[slug];
           var href = "gallery.html#" + slug;
+          servicesHtml += '<a href="#services">' + label + '<span class="dot"></span></a>';
           galleryHtml += '<a href="' + href + '">' + label + '<span class="dot"></span></a>';
           mobileHtml += '<li><a href="' + href + '">' + label + '</a></li>';
           footerHtml += '<li><a href="' + href + '">' + label + '</a></li>';
         });
+        var sd = document.getElementById("servicesDropdown");
+        if (sd) sd.innerHTML = servicesHtml;
         var gd = document.getElementById("galleryDropdown");
         if (gd) gd.innerHTML = galleryHtml;
         var mgl = document.getElementById("mobileGalleryLinks");
@@ -1026,6 +1049,33 @@
         var STEP = FRAMES_END / totalFrames;
         var OVERLAP = STEP * 0.3;
 
+        // PERF: frames beyond the first 2 use data-src so they aren't
+        // downloaded on initial page load. We stream them in gradually
+        // during idle time, and force-load any frame the instant it's
+        // about to become visible so fast scrolling never shows a gap.
+        function loadFrame(el) {
+          if (el && el.dataset && el.dataset.src) {
+            el.src = el.dataset.src;
+            delete el.dataset.src;
+          }
+        }
+        (function idlePreloadFrames() {
+          var i = 0;
+          function step() {
+            var loadedOne = false;
+            while (i < frameElements.length && !loadedOne) {
+              var el = frameElements[i++];
+              if (el.dataset && el.dataset.src) { loadFrame(el); loadedOne = true; }
+            }
+            if (i < frameElements.length) {
+              if (window.requestIdleCallback) requestIdleCallback(step, { timeout: 300 });
+              else setTimeout(step, 120);
+            }
+          }
+          if (window.requestIdleCallback) requestIdleCallback(step, { timeout: 300 });
+          else setTimeout(step, 120);
+        })();
+
         function clamp01(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
         function smooth(t) { t = clamp01(t); return t * t * (3 - 2 * t); }
         function band(p, start, end) { return clamp01((p - start) / (end - start)); }
@@ -1049,6 +1099,7 @@
               smooth(band(p, end - OVERLAP, end));
             if (idx === 0) { opacity = 1 - smooth(band(p, end - OVERLAP, end)); }
             opacity = clamp01(opacity);
+            if (opacity > 0.02) loadFrame(frame);
             frame.style.opacity = opacity.toFixed(3);
             if (opacity > 0.5) activeName = "Frame " + (idx+1);
           });
