@@ -941,8 +941,7 @@
           </div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="index.html#services">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
-          <div class="nav-dropdown" id="servicesDropdown"></div>
+          <a class="nav-link" href="index.html#services">Services</a>
         </li>
         <li class="nav-item is-active">
           <a class="nav-link" href="#gallery">Gallery <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
@@ -1532,15 +1531,13 @@
   // NAV DROPDOWNS, SOCIAL, FILTER, GRID, LIGHTBOX, etc.
   // ============================================================
   function buildNavDropdowns(){
-    var servicesHtml = "", galleryHtml = "", mobileHtml = "", footerHtml = "";
+    var galleryHtml = "", mobileHtml = "", footerHtml = "";
     CATEGORY_ORDER.forEach(function(slug){
       var label = CATEGORY_META[slug].label;
-      servicesHtml += '<a href="index.html#services">'+label+'<span class="dot"></span></a>';
       galleryHtml += '<a href="#gallery" data-goto="'+slug+'">'+label+'<span class="dot"></span></a>';
       mobileHtml += '<li><a href="#gallery" data-goto="'+slug+'">'+label+'</a></li>';
       footerHtml += '<li><a href="#gallery" data-goto="'+slug+'">'+label+'</a></li>';
     });
-    document.getElementById("servicesDropdown").innerHTML = servicesHtml;
     document.getElementById("galleryDropdown").innerHTML = galleryHtml;
     document.getElementById("mobileGalleryLinks").innerHTML = mobileHtml;
     document.getElementById("footerGalleryLinks").innerHTML = footerHtml;

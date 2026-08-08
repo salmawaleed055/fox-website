@@ -240,6 +240,7 @@
     .brand-sub { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .24em; color: var(--slate); margin-top: 2px; }
     .primary-nav { display: flex; align-items: center; gap: 2px; }
     .primary-nav > ul { display: flex; align-items: center; gap: 2px; }
+    .nav-item { position: relative; }
     .nav-link {
       display: flex;
       align-items: center;
@@ -743,8 +744,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#services">Services <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
-            <div class="nav-dropdown" id="servicesDropdown"></div>
+            <a class="nav-link" href="#services">Services</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="gallery.html">Gallery <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4" /></svg></a>
@@ -962,17 +962,14 @@
       };
 
       function buildNavDropdowns() {
-        var servicesHtml = "", galleryHtml = "", mobileHtml = "", footerHtml = "";
+        var galleryHtml = "", mobileHtml = "", footerHtml = "";
         CATEGORY_ORDER.forEach(function(slug) {
           var label = CATEGORY_LABEL[slug];
           var href = "gallery.html#" + slug;
-          servicesHtml += '<a href="#services">' + label + '<span class="dot"></span></a>';
           galleryHtml += '<a href="' + href + '">' + label + '<span class="dot"></span></a>';
           mobileHtml += '<li><a href="' + href + '">' + label + '</a></li>';
           footerHtml += '<li><a href="' + href + '">' + label + '</a></li>';
         });
-        var sd = document.getElementById("servicesDropdown");
-        if (sd) sd.innerHTML = servicesHtml;
         var gd = document.getElementById("galleryDropdown");
         if (gd) gd.innerHTML = galleryHtml;
         var mgl = document.getElementById("mobileGalleryLinks");
