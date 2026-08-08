@@ -344,12 +344,12 @@
     .mobile-social { display: flex; gap: 18px; margin-top: 30px; flex-wrap: wrap; }
     .mobile-social a { width: 38px; height: 38px; border: 1px solid rgba(6,30,50,0.06); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-    /* FOX BUILD – fully responsive */
+    /* FOX BUILD – fully responsive, reduced void after animation */
     .fox-build { position: relative; background: var(--bg); }
-    .fox-build-stage { position: relative; height: 440vh; }
-    @media (max-width: 880px) { .fox-build-stage { height: 160vh; } }
-    @media (max-width: 480px) { .fox-build-stage { height: 140vh; } }
-    @media (max-width: 360px) { .fox-build-stage { height: 130vh; } }
+    .fox-build-stage { position: relative; height: 380vh; } /* reduced from 440vh to minimize void */
+    @media (max-width: 880px) { .fox-build-stage { height: 140vh; } }
+    @media (max-width: 480px) { .fox-build-stage { height: 120vh; } }
+    @media (max-width: 360px) { .fox-build-stage { height: 110vh; } }
 
     .fox-build-headline {
       position: fixed;
