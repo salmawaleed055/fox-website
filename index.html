@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preload" as="image" href="Home-Frames/frame_003_no_bg.webp" fetchpriority="high" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&family=Bangers&display=swap" rel="stylesheet" />
   <style>
     /* -------------------------------------------------------------
        TOKENS – cyanotype / blueprint
@@ -32,9 +32,12 @@
       --font-display: 'Space Grotesk', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
+      --font-subtitle: 'Manrope', sans-serif;
+      --font-slogan: 'Bangers', cursive;
       --ease: cubic-bezier(.16, .84, .44, 1);
       --ease-out: cubic-bezier(.22, .61, .36, 1);
-      --header-h: 84px;
+      --header-h: 100px;
+      --header-h-scrolled: 76px;
       --container: 1320px;
     }
     [data-theme="dark"] {
@@ -216,7 +219,7 @@
       border-bottom: 1px solid rgba(6, 30, 50, .06);
       transition: height .35s var(--ease), background .35s var(--ease);
     }
-    .site-header.is-scrolled { height: 64px; background: rgba(255,255,255,.98); }
+    .site-header.is-scrolled { height: var(--header-h-scrolled); background: rgba(255,255,255,.98); }
     [data-theme="dark"] .site-header { background: rgba(11,23,36,0.94); border-bottom-color: rgba(255,255,255,0.06); }
     [data-theme="dark"] .site-header.is-scrolled { background: rgba(11,23,36,0.98); border-color: rgba(255,255,255,0.08); }
     .nav-inner {
@@ -232,8 +235,10 @@
     @media (max-width: 720px) { .nav-inner { padding: 0 22px; } }
     @media (max-width: 480px) { .nav-inner { padding: 0 16px; } }
     .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .brand-mark { width: 64px; height: 64px; flex-shrink: 0; display: block; }
-    @media (max-width: 480px) { .brand-mark { width: 48px; height: 48px; } }
+    .brand-mark { width: 84px; height: 84px; flex-shrink: 0; display: block; transition: width .35s var(--ease), height .35s var(--ease); }
+    .site-header.is-scrolled .brand-mark { width: 66px; height: 66px; }
+    @media (max-width: 720px) { .brand-mark { width: 68px; height: 68px; } }
+    @media (max-width: 480px) { .brand-mark { width: 58px; height: 58px; } }
     .brand-copy { display: none; } /* hide text, keep only logo */
     .brand-word { font-family: var(--font-display); font-weight: 700; font-size: 18px; letter-spacing: .02em; line-height: 1; color: var(--brass); }
     .brand-sub { display: block; font-family: var(--font-mono); font-size: 9px; letter-spacing: .24em; color: var(--slate); margin-top: 2px; }
@@ -498,13 +503,17 @@
     @media (max-width: 880px) {
       .fox-build-headline {
         position: fixed;
-        left: auto;
-        top: auto;
+        left: 6vw;
+        right: 6vw;
+        top: calc(var(--header-h) + 22px);
+        bottom: auto;
         transform: none;
-        width: min(88vw, 620px);
+        width: auto;
+        max-width: 620px;
+        margin: 0 auto;
         text-align: center;
         padding: 0;
-        inset: 96px 6vw auto;
+        z-index: 3;
         pointer-events: none;
       }
       .fox-build-headline .eyebrow,
@@ -520,8 +529,17 @@
       .fb-progress-rail { right: 16px; height: 120px; }
     }
     @media (max-width: 480px) {
-      .fox-build-headline { inset: 78px 5vw auto; }
+      .fox-build-headline {
+        left: 5vw;
+        right: 5vw;
+        top: calc(var(--header-h) + 14px);
+      }
+      .fox-build-headline h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); margin: 14px 0 16px; }
+      .fox-build-headline .lede { display: none; }
       .fb-progress-rail { display: none; }
+    }
+    @media (max-width: 360px) {
+      .fox-build-headline { top: calc(var(--header-h) + 8px); }
     }
 
     /* SHOWREEL, WHO, CLIENTS, SERVICES, CTA, FOOTER – styles kept */
