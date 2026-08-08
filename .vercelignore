@@ -1,0 +1,29 @@
+# Source artwork that the site never serves. Everything here has a generated,
+# web-sized counterpart that IS deployed:
+#
+#   Images/<category>/   ->  img/<category>/*-{480,960,1600}.webp
+#   Home-Frames/, Frames/ ->  anim/home*/, anim/gallery*/
+#
+# Keeping these out takes the deploy from ~280 MB to under 40 MB. Regenerate the
+# derivatives with tools/encode-images.py and tools/encode-frames.py.
+
+.vs
+tools
+
+# Frame sequence sources (864x496 PNGs, ~51 MB)
+Home-Frames
+Frames
+frames with no background
+Video
+
+# Camera-resolution gallery originals (~209 MB).
+# Images/Logo.svg and Images/Video/ are still referenced, so Images/ itself and
+# those two entries stay.
+Images/Banner
+Images/Branding
+Images/Creative Concepts
+Images/Display Stands
+Images/Exhibition
+Images/Giveaways
+Images/Packaging
+Images/Printing Materials

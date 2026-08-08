@@ -1,0 +1,7 @@
+# Visual Studio scratch state - machine-local, was committed by accident
+.vs/
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store

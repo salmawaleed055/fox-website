@@ -9,7 +9,12 @@
   <meta name="theme-color" content="#0A1F38">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="Frames/frame_002_no_bg.png" fetchpriority="high">
+  <!-- First frame only. The player picks the same tier at runtime from the
+       rig's device-pixel width, so these two never both apply. -->
+  <link rel="preload" as="image" href="anim/gallery/0001.webp" media="(min-width: 481px)" fetchpriority="high">
+  <link rel="preload" as="image" href="anim/gallery-sm/0001.webp" media="(max-width: 480px)" fetchpriority="high">
+  <script src="js/fox-sequence.js" defer></script>
+  <script src="js/gallery-images.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
@@ -362,8 +367,8 @@
        ============================================================ */
     .fox-build{ position:relative; background:var(--bg); }
     .fox-build-stage{ position:relative; height:440vh; }
-    @media (max-width:880px){ .fox-build-stage{ height:160vh; } }
-    @media (max-width:480px){ .fox-build-stage{ height:140vh; } }
+    @media (max-width:880px){ .fox-build-stage{ height:300vh; } }
+    @media (max-width:480px){ .fox-build-stage{ height:280vh; } }
 
     .fox-build-headline{
       position:fixed;
@@ -436,10 +441,12 @@
       will-change:transform;
     }
 
-    .fb-frame{
-      position:absolute; inset:0; width:100%; height:100%;
-      object-fit:contain; opacity:0;
-    }
+    /* Single canvas holds the whole frame sequence - one composited layer
+       instead of one per frame. object-fit keeps the old letterboxing. */
+    .fb-canvas,
+    .fb-poster{ position:absolute; inset:0; width:100%; height:100%; }
+    .fb-canvas,
+    .fb-poster img{ width:100%; height:100%; object-fit:contain; }
 
     .fb-ground-shadow{
       position:absolute; left:50%; bottom:2%; width:56%; height:18px;
@@ -772,6 +779,21 @@
       .lightbox-panel{ grid-template-columns:1fr; overflow-y:auto; }
       .lightbox-art{ min-height:220px; }
     }
+
+    /* Reduced motion runs no scroll loop, so nothing is there to fade the
+       headline out. It is position:fixed, which would leave it pinned over
+       every section below. Take it out of the fixed layer entirely and let it
+       scroll away with the section - no JS involved, no motion introduced. */
+    @media (prefers-reduced-motion: reduce) {
+      .fox-build-headline {
+        position: absolute;
+        top: 18vh;
+        bottom: auto;
+        left: clamp(18px, 5vw, 64px);
+        right: auto;
+        transform: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -813,10 +835,10 @@
           <div class="nav-dropdown" id="galleryDropdown"></div>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
+          <a class="nav-link" href="Portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio <svg viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg></a>
           <div class="nav-dropdown">
-            <a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF <span class="dot"></span></a>
-            <a href="portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF <span class="dot"></span></a>
+            <a href="Portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF <span class="dot"></span></a>
+            <a href="Portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF <span class="dot"></span></a>
           </div>
         </li>
       </ul>
@@ -847,8 +869,8 @@
   <ul class="sub" id="mobileGalleryLinks"></ul>
   <h3>Portfolio</h3>
   <ul class="sub">
-    <li><a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF</a></li>
-    <li><a href="portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF</a></li>
+    <li><a href="Portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Preview PDF</a></li>
+    <li><a href="Portfolio/Fox-Advertising-Portfolio.pdf" download="Fox-Advertising-Portfolio.pdf">Download PDF</a></li>
   </ul>
   <div class="mobile-social" id="mobileSocial"></div>
 </nav>
@@ -870,74 +892,15 @@
         <div class="fb-progress-rail" aria-hidden="true"><div class="fb-progress-fill" id="fbProgressFill"></div></div>
 
         <div class="fb-rig" id="fbRig">
-          <img class="fb-frame" id="fbF1" src="Frames/frame_002_no_bg.png" fetchpriority="high" decoding="async" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF2" src="Frames/frame_003_no_bg.png" decoding="async" alt="" aria-hidden="true">
-          <img class="fb-frame" id="fbF3" data-src="Frames/frame_004_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF4" data-src="Frames/frame_005_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF5" data-src="Frames/frame_006_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF6" data-src="Frames/frame_007_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF7" data-src="Frames/frame_008_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF8" data-src="Frames/frame_009_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF9" data-src="Frames/frame_010_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF10" data-src="Frames/frame_011_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF11" data-src="Frames/frame_012_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF12" data-src="Frames/frame_013_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF13" data-src="Frames/frame_014_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF14" data-src="Frames/frame_015_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF15" data-src="Frames/frame_016_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF16" data-src="Frames/frame_017_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF17" data-src="Frames/frame_018_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF18" data-src="Frames/frame_019_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF19" data-src="Frames/frame_020_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF20" data-src="Frames/frame_021_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF21" data-src="Frames/frame_022_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF22" data-src="Frames/frame_023_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF23" data-src="Frames/frame_024_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF24" data-src="Frames/frame_025_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF25" data-src="Frames/frame_026_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF26" data-src="Frames/frame_027_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF27" data-src="Frames/frame_028_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF28" data-src="Frames/frame_029_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF29" data-src="Frames/frame_030_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF30" data-src="Frames/frame_031_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF31" data-src="Frames/frame_032_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF32" data-src="Frames/frame_033_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF33" data-src="Frames/frame_034_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF34" data-src="Frames/frame_035_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF35" data-src="Frames/frame_036_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF36" data-src="Frames/frame_037_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF37" data-src="Frames/frame_038_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF38" data-src="Frames/frame_039_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF39" data-src="Frames/frame_040_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF40" data-src="Frames/frame_041_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF41" data-src="Frames/frame_042_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF42" data-src="Frames/frame_043_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF43" data-src="Frames/frame_044_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF44" data-src="Frames/frame_045_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF45" data-src="Frames/frame_046_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF46" data-src="Frames/frame_047_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF47" data-src="Frames/frame_048_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF48" data-src="Frames/frame_049_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF49" data-src="Frames/frame_050_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF50" data-src="Frames/frame_051_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF51" data-src="Frames/frame_052_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF52" data-src="Frames/frame_053_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF53" data-src="Frames/frame_054_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF54" data-src="Frames/frame_055_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF55" data-src="Frames/frame_056_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF56" data-src="Frames/frame_057_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF57" data-src="Frames/frame_058_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF58" data-src="Frames/frame_059_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF59" data-src="Frames/frame_060_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF60" data-src="Frames/frame_061_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF61" data-src="Frames/frame_062_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF62" data-src="Frames/frame_063_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF63" data-src="Frames/frame_064_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF64" data-src="Frames/frame_065_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF65" data-src="Frames/frame_066_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <!-- <img class="fb-frame" id="fbF66" data-src="Frames/frame_067_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
-          <img class="fb-frame" id="fbF67" data-src="Frames/frame_068_no_bg.png" alt="" aria-hidden="true" loading="lazy" decoding="async"> -->
-      
+          <!-- The 66-frame sequence is drawn into a canvas injected by
+               js/fox-sequence.js. Frames live in anim/gallery/.
+               The poster is the already-preloaded first frame: it fills the rig
+               before the canvas has anything, and is what remains if the player
+               script never loads. The player hides it on first paint. -->
+          <picture class="fb-poster">
+            <source media="(max-width: 480px)" srcset="anim/gallery-sm/0001.webp">
+            <img src="anim/gallery/0001.webp" alt="" aria-hidden="true" width="864" height="496" fetchpriority="high" decoding="async">
+          </picture>
           <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
         </div>
 
@@ -1020,7 +983,7 @@
           <li><a href="index.html#who">About us</a></li>
           <li><a href="index.html#services">Services</a></li>
           <li><a href="index.html#clients">Our clients</a></li>
-          <li><a href="portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
+          <li><a href="Portfolio/Fox-Advertising-Portfolio.pdf" target="_blank" rel="noopener noreferrer">Portfolio</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1161,7 +1124,7 @@
 
     { cat:"packaging", title:"Dates Box Packaging", client:"Confidential", year:"2025", size:"md", desc:"Custom food packaging designed with a refined presentation suitable for premium product presentation.", image:"Images/Packaging/Box (dates) NeW_0001.webp" },
 
-    { cat:"packaging", title:"Premium Box System", client:"Confidential", year:"2025", size:"sm", desc:"A structured packaging system combining product protection with a distinctive branded presentation.", image:"Images/Packaging/Box New_Mk-131022_NEW3.webp" },
+    { cat:"packaging", title:"Premium Box System", client:"Confidential", year:"2025", size:"sm", desc:"A structured packaging system combining product protection with a distinctive branded presentation.", image:"Images/Packaging/Box New_MK-13102022_NEW3.webp" },
 
     { cat:"packaging", title:"Claforan Tissue Box", client:"Claforan", year:"2024", size:"md", desc:"Pharmaceutical tissue-box packaging designed for clear product recognition and practical retail presentation.", image:"Images/Packaging/claforan tissue box.webp" },
 
@@ -1263,11 +1226,11 @@
 
     { cat:"giveaways", title:"Bebelac Invitation", client:"Bebelac", year:"2025", size:"sm", desc:"Branded invitation concept created for a polished promotional and event experience.", image:"Images/Giveaways/Bebelac Invitation back Simu 30-19.webp" },
 
-    { cat:"giveaways", title:"Biofar Mobile Holder", client:"Biofar", year:"2025", size:"md", desc:"Custom branded mobile holder designed as a practical pharmaceutical promotional item.", image:"Images/Giveaways/Biofar Mobile Holder(Rubbe....webp" },
+    { cat:"giveaways", title:"Biofar Mobile Holder", client:"Biofar", year:"2025", size:"md", desc:"Custom branded mobile holder designed as a practical pharmaceutical promotional item.", image:"Images/Giveaways/Biofar Mobile Holder( Rubber) Option 2_0001.webp" },
 
     { cat:"giveaways", title:"Biofar Pen Holder", client:"Biofar", year:"2025", size:"sm", desc:"Branded pen holder designed as a practical desk giveaway for corporate and pharmaceutical environments.", image:"Images/Giveaways/Biofar Pen Holder NEW Color 2_0005.webp" },
 
-    { cat:"giveaways", title:"Dyslipidemia Fighting House", client:"Confidential", year:"2025", size:"lg", desc:"Interactive promotional concept designed to communicate a health-focused campaign through an engaging physical experience.", image:"Images/Giveaways/Dyslipidemia a Fighting House (Flash me....webp" },
+    { cat:"giveaways", title:"Dyslipidemia Fighting House", client:"Confidential", year:"2025", size:"lg", desc:"Interactive promotional concept designed to communicate a health-focused campaign through an engaging physical experience.", image:"Images/Giveaways/Dyslipidemia Fighting House (Flash memory) Rubber_0000 copy.webp" },
 
     { cat:"giveaways", title:"Branded Mug", client:"Confidential", year:"2025", size:"sm", desc:"Custom branded mug designed as an everyday promotional gift with strong visual visibility.", image:"Images/Giveaways/IMG_5923.webp" },
 
@@ -1288,8 +1251,8 @@
     { cat:"printing-materials", title:"Photo Frame Print", client:"Confidential", year:"2024", size:"sm", desc:"Printed photo-frame concept combining branded presentation with a polished physical finish.", image:"Images/Printing Materials/photo frame.webp" },
     { cat:"printing-materials", title:"Roll-Up Banner", client:"Confidential", year:"2024", size:"lg", desc:"Large-format roll-up banner designed for exhibitions, events, and high-visibility promotional environments.", image:"Images/Printing Materials/Roll-up.webp" },
     { cat:"printing-materials", title:"Sanofi Notebook", client:"Sanofi", year:"2024", size:"md", desc:"Branded notebook and stationery mockup designed to translate a corporate identity into a premium physical product.", image:"Images/Printing Materials/sanofi notebook 3d mockup-5 copy.webp" },
-    { cat:"printing-materials", title:"Telfast Dangler", client:"Telfast", year:"2024", size:"sm", desc:"Point-of-sale dangler designed to communicate a pharmaceutical product message through an eye-catching retail format.", image:"Images/Printing Materials/Telfast-D Dangler simu 02-Mk-16022022 SF.webp" },
-    { cat:"printing-materials", title:"House of Diabetes Invitation", client:"The House of Diabetes", year:"2024", size:"md", desc:"Event invitation design combining branded visual communication with an elegant physical print format.", image:"Images/Printing Materials/The-House-Of-Diaibetes-_Invitation-Simu-1.-Mk-040717-SF-.webp" },
+    { cat:"printing-materials", title:"Telfast Dangler", client:"Telfast", year:"2024", size:"sm", desc:"Point-of-sale dangler designed to communicate a pharmaceutical product message through an eye-catching retail format.", image:"Images/Printing Materials/Telfast-D Dangler simu 02-Mk-16022022-SF.webp" },
+    { cat:"printing-materials", title:"House of Diabetes Invitation", client:"The House of Diabetes", year:"2024", size:"md", desc:"Event invitation design combining branded visual communication with an elegant physical print format.", image:"Images/Printing Materials/The-House-Of-Daibetes-_Invitation-Simu-1.-Mk-040717-SF-.webp" },
     { cat:"printing-materials", title:"Vixaport Invitation", client:"Vixaport", year:"2024", size:"sm", desc:"Branded invitation designed for professional event communication and premium printed presentation.", image:"Images/Printing Materials/Vixaport-Invitation-01-Simu-.webp" },
 // DISPLAY STANDS (Newly added)
     { cat:"display-stands", title:"Modular POS Stand", client:"Delta Foods", year:"2024", size:"lg", desc:"A snap-together counter stand rolled out to six hundred stores without a single tool required.", image:"Images/Display Stands/1.webp" },
@@ -1338,9 +1301,47 @@
 
   ITEMS.forEach(function(it, i){ it.id = i; it.seed = 1000 + i * 37; });
 
-  function renderArt(item){
+  // Grid cards live in a multi-column layout with column-width:320px inside a
+  // 1320px container: one column up to ~745px wide, two up to ~1084px, three
+  // above that, capping around 400px per card.
+  var SIZES_CARD = "(max-width: 745px) calc(100vw - 44px), " +
+                   "(max-width: 1083px) calc((100vw - 102px) / 2), 420px";
+  // The lightbox art panel is 1.2fr of a two-column 1080px grid, and goes
+  // full-width below 820px.
+  var SIZES_LIGHTBOX = "(max-width: 820px) 92vw, 590px";
+
+  function escapeAttr(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  }
+
+  /*
+    The originals in Images/ are camera-resolution - 190 files, 209MB, plenty of
+    them 6000x4000 - and nothing here displays them above ~590 CSS px. This
+    hands the browser the responsive set built by tools/encode-images.py and
+    lets it pick. `sizes` says how wide the image will be laid out; the browser
+    combines that with the device pixel ratio to choose a variant.
+  */
+  function renderArt(item, sizes){
     if(item && item.image){
-      return '<img src="'+item.image+'" alt="'+(item.title || '')+'" loading="lazy">';
+      var alt = escapeAttr(item.title);
+      var rec = window.FOX_IMAGES && window.FOX_IMAGES[item.image];
+      if(!rec){
+        // Not in the generated table (new artwork, table not regenerated yet).
+        // Fall back to the original file rather than rendering nothing.
+        return '<img src="'+escapeAttr(encodeURI(item.image))+'" alt="'+alt+
+               '" loading="lazy" decoding="async">';
+      }
+      var base = rec[0], w = rec[1], h = rec[2], variants = rec[3];
+      var srcset = variants.map(function(v){
+        return base + "-" + v[0] + ".webp " + v[1] + "w";
+      }).join(", ");
+      var fallback = base + "-" + variants[variants.length - 1][0] + ".webp";
+      // width/height carry the intrinsic aspect ratio so the masonry grid
+      // reserves the right space before the image decodes.
+      return '<img src="'+fallback+'" srcset="'+srcset+'" sizes="'+
+             escapeAttr(sizes || SIZES_CARD)+'" width="'+w+'" height="'+h+
+             '" alt="'+alt+'" loading="lazy" decoding="async">';
     }
     // fallback generative art if needed
     return '<div style="background:#0F2942;height:200px;display:flex;align-items:center;justify-content:center;color:#7fd9fb;">'+item.title+'</div>';
@@ -1560,7 +1561,7 @@
     var item = ITEMS[id];
     var meta = CATEGORY_META[item.cat];
     lb.currentId = id;
-    lb.art.innerHTML = renderArt(item);
+    lb.art.innerHTML = renderArt(item, SIZES_LIGHTBOX);
     lb.cat.textContent = meta.label;
     lb.title.textContent = item.title;
     lb.client.textContent = item.client + " — " + item.year;
@@ -1649,113 +1650,32 @@
     if(CATEGORY_ORDER.indexOf(hash) !== -1){ applyFilter(hash, false); } else { applyFilter("all", false); }
     observeReveals();
     window.addEventListener("load", function(){
-      setTimeout(function(){ document.getElementById("loader").classList.add("is-done"); }, 250);
+      // There is no #loader element in this page; guard so the missing node
+      // stops throwing an uncaught TypeError on every load.
+      setTimeout(function(){
+        var loader = document.getElementById("loader");
+        if (loader) loader.classList.add("is-done");
+      }, 250);
     });
   }
 
-  document.addEventListener("DOMContentLoaded", init);
-
-  // Fox build scrub (80 frames)
-  (function(){
-    var section = document.getElementById("foxBuild");
-    if(!section) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    var camera = document.getElementById("fbCamera");
-    var ground = document.getElementById("fbGround");
-    var headline = document.getElementById("fbHeadline");
-    var stageLabel = document.getElementById("fbStageLabel");
-    var progressFill = document.getElementById("fbProgressFill");
-    
-    // Collect all 80 frame elements
-    var frameEls = [];
-    for (var i = 1; i <= 80; i++) {
-      var el = document.getElementById("fbF" + i);
-      if (el) frameEls.push({ el: el, name: "Frame " + i });
-    }
-    // give them nice names at key milestones
-    var labelMap = {
-      1: "Begin",
-      20: "Construct",
-      40: "Refine",
-      60: "Defined",
-      80: "Brand"
-    };
-    frameEls.forEach(function(f, idx) {
-      var num = idx + 1;
-      f.name = labelMap[num] || "Frame " + num;
+  // Fox build scrub - canvas frame sequence, see js/fox-sequence.js
+  document.addEventListener("DOMContentLoaded", function(){
+    if (!window.initFoxSequence) return;
+    var MILESTONES = { 0:"Begin", 16:"Construct", 33:"Refine", 49:"Defined", 65:"Brand" };
+    function n(i){ return ("000" + (i + 1)).slice(-4) + ".webp"; }
+    window.initFoxSequence({
+      count: 66,
+      framesEnd: 0.875,
+      full:  { src: function(i){ return "anim/gallery/" + n(i); },    width: 864, height: 496 },
+      small: { src: function(i){ return "anim/gallery-sm/" + n(i); }, width: 540, height: 310 },
+      smallUpTo: 700,
+      still: "anim/gallery-still.png",
+      label: function(i){ return MILESTONES[i] || "Frame " + (i + 1); }
     });
+  });
 
-    var FRAMES_END = 0.875;
-    var STEP = FRAMES_END / frameEls.length;
-    var OVERLAP = STEP * 0.35;
-
-    // PERF: frames beyond the first 2 use data-src so they aren't
-    // downloaded on initial page load. Stream them in during idle time,
-    // and force-load any frame the instant it's about to become visible.
-    function loadFrame(el) {
-      if (el && el.dataset && el.dataset.src) {
-        el.src = el.dataset.src;
-        delete el.dataset.src;
-      }
-    }
-    (function idlePreloadFrames() {
-      var i = 0;
-      function step() {
-        var loadedOne = false;
-        while (i < frameEls.length && !loadedOne) {
-          var el = frameEls[i++].el;
-          if (el.dataset && el.dataset.src) { loadFrame(el); loadedOne = true; }
-        }
-        if (i < frameEls.length) {
-          if (window.requestIdleCallback) requestIdleCallback(step, { timeout: 300 });
-          else setTimeout(step, 120);
-        }
-      }
-      if (window.requestIdleCallback) requestIdleCallback(step, { timeout: 300 });
-      else setTimeout(step, 120);
-    })();
-
-    function clamp01(v){ return v<0 ? 0 : v>1 ? 1 : v; }
-    function smooth(t){ t = clamp01(t); return t*t*(3 - 2*t); }
-    function band(p, start, end){ return clamp01((p - start) / (end - start)); }
-    
-    function update(){
-      var scrollable = section.offsetHeight - window.innerHeight;
-      if(scrollable <= 0) return;
-      var rect = section.getBoundingClientRect();
-      var p = clamp01((-rect.top) / scrollable);
-      camera.style.transform = "scale(" + (1 + 0.035 * smooth(p)) + ")";
-      
-      var activeName = frameEls[0] ? frameEls[0].name : "Begin";
-      frameEls.forEach(function(frame, i){
-        var start = i * STEP;
-        var end = start + STEP;
-        var opacity = smooth(band(p, start - OVERLAP, start)) - smooth(band(p, end - OVERLAP, end));
-        if(i === 0){ opacity = 1 - smooth(band(p, end - OVERLAP, end)); }
-        opacity = clamp01(opacity);
-        if (opacity > 0.02) loadFrame(frame.el);
-        frame.el.style.opacity = opacity.toFixed(3);
-        if(opacity > 0.5) activeName = frame.name;
-      });
-      
-      ground.style.opacity = smooth(band(p, FRAMES_END - STEP, FRAMES_END)).toFixed(3);
-      if(headline){
-        headline.style.opacity = p < FRAMES_END ? "1" : (1 - smooth(band(p, FRAMES_END, 1))).toFixed(3);
-        headline.style.transform = "translateY(-50%)";
-      }
-      if(stageLabel) stageLabel.textContent = p >= FRAMES_END - OVERLAP ? "Brand" : activeName;
-      if(progressFill) progressFill.style.height = (p * 100).toFixed(1) + "%";
-    }
-    
-    var ticking = false;
-    function onScroll(){
-      if(!ticking){ requestAnimationFrame(function(){ update(); ticking = false; }); ticking = true; }
-    }
-    window.addEventListener("scroll", onScroll, { passive:true });
-    window.addEventListener("resize", onScroll, { passive:true });
-    window.addEventListener("load", update);
-    update();
-  })();
+  document.addEventListener("DOMContentLoaded", init);
 
 })();
 // Add this to handle all anchor links
@@ -1779,37 +1699,6 @@ document.addEventListener('click', function(e) {
     behavior: 'smooth'
   });
 });
-function update(){
-  var scrollable = section.offsetHeight - window.innerHeight;
-  if(scrollable <= 0) return;
-  var rect = section.getBoundingClientRect();
-  var p = clamp01((-rect.top) / scrollable);
-  
-  // Camera scale animation
-  camera.style.transform = "scale(" + (1 + 0.035 * smooth(p)) + ")";
-  
-  var activeName = frameEls[0] ? frameEls[0].name : "Begin";
-  frameEls.forEach(function(frame, i){
-    var start = i * STEP;
-    var end = start + STEP;
-    var opacity = smooth(band(p, start - OVERLAP, start)) - smooth(band(p, end - OVERLAP, end));
-    if(i === 0){ opacity = 1 - smooth(band(p, end - OVERLAP, end)); }
-    opacity = clamp01(opacity);
-    frame.el.style.opacity = opacity.toFixed(3);
-    if(opacity > 0.5) activeName = frame.name;
-  });
-  
-  ground.style.opacity = smooth(band(p, FRAMES_END - STEP, FRAMES_END)).toFixed(3);
-  
-  // Headline fade out
-  if(headline){
-    headline.style.opacity = p < FRAMES_END ? "1" : (1 - smooth(band(p, FRAMES_END, 1))).toFixed(3);
-    // Remove the transform that was causing issues
-  }
-  
-  if(stageLabel) stageLabel.textContent = p >= FRAMES_END - OVERLAP ? "Brand" : activeName;
-  if(progressFill) progressFill.style.height = (p * 100).toFixed(1) + "%";
-}
 </script>
 </body>
 </html>
