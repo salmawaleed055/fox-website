@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fox Advertising · Healthcare & Pharma Marketing, Cairo</title>
   <link rel="icon" type="image/svg+xml" href="Images/Logo.svg" />
   <meta name="description" content="Fox Advertising is a full-service agency with 15+ years of experience delivering 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets." />
@@ -602,6 +602,102 @@
         right: auto;
         transform: none;
       }
+    }
+
+    /* ==========================================================
+       RESPONSIVE FIXES
+       Everything below overrides earlier rules by source order.
+       ========================================================== */
+
+    /* This page never reset button styling, so #burgerBtn - which only
+       appears at <=960px - rendered as a native grey box with an outset
+       border on every phone. gallery.html already had this rule. */
+    button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+    /* The headline is position:fixed and the rig is centred in the same 100vh
+       sticky frame, so on a phone they were landing on top of each other
+       (measured 114px of overlap at 360x780). Give them separate bands: the
+       headline keeps the top, the fox is pinned to the bottom. max-height on
+       the rig makes it yield first as the screen gets shorter. */
+    @media (max-width: 880px) and (orientation: portrait) {
+      .fox-build-camera {
+        align-items: flex-end;
+        padding-bottom: clamp(20px, 5vh, 64px);
+      }
+      .fb-rig {
+        width: min(68vw, 440px);
+        max-height: 32vh;
+        margin: 0 auto;
+      }
+    }
+    @media (max-width: 480px) and (orientation: portrait) {
+      .fb-rig { width: 72vw; }
+    }
+
+    /* A phone in landscape has ~390px of height - not enough for a 245px
+       headline block stacked above the fox, which overlapped by 53px. There
+       is plenty of width though, so put them side by side the way the desktop
+       layout does. */
+    @media (max-width: 880px) and (orientation: landscape) {
+      .fox-build-headline {
+        inset: 50% auto auto clamp(14px, 4vw, 40px);
+        transform: translateY(-50%);
+        width: min(46vw, 440px);
+        text-align: left;
+      }
+      .fox-build-headline .eyebrow,
+      .fox-build-headline .hero-meta { justify-content: flex-start; }
+      .fox-build-headline .lede { margin: 0; font-size: 13px; }
+      .fox-build-headline h1 { font-size: clamp(1.4rem, 4.2vw, 2.1rem); margin: 10px 0 12px; }
+      .fox-build-headline .hero-meta { margin-top: 12px; }
+      .fox-build-camera {
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0 clamp(14px, 4vw, 40px);
+      }
+      .fb-rig {
+        width: min(44vw, 360px);
+        max-height: 80vh;
+        margin: 0;
+      }
+    }
+    /* Short phones cannot fit the full headline block and the fox at their
+       normal sizes. Trade a little from both rather than let them collide. */
+    @media (max-width: 880px) and (orientation: portrait) and (max-height: 700px) {
+      .fox-build-headline { inset: 76px 5vw auto; }
+      .fox-build-headline h1 { font-size: clamp(1.6rem, 6.4vw, 2.3rem); margin: 10px 0 12px; }
+      .fox-build-headline .lede { font-size: 13px; }
+      .fox-build-headline .hero-meta { margin-top: 12px; }
+      .fb-rig { max-height: 26vh; }
+    }
+
+    /* The camera scales to 1.035 while scrubbing, so its box reaches ~7px past
+       each edge of the viewport. body{overflow-x:hidden} was absorbing that,
+       but that is unreliable on iOS Safari. Contain it at the source instead.
+       overflow-x:clip (not hidden) does not create a scroll container, so the
+       sticky camera keeps working. */
+    .fox-build { overflow-x: clip; }
+
+    /* The stage readout sits top-left of the camera and the headline eyebrow
+       runs across the same line once the headline moves up on small screens -
+       they overlapped by 37px. It is a decorative technical caption, so drop
+       it below the desktop layout rather than fight for the space. */
+    @media (max-width: 880px) {
+      .fb-stage-label { display: none; }
+    }
+
+    /* 9px mono is below the floor for legibility on a phone. */
+    @media (max-width: 720px) {
+      .brand-sub { font-size: 10.5px; letter-spacing: .18em; }
+      .client-logo .sector { font-size: 10.5px; }
+      #themeLabel { font-size: 11px; }
+    }
+
+    /* Touch targets. The toggle was 29px tall; 44px is the usual floor. */
+    @media (pointer: coarse) {
+      .theme-toggle { padding: 8px 14px 8px 8px; }
+      .back-top { padding: 10px 0; }
+      .mobile-nav a { padding-block: 6px; }
     }
   </style>
 </head>
