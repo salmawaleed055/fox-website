@@ -873,6 +873,16 @@
       .approach-item p { font-size: 14px; }
     }
 
+    /* .fox-build-headline h1 carries max-width:16ch. Once the font shrinks on
+       a short screen that cap lands well inside the centred container, and a
+       block with a max-width and no auto margins sits flush left - the title
+       rendered 65px off-centre while the lede under it looked fine, because
+       the lede's cap is wider than the container. Most phones hit this: iOS
+       Safari with the address bar showing leaves a 390x844 device about 664px
+       of viewport height, so the short-screen rules apply. */
+    @media (max-width: 880px) and (orientation: portrait) {
+      .fox-build-headline h1 { margin-inline: auto; }
+    }
     /* The camera scales to 1.035 while scrubbing, so its box reaches ~7px past
        each edge of the viewport. body{overflow-x:hidden} was absorbing that,
        but that is unreliable on iOS Safari. Contain it at the source instead.
