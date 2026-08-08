@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
   <title>Fox Advertising · Healthcare & Pharma Marketing, Cairo</title>
   <link rel="icon" type="image/svg+xml" href="Images/Logo.svg" />
   <meta name="description" content="Fox Advertising is a full-service agency with 15+ years of experience delivering 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets." />
@@ -500,6 +500,7 @@
       pointer-events: none;
     }
 
+    /* ----- MOBILE TWEAKS: ensure full title visible on phone ----- */
     @media (max-width: 880px) {
       .fox-build-headline {
         position: fixed;
@@ -532,14 +533,34 @@
       .fox-build-headline {
         left: 5vw;
         right: 5vw;
-        top: calc(var(--header-h) + 14px);
+        top: calc(var(--header-h) + 8px);  /* reduced top offset */
+        transform: none;
+        bottom: auto;
+        text-align: center;
+        width: auto;
       }
-      .fox-build-headline h1 { font-size: clamp(1.8rem, 8vw, 2.6rem); margin: 14px 0 16px; }
+      .fox-build-headline h1 {
+        font-size: clamp(2.0rem, 9.5vw, 2.8rem);
+        margin: 10px 0 12px;
+        line-height: 1.0;
+        max-width: 20ch;
+        word-break: break-word;
+      }
       .fox-build-headline .lede { display: none; }
+      .fox-build-headline .hero-meta {
+        font-size: 10px;
+        margin-top: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
       .fb-progress-rail { display: none; }
     }
     @media (max-width: 360px) {
-      .fox-build-headline { top: calc(var(--header-h) + 8px); }
+      .fox-build-headline { top: calc(var(--header-h) + 4px); }
+      .fox-build-headline h1 {
+        font-size: clamp(1.6rem, 8vw, 2.2rem);
+        margin: 6px 0 8px;
+      }
     }
 
     /* SHOWREEL, WHO, CLIENTS, SERVICES, CTA, FOOTER – styles kept */
