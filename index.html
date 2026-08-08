@@ -358,11 +358,19 @@
       font-size: clamp(2.2rem, 6.2vw, 5.4rem);
       line-height: .95;
       margin: 20px 0 24px;
-      max-width: 16ch;
+      max-width: 20ch;
       letter-spacing: -0.04em;
       color: var(--text);
+      text-transform: uppercase;
     }
-    .fox-build-headline h1 em { font-style: normal; color: var(--brass); }
+    .fox-build-headline h1 em {
+      font-style: normal;
+      font-weight: 800;
+      color: var(--brass);
+      display: inline-block;
+      transform: skewX(-8deg);
+      letter-spacing: -0.02em;
+    }
     .fox-build-headline .lede {
       max-width: 52ch;
       margin: 0;
@@ -789,7 +797,7 @@
     <section class="fox-build" id="foxBuild" aria-label="Intro animation: the Fox mark being built">
       <div class="fox-build-headline container" id="fbHeadline">
         <span class="eyebrow reveal">Fox Advertising</span>
-        <h1 class="reveal">Work built to fill <em>rooms</em>,<br>not just pages.</h1>
+        <h1 class="reveal">What the lion<br>cannot manage to do.. <em>the fox can</em></h1>
         <p class="lede reveal">Twenty-eight projects across seven disciplines — the physical output of a studio that designs for exhibition halls, shelves, and hands, as much as for screens.</p>
         <p class="hero-meta reveal">28 Projects &nbsp;·&nbsp; <strong>7</strong> Disciplines &nbsp;·&nbsp; 2023–2025 &nbsp;·&nbsp; Cairo, Egypt</p>
       </div>
