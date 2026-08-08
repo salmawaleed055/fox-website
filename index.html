@@ -346,7 +346,7 @@
 
     /* FOX BUILD – fully responsive, reduced void after animation */
     .fox-build { position: relative; background: var(--bg); }
-    .fox-build-stage { position: relative; height: 380vh; } /* reduced from 440vh to minimize void */
+    .fox-build-stage { position: relative; height: 380vh; }
     @media (max-width: 880px) { .fox-build-stage { height: 140vh; } }
     @media (max-width: 480px) { .fox-build-stage { height: 120vh; } }
     @media (max-width: 360px) { .fox-build-stage { height: 110vh; } }
@@ -533,7 +533,7 @@
       .fox-build-headline {
         left: 5vw;
         right: 5vw;
-        top: calc(var(--header-h) + 8px);  /* reduced top offset */
+        top: calc(60px + 8px);  /* reduced top offset – header is hidden via display:none on mobile */
         transform: none;
         bottom: auto;
         text-align: center;
@@ -554,13 +554,46 @@
         justify-content: center;
       }
       .fb-progress-rail { display: none; }
+      /* HIDE the entire navbar on phones – only burger remains */
+      .site-header .nav-inner .primary-nav,
+      .site-header .nav-inner .btn-talk,
+      .site-header .nav-inner .theme-toggle {
+        display: none !important;
+      }
+      .site-header .nav-inner .burger {
+        display: flex !important;
+      }
+      .site-header {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border-bottom: none !important;
+        height: 60px !important; /* minimal header height */
+        pointer-events: auto;
+      }
+      .site-header .nav-inner {
+        justify-content: flex-end;
+        padding: 0 16px;
+      }
+      .site-header .brand-mark {
+        display: none; /* hide logo on phone to save space, or keep? we keep it tiny */
+        width: 40px;
+        height: 40px;
+      }
+      .site-header .brand {
+        display: none; /* hide brand completely on phone, only burger */
+      }
+      .site-header .header-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
     }
     @media (max-width: 360px) {
-      .fox-build-headline { top: calc(var(--header-h) + 4px); }
+      .fox-build-headline { top: calc(50px + 4px); }
       .fox-build-headline h1 {
         font-size: clamp(1.6rem, 8vw, 2.2rem);
         margin: 6px 0 8px;
       }
+      .site-header { height: 50px !important; }
     }
 
     /* SHOWREEL, WHO, CLIENTS, SERVICES, CTA, FOOTER – styles kept */
@@ -663,7 +696,6 @@
     <div class="nav-inner">
       <a href="#top" class="brand" aria-label="Fox Advertising, home">
         <span class="brand-mark"><img src="Images/Logo.svg" alt="Fox Advertising logo" width="64" height="64" /></span>
-        <!-- brand-copy removed -->
       </a>
       <nav class="primary-nav" aria-label="Primary">
         <ul>
