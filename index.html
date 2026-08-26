@@ -1257,11 +1257,21 @@
       // 120ms DOMContentLoaded; on mobile data it is many seconds of blue.
       // Dismiss once the document is parsed and has had a frame to paint, with
       // a hard cap so no condition can hold it.
+      //
+      // dismissLoader() is also what kicks off the hero fox-build sequence
+      // (via startFoxAnimOnce, defined below). Previously initFoxAnim() ran
+      // on the same DOMContentLoaded tick as the loader's 42-frame request
+      // burst, so ~115 image requests (42 loader + 73 hero) fired at once and
+      // competed for the same connections — the hero frames could still be
+      // arriving well after you'd scrolled to them. Starting the hero
+      // sequence only once the loader is actually dismissed lets the loader's
+      // frames clear the queue first instead of racing the hero for bandwidth.
       (function() {
         function dismissLoader() {
           var el = document.getElementById("loader");
           if (el) el.classList.add("is-done");
           if (window.__stopLoaderFox) window.__stopLoaderFox();
+          startFoxAnimOnce();
         }
         function afterPaint() {
           requestAnimationFrame(function() { requestAnimationFrame(dismissLoader); });
@@ -1326,6 +1336,15 @@
       }
 
       // FOX BUILD ANIMATION – canvas frame sequence, see js/fox-sequence.js
+      // Not called directly from init(): it's started by startFoxAnimOnce(),
+      // which dismissLoader() invokes above, so its 73 frame requests don't
+      // fire at the same instant as the loader's 42 frame requests.
+      var foxAnimStarted = false;
+      function startFoxAnimOnce() {
+        if (foxAnimStarted) return;
+        foxAnimStarted = true;
+        initFoxAnim();
+      }
       function initFoxAnim() {
         if (!window.initFoxSequence) return;
         function n(i) { return ("0000" + i).slice(-5) + ".webp"; }
@@ -1340,13 +1359,14 @@
         });
       }
 
-      // Sequence first: it is the only thing here that starts network requests,
-      // so it should not queue behind the rest of the page's setup work.
-      function init() { initFoxAnim();
+      // The fox sequence itself is started elsewhere (see startFoxAnimOnce
+      // above) so its frame requests don't collide with the loader's.
+      function init() {
         initTheme();
         buildNavDropdowns();
         buildSocial();
-        observeReveals(); }
+        observeReveals();
+      }
       document.addEventListener("DOMContentLoaded", init);
     })();
   </script>
