@@ -312,6 +312,31 @@
 
     .header-actions{ display:flex; align-items:center; gap:14px; }
 
+    .btn-talk {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      letter-spacing: .06em;
+      border: 1px solid var(--brass);
+      color: var(--brass);
+      padding: 10px 20px;
+      border-radius: 100px;
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      transition: color .3s var(--ease);
+    }
+    .btn-talk::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: var(--brass);
+      transform: translateX(-101%);
+      transition: transform .32s var(--ease);
+      z-index: -1;
+    }
+    .btn-talk:hover { color: #fff; }
+    .btn-talk:hover::before { transform: translateX(0); }
+
     .burger{
       display:none; width:40px; height:40px; align-items:center; justify-content:center;
       flex-direction:column; gap:5px;
@@ -322,7 +347,7 @@
     .burger[aria-expanded="true"] span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); }
 
     @media (max-width:960px){
-      .primary-nav{ display:none; }
+      .primary-nav, .btn-talk{ display:none; }
       .burger{ display:flex; }
     }
 
@@ -371,12 +396,14 @@
       pointer-events: none;
     }
     .fox-build-headline .eyebrow{ justify-content:flex-start; }
+    [data-theme="light"] .fox-build-headline .eyebrow { color: var(--ink); }
+    [data-theme="light"] .fox-build-headline .eyebrow::before { background: var(--ink); }
     .fox-build-headline h1{
       font-size:clamp(2.6rem, 6.2vw, 5.4rem); line-height:.95; margin:20px 0 24px; max-width:16ch;
       letter-spacing:-0.04em; color:var(--text);
     }
     .fox-build-headline h1 em{ font-style:normal; color:var(--brass); }
-    .fox-build-headline .lede{ max-width:52ch; margin:0; color:var(--text); opacity:0.72; font-size:17px; }
+    .fox-build-headline .lede{ max-width:52ch; margin:0; color:var(--slate); opacity:1; font-family:var(--font-body); font-size:clamp(14px, 1.6vw, 17px); }
     .fox-build-headline .hero-meta{
       margin-top:28px; font-family:var(--font-mono); font-size:12.5px;
       color:var(--text); opacity:0.6; letter-spacing:.03em; justify-content:flex-start;
@@ -675,6 +702,83 @@
     .btn-large svg{ width:16px; height:16px; transition:transform .3s var(--ease); }
     .btn-large:hover svg{ transform:translateX(4px); }
 
+    /* -------------------------------------------------------------
+       LET'S TALK — contact modal (no backend, FormSubmit relay)
+       ------------------------------------------------------------- */
+    .talk-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(6, 20, 34, .55);
+      backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0; visibility: hidden;
+      transition: opacity .28s var(--ease), visibility .28s var(--ease);
+    }
+    .talk-overlay.is-open { opacity: 1; visibility: visible; }
+    .talk-modal {
+      position: relative; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto;
+      background: var(--bg); color: var(--text);
+      border-radius: 20px; padding: 40px 36px 34px;
+      box-shadow: 0 30px 70px -20px rgba(0,0,0,.45);
+      transform: translateY(18px) scale(.98); transition: transform .32s var(--ease);
+    }
+    .talk-overlay.is-open .talk-modal { transform: translateY(0) scale(1); }
+    .talk-modal-close {
+      position: absolute; top: 18px; right: 18px; width: 34px; height: 34px;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: var(--text); opacity: .55; transition: opacity .2s, background .2s;
+      cursor: pointer; background: transparent; border: none;
+    }
+    .talk-modal-close:hover { opacity: 1; background: rgba(6,30,50,0.06); }
+    .talk-modal-close svg { width: 15px; height: 15px; }
+    .talk-eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--brass); opacity: .8; margin-bottom: 8px; }
+    .talk-modal h3 { font-family: var(--font-display); font-size: clamp(1.5rem, 3vw, 1.9rem); line-height: 1.1; margin-bottom: 8px; color: var(--text); }
+    .talk-modal p.talk-sub { color: var(--text); opacity: .65; font-size: 14px; margin-bottom: 26px; }
+    .talk-form { display: grid; gap: 16px; }
+    .talk-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .talk-row { grid-template-columns: 1fr; } }
+    .talk-field { position: relative; }
+    .talk-field label { display: block; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; opacity: .55; margin-bottom: 6px; }
+    .talk-field input, .talk-field select, .talk-field textarea {
+      width: 100%; background: transparent; color: var(--text);
+      border: 1px solid rgba(6,30,50,0.14); border-radius: 10px;
+      padding: 12px 14px; font-family: var(--font-body); font-size: 14.5px;
+      transition: border-color .2s var(--ease), background .2s var(--ease);
+      appearance: none; -webkit-appearance: none;
+    }
+    [data-theme="dark"] .talk-field input, [data-theme="dark"] .talk-field select, [data-theme="dark"] .talk-field textarea { border-color: rgba(255,255,255,0.14); }
+    .talk-field input:focus, .talk-field select:focus, .talk-field textarea:focus { outline: none; border-color: var(--brass); }
+    .talk-field select { cursor: pointer; }
+    .talk-field.select-wrap::after {
+      content: ""; position: absolute; right: 14px; top: 38px; width: 9px; height: 9px;
+      border-right: 1.6px solid var(--text); border-bottom: 1.6px solid var(--text);
+      transform: rotate(45deg); opacity: .45; pointer-events: none;
+    }
+    .talk-field textarea { resize: vertical; min-height: 80px; }
+    .talk-honey { position: absolute; left: -9999px; opacity: 0; pointer-events: none; }
+    .talk-submit {
+      margin-top: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      background: var(--brass); color: #fff; font-weight: 600; font-size: 15px;
+      padding: 15px 28px; border-radius: 100px; border: none; cursor: pointer;
+      transition: transform .25s var(--ease), box-shadow .25s var(--ease), opacity .2s;
+      box-shadow: 0 8px 20px -6px rgba(22, 159, 219, .35);
+    }
+    .talk-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -8px rgba(22, 159, 219, .45); }
+    .talk-submit:disabled { opacity: .6; cursor: default; transform: none; }
+    .talk-submit .talk-spinner { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; animation: talk-spin .7s linear infinite; display: none; }
+    .talk-submit.is-loading .talk-spinner { display: inline-block; }
+    .talk-submit.is-loading .talk-submit-label { opacity: .85; }
+    @keyframes talk-spin { to { transform: rotate(360deg); } }
+    .talk-status { font-size: 13.5px; margin-top: 4px; display: none; }
+    .talk-status.is-visible { display: block; }
+    .talk-status.ok { color: #1f9d55; }
+    .talk-status.err { color: #d64545; }
+    .talk-success { text-align: center; padding: 20px 0 6px; }
+    .talk-success .talk-check { width: 56px; height: 56px; border-radius: 50%; background: rgba(22,159,219,.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; }
+    .talk-success .talk-check svg { width: 24px; height: 24px; color: var(--brass); }
+    .talk-success h3 { margin-bottom: 8px; }
+    .talk-success p { color: var(--text); opacity: .65; font-size: 14.5px; }
+
     /* ============================================================
        FOOTER – responsive
        ============================================================ */
@@ -891,6 +995,90 @@
 </head>
 <body>
 
+  <!-- LET'S TALK — contact modal (client-side only, delivered via FormSubmit) -->
+  <div class="talk-overlay" id="talkOverlay" role="dialog" aria-modal="true" aria-labelledby="talkTitle" hidden>
+    <div class="talk-modal">
+      <button type="button" class="talk-modal-close" id="talkClose" aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="none"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+
+      <div id="talkFormWrap">
+        <div class="talk-eyebrow">Contact us</div>
+        <h3 id="talkTitle">Have a project? Get in touch!</h3>
+        <p class="talk-sub">Tell us a bit about it and we'll get back to you shortly.</p>
+
+        <form class="talk-form" id="talkForm">
+          <!-- honeypot spam trap -->
+          <input type="text" name="_honey" class="talk-honey" tabindex="-1" autocomplete="off" />
+          <input type="hidden" name="_subject" value="New Let's Talk enquiry — Fox Advertising site" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
+
+          <div class="talk-row">
+            <div class="talk-field">
+              <label for="talkName">Name</label>
+              <input type="text" id="talkName" name="Name" required />
+            </div>
+            <div class="talk-field">
+              <label for="talkEmail">Email Address</label>
+              <input type="email" id="talkEmail" name="Email Address" required />
+            </div>
+          </div>
+
+          <div class="talk-row">
+            <div class="talk-field">
+              <label for="talkPhone">Phone</label>
+              <input type="tel" id="talkPhone" name="Phone" required />
+            </div>
+            <div class="talk-field select-wrap">
+              <label for="talkCountry">Country</label>
+              <select id="talkCountry" name="Country" required>
+                <option value="" disabled selected>Select country</option>
+                <option value="Egypt">Egypt</option>
+                <option value="Saudi Arabia">Saudi Arabia</option>
+                <option value="GCC">GCC</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="talk-field select-wrap">
+            <label for="talkSubject">Subject</label>
+            <select id="talkSubject" name="Subject" required>
+              <option value="" disabled selected>Subject</option>
+              <option value="Creative Lab">Creative Lab</option>
+              <option value="Studio brief">Studio brief</option>
+              <option value="Event Management">Event Management</option>
+              <option value="Exhibition solutions">Exhibition solutions</option>
+              <option value="Production request">Production request</option>
+              <option value="Scientific medical department">Scientific medical department</option>
+              <option value="Digital marketing & social media">Digital marketing & social media</option>
+              <option value="Media production">Media production</option>
+            </select>
+          </div>
+
+          <div class="talk-field">
+            <label for="talkMessage">Message <span style="opacity:.5; text-transform:none; letter-spacing:0;">(optional)</span></label>
+            <textarea id="talkMessage" name="Message"></textarea>
+          </div>
+
+          <button type="submit" class="talk-submit" id="talkSubmitBtn">
+            <span class="talk-submit-label">Send message</span>
+            <span class="talk-spinner"></span>
+          </button>
+          <div class="talk-status" id="talkStatus"></div>
+        </form>
+      </div>
+
+      <div class="talk-success" id="talkSuccess" hidden>
+        <div class="talk-check"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <h3>Message sent</h3>
+        <p>Thanks for reaching out — our team will be in touch shortly.</p>
+      </div>
+    </div>
+  </div>
+
+
 <a class="skip-link" href="#gallery">Skip to gallery</a>
 
 <!-- STARS CONTAINER (dark mode) -->
@@ -938,6 +1126,7 @@
         <span class="toggle-track"><span class="toggle-thumb"></span></span>
         <span class="label" id="themeLabel">Light</span>
       </button>
+      <a class="btn-talk" href="#" data-open-talk>Let's talk</a>
       <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileNav">
         <span></span><span></span><span></span>
       </button>
@@ -1063,7 +1252,7 @@
       <div class="footer-col">
         <h4>Contact</h4>
         <ul>
-          <li><a href="https://forms.gle/q3p1EoTT89jcm9KW6" target="_blank" rel="noopener noreferrer">Contact us</a></li>
+          <li><a href="#" data-open-talk>Contact us</a></li>
           <li><a href="#gallery">Preview portfolio</a></li>
           <li><a href="#gallery">Download portfolio</a></li>
         </ul>
@@ -1764,5 +1953,100 @@ document.addEventListener('click', function(e) {
   });
 });
 </script>
+
+  <script>
+    /* -------------------------------------------------------------
+       LET'S TALK — modal open/close + no-backend submission
+       Delivered via FormSubmit.co (free relay, no server/API key
+       needed). First submission triggers a one-time confirmation
+       email to the destination address — it must be confirmed
+       once before messages start arriving.
+       ------------------------------------------------------------- */
+    (function () {
+      "use strict";
+
+      var TALK_ENDPOINT = "https://formsubmit.co/ajax/salmawaleed055@aucegypt.edu";
+
+      var overlay = document.getElementById("talkOverlay");
+      var closeBtn = document.getElementById("talkClose");
+      var form = document.getElementById("talkForm");
+      var formWrap = document.getElementById("talkFormWrap");
+      var successWrap = document.getElementById("talkSuccess");
+      var statusEl = document.getElementById("talkStatus");
+      var submitBtn = document.getElementById("talkSubmitBtn");
+      var lastFocused = null;
+
+      function openTalk(e) {
+        if (e) e.preventDefault();
+        lastFocused = document.activeElement;
+        overlay.hidden = false;
+        requestAnimationFrame(function () { overlay.classList.add("is-open"); });
+        document.body.style.overflow = "hidden";
+        var firstField = document.getElementById("talkName");
+        if (firstField) setTimeout(function () { firstField.focus(); }, 300);
+      }
+
+      function closeTalk() {
+        overlay.classList.remove("is-open");
+        document.body.style.overflow = "";
+        setTimeout(function () { overlay.hidden = true; }, 280);
+        if (lastFocused) lastFocused.focus();
+      }
+
+      document.querySelectorAll("[data-open-talk]").forEach(function (el) {
+        el.addEventListener("click", openTalk);
+      });
+
+      closeBtn.addEventListener("click", closeTalk);
+      overlay.addEventListener("click", function (e) {
+        if (e.target === overlay) closeTalk();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && overlay.classList.contains("is-open")) closeTalk();
+      });
+
+      function setStatus(msg, kind) {
+        statusEl.textContent = msg;
+        statusEl.className = "talk-status is-visible" + (kind ? " " + kind : "");
+      }
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        // honeypot: if filled, silently drop (bot)
+        if (form.querySelector('[name="_honey"]').value) return;
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add("is-loading");
+        setStatus("", "");
+
+        var formData = new FormData(form);
+        var payload = {};
+        formData.forEach(function (value, key) { payload[key] = value; });
+
+        fetch(TALK_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(payload)
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("Request failed");
+            return res.json();
+          })
+          .then(function () {
+            formWrap.hidden = true;
+            successWrap.hidden = false;
+            form.reset();
+          })
+          .catch(function () {
+            setStatus("Something went wrong — please try again, or email us directly at fox@foxadv.net.", "err");
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("is-loading");
+          });
+      });
+    })();
+  </script>
 </body>
 </html>
