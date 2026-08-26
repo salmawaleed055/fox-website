@@ -142,7 +142,10 @@
       // Match the device pixels the canvas actually occupies so the compositor
       // does not resample a second time on top of drawImage. Re-read the DPR
       // each time: dragging the window to a different monitor changes it.
-      var ratio = Math.min(window.devicePixelRatio || 1, 2);
+      // Capped at 1.5, not 2: on a 3x-DPR phone the extra backing pixels cost
+      // real decode/composite time every scroll frame for detail that is not
+      // in an 864px-wide source anyway.
+      var ratio = Math.min(window.devicePixelRatio || 1, 1.5);
       var w = Math.max(1, Math.min(Math.round(rigWidth() * ratio), backingCap));
       if (w === backingW) return false;
       backingW = w;
@@ -150,6 +153,7 @@
       canvas.height = Math.max(1, Math.round(w / ASPECT));
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
+      smoothQuality = "high"; // keep tick()'s tracker in sync after a reset
       return true; // caller must redraw: resizing clears the canvas
     }
     sizeCanvas();
@@ -368,6 +372,8 @@
       }
     }
 
+    var smoothQuality = null; // tracks what ctx is currently set to, avoid redundant writes
+
     function tick(now) {
       // Cleared first so a throw anywhere below cannot strand the flag as true
       // with no frame pending, which would kill the loop for good.
@@ -383,6 +389,17 @@
 
       var d = target - current;
       var moving = Math.abs(d) >= SETTLE;
+
+      // High-quality resampling is the single most expensive part of each
+      // drawImage call. Pay for it only on the settled frame the eye actually
+      // rests on; use the cheap filter for the frames flying by mid-scroll,
+      // where quality is invisible anyway.
+      var wantQuality = moving ? "low" : "high";
+      if (wantQuality !== smoothQuality) {
+        ctx.imageSmoothingQuality = wantQuality;
+        smoothQuality = wantQuality;
+      }
+
       if (moving) current += d * (1 - Math.pow(1 - RESPONSE, dt / 16.667));
       else current = target;
 
