@@ -556,6 +556,11 @@
     [data-theme="light"] .clients-marquee { border-color: var(--brass); box-shadow: 0 0 0 1px rgba(22,159,219,0.25), 0 10px 30px -14px rgba(22,159,219,0.45); }
     .clients-track { display: flex; width: max-content; animation: scrollClients 48s linear infinite; }
     .clients-marquee:hover .clients-track { animation-play-state: paused; }
+    /* Paused by JS (IntersectionObserver) while off-screen: an infinite CSS
+       animation keeps compositing every frame even when nobody can see it,
+       which is real cost stolen from the hero's canvas scrub whenever this
+       section happens to be far down the page during that scroll. */
+    .clients-marquee.is-offscreen .clients-track { animation-play-state: paused; }
     @keyframes scrollClients { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     .client-logo { flex: 0 0 180px; width: 180px; height: 140px; margin: 0 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.06); padding: 16px 12px; transition: filter 0.25s, border-color 0.3s, transform 0.25s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.15); background: rgba(4, 18, 30, 0.7); }
     .client-logo:hover { filter: brightness(1.18); border-color: rgba(79, 195, 255, 0.4); transform: translateY(-3px); }
@@ -933,14 +938,32 @@
       }
 
       var cur = 0;
-      var timer = setInterval(function () {
-        cur = (cur + 1) % FRAME_COUNT;
-        if (loaded[cur]) img.src = pool[cur].src;
-      }, 1000 / FPS);
+      var running = true;
+      var lastT = 0;
+      var acc = 0;
+      var interval = 1000 / FPS;
 
-      // dismissLoader() below calls this so the interval doesn't keep
+      // Same rAF + delta-time pacing fox-sequence.js uses for the hero scrub,
+      // instead of setInterval: it lines up with paint, doesn't drift, and -
+      // unlike setInterval - simply stops firing when the tab is backgrounded
+      // rather than burning cycles no one will ever see.
+      function tick(now) {
+        if (!running) return;
+        var dt = lastT ? Math.min(now - lastT, 100) : interval;
+        lastT = now;
+        acc += dt;
+        while (acc >= interval) {
+          acc -= interval;
+          cur = (cur + 1) % FRAME_COUNT;
+          if (loaded[cur]) img.src = pool[cur].src;
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+
+      // dismissLoader() below calls this so the loop doesn't keep
       // ticking in the background after the loader is gone.
-      window.__stopLoaderFox = function () { clearInterval(timer); };
+      window.__stopLoaderFox = function () { running = false; };
     })();
   </script>
 
@@ -1366,8 +1389,22 @@
         buildNavDropdowns();
         buildSocial();
         observeReveals();
+        observeMarquee();
       }
       document.addEventListener("DOMContentLoaded", init);
+
+      // Pauses the client-logo marquee's infinite CSS animation whenever it's
+      // scrolled out of view, so it isn't compositing 48s of translateX on a
+      // page you can't see it on — including while you're mid-scroll through
+      // the hero section further up the page.
+      function observeMarquee() {
+        var el = document.querySelector(".clients-marquee");
+        if (!el || !window.IntersectionObserver) return;
+        new IntersectionObserver(function (entries) {
+          var visible = entries[entries.length - 1].isIntersecting;
+          el.classList.toggle("is-offscreen", !visible);
+        }, { rootMargin: "200px 0px" }).observe(el);
+      }
     })();
   </script>
 
