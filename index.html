@@ -14,7 +14,7 @@
   <link rel="preload" as="image" href="anim/home-sm/00000.webp" media="(max-width: 480px)" fetchpriority="high" />
   <!-- Loader's first frame, so the fox is already on screen the instant the
        loader paints instead of popping in a beat later. -->
-  <link rel="preload" as="image" href="anim/loading/00000.webp" fetchpriority="high" />
+  <link rel="preload" as="image" href="anim/Loading/00000.webp" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="js/fox-sequence.js" defer></script>
   <style>
@@ -899,13 +899,13 @@
   <div class="stars-container" id="starsContainer" aria-hidden="true"></div>
 
   <div class="loader" id="loader" aria-hidden="true">
-    <img class="loader-fox" id="loaderFox" src="anim/loading/00000.webp" width="191" height="280" alt="" decoding="async">
+    <img class="loader-fox" id="loaderFox" src="anim/Loading/00000.webp" width="191" height="280" alt="" decoding="async">
   </div>
   <script>
     // Runs immediately during parsing (not deferred) so the fox starts
     // "thinking" the instant the loader paints, same reasoning as the
     // rel=preload above it: don't make the loader wait on anything else.
-    // Frames live in anim/loading/, 42 of them (00000.webp - 00041.webp),
+    // Frames live in anim/Loading/, 42 of them (00000.webp - 00041.webp),
     // sampled down from the full 168-frame render. Cheap, best-effort:
     // frames are requested up front but a tick simply holds the last
     // frame that's actually finished loading, so nothing ever shows a
@@ -927,7 +927,7 @@
         (function (idx) {
           var frame = new Image();
           frame.onload = function () { loaded[idx] = true; };
-          frame.src = "anim/loading/" + n(idx);
+          frame.src = "anim/Loading/" + n(idx);
           pool[idx] = frame;
         })(i);
       }
