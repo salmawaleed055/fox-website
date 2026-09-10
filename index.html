@@ -347,9 +347,9 @@
        (height - 100vh) is divided between them, so it has to stay long
        enough that each frame gets real scroll distance – at 160vh a phone
        gave every frame about 6px, which reads as a blur, not an animation. */
-    .fox-build-stage { position: relative; height: 440vh; }
-    @media (max-width: 880px) { .fox-build-stage { height: 320vh; } }
-    @media (max-width: 480px) { .fox-build-stage { height: 300vh; } }
+    .fox-build-stage { position: relative; height: 260vh; }
+    @media (max-width: 880px) { .fox-build-stage { height: 210vh; } }
+    @media (max-width: 480px) { .fox-build-stage { height: 190vh; } }
 
     .fox-build-headline {
       position: fixed;
@@ -608,7 +608,7 @@
       background: var(--bg); color: var(--text);
       border-radius: 20px; padding: 40px 36px 34px;
       box-shadow: 0 30px 70px -20px rgba(0,0,0,.45);
-      transform: translateY(18px) scale(.98); transition: transform .32s var(--ease-out);
+      transform: translateY(18px) scale(.98); transition: transform .32s var(--ease);
     }
     .talk-overlay.is-open .talk-modal { transform: translateY(0) scale(1); }
     .talk-modal-close {
@@ -635,6 +635,14 @@
       appearance: none; -webkit-appearance: none;
     }
     [data-theme="dark"] .talk-field input, [data-theme="dark"] .talk-field select, [data-theme="dark"] .talk-field textarea { border-color: rgba(255,255,255,0.14); }
+    /* Native <option> dropdowns render on a light OS-level background even in
+       dark mode, so inheriting the near-white --text color made the choices
+       unreadable. Force dark, high-contrast text (and a matching light
+       background) on the options themselves. */
+    [data-theme="dark"] .talk-field select option {
+      color: #0b1724;
+      background-color: #eaf3fc;
+    }
     .talk-field input:focus, .talk-field select:focus, .talk-field textarea:focus { outline: none; border-color: var(--brass); }
     .talk-field select { cursor: pointer; }
     .talk-field.select-wrap::after {
@@ -648,7 +656,7 @@
       margin-top: 6px; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
       background: var(--brass); color: #fff; font-weight: 600; font-size: 15px;
       padding: 15px 28px; border-radius: 100px; border: none; cursor: pointer;
-      transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), opacity .2s;
+      transition: transform .25s var(--ease), box-shadow .25s var(--ease), opacity .2s;
       box-shadow: 0 8px 20px -6px rgba(22, 159, 219, .35);
     }
     .talk-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -8px rgba(22, 159, 219, .45); }

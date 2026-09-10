@@ -747,6 +747,14 @@
       appearance: none; -webkit-appearance: none;
     }
     [data-theme="dark"] .talk-field input, [data-theme="dark"] .talk-field select, [data-theme="dark"] .talk-field textarea { border-color: rgba(255,255,255,0.14); }
+    /* Native <option> dropdowns render on a light OS-level background even in
+       dark mode, so inheriting the near-white --text color made the choices
+       unreadable. Force dark, high-contrast text (and a matching light
+       background) on the options themselves. */
+    [data-theme="dark"] .talk-field select option {
+      color: #0b1724;
+      background-color: #eaf3fc;
+    }
     .talk-field input:focus, .talk-field select:focus, .talk-field textarea:focus { outline: none; border-color: var(--brass); }
     .talk-field select { cursor: pointer; }
     .talk-field.select-wrap::after {

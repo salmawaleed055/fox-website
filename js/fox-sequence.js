@@ -43,7 +43,7 @@
 
   var SKIP = {};        // stands in for a frame that failed to load
   var MAX_BACKING = 1600;
-  var RESPONSE = 0.24;  // fraction of the remaining distance closed per 60Hz frame
+  var RESPONSE = 0.38;  // fraction of the remaining distance closed per 60Hz frame
   var SETTLE = 0.0002;  // scroll-fraction delta below which the loop parks
   var DECODE_TIMEOUT = 1200;
   var REQUEST_TIMEOUT = 12000;
