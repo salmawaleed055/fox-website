@@ -614,11 +614,33 @@
        (see applyFilter). */
     .card.is-hidden{ display:none; }
 
+    /* ---- Card layers, back to front ---------------------------------------
+       .card-art      photo: zooms and warms on hover/focus
+       .card-veil     resting bottom vignette: fades out on hover/focus
+       .card-overlay  brand tint + frosted blur over the whole frame: NO text
+       .card-plaque   the ONLY text: [category] / title / client - year + icon
+       .card::after   corner brackets
+       Every fact appears once. The centre pills, the top-left category pill
+       and the top-right running number are gone from the markup (buildGrid),
+       and the category line is only rendered when the title does not already
+       name it. All text lives in one normal-flow block hanging from the bottom
+       edge, sized from the card's own width (cqi) and height (100cqi / --ar),
+       so nothing can overlap. Measured on all 186 cards from 320px to 1920px:
+       no two text boxes intersect, titles stay within 2 lines, and the first
+       line sits at least 50px below the card's top edge. Portrait cards can
+       be as narrow as ~120px on a phone; they get the narrow rule below. */
+    .card{
+      container-type: inline-size;  /* cqi below = this card's width */
+      --card-mark: #F3F8FF;         /* brackets sit on the photo, not the page: one colour for both themes */
+      scroll-margin-top: 88px;      /* a focused card scrolls clear of the sticky filter bar (~72px) */
+      scroll-margin-bottom: 16px;
+    }
+
     .card-art{
       position:absolute; inset:0; display:block; overflow:hidden;
       transition:transform .6s var(--ease-out-soft);
     }
-    .card:hover .card-art, .card:focus-visible .card-art{ transform:scale(1.01); }
+    .card:is(:hover, :focus-visible) .card-art{ transform:scale(1.01); }
     /* No will-change here: on 186 cards it held 186 GPU layers alive
        permanently. The hover transform is promoted on its own when it runs. */
     .card-art img{
@@ -627,101 +649,143 @@
       transition:transform .6s var(--ease-out-soft), filter .6s var(--ease-out-soft), opacity .45s var(--ease);
     }
     .card-art img.is-loaded{ opacity:1; }
-    .card:hover .card-art img, .card:focus-visible .card-art img{ transform:scale(1.08); filter:saturate(1.05) contrast(1.03); }
+    .card:is(:hover, :focus-visible) .card-art img{ transform:scale(1.08); filter:saturate(1.05) contrast(1.03); }
 
     .card-veil{
       position:absolute; inset:0; pointer-events:none;
       background:linear-gradient(180deg, rgba(10,31,56,0) 40%, rgba(10,31,56,.92) 100%);
       opacity:.55; transition:opacity .4s var(--ease);
     }
-    .card:hover .card-veil, .card:focus-visible .card-veil{ opacity:.0; }
+    .card:is(:hover, :focus-visible) .card-veil{ opacity:0; }
 
+    /* Tint and blur only. It used to carry a second copy of the title and a
+       third copy of the category as centred pills, which ran into the plaque. */
     .card-overlay{
-      position:absolute; inset:0; display:flex; flex-direction:column;
-      align-items:center; justify-content:center; padding:18px;
-      background:rgba(22,159,219,0.14); color:#fff; text-align:center; opacity:0;
+      position:absolute; inset:0; pointer-events:none;
+      background:rgba(22,159,219,.14); opacity:0;
       /* backdrop-filter is listed so the blur fades out with the overlay rather
          than snapping off the moment the pointer leaves. */
-      transition:opacity .22s var(--ease), transform .22s var(--ease), backdrop-filter .22s var(--ease);
+      transition:opacity .22s var(--ease), backdrop-filter .22s var(--ease);
     }
-    /* The blur is applied only while hovered: sitting on all 186 overlays at
-       opacity 0 it still cost compositing work. It comes in with the overlay's
-       fade, so the switch is never visible. */
-    .card:hover .card-overlay, .card:focus-visible .card-overlay{
+    /* The blur is applied only while hovered/focused: sitting on all 186
+       overlays at opacity 0 it still cost compositing work. */
+    .card:is(:hover, :focus-visible) .card-overlay{
       opacity:1;
-      backdrop-filter: blur(6px) saturate(120%);
-    }
-    .card-overlay .overlay-title{
-      font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.05;
-      text-transform:none; background:rgba(0,0,0,0.5); padding:6px 14px; border-radius:30px;
-    }
-    .card-overlay .overlay-cat{
-      font-family:var(--font-mono); font-size:11px; letter-spacing:.08em;
-      text-transform:uppercase; margin-top:8px; background:rgba(0,0,0,0.4); padding:4px 12px; border-radius:20px;
+      -webkit-backdrop-filter:blur(6px) saturate(120%);
+      backdrop-filter:blur(6px) saturate(120%);
     }
 
-    .card-plaque{ transform:translateY(10px); opacity:0; }
-    .card:hover .card-plaque, .card:focus-visible .card-plaque{ transform:translateY(0); opacity:1; }
+    /* The caption. Its navy scrim is at least 74% opaque behind every line of
+       text (the 28px fade sits above the first line), so light text reads on
+       any photo. Worst case, a pure white image: white 8.1:1, --brass-soft
+       5.1:1 (light) / 5.5:1 (dark), client-year 5.3:1. Identical in both
+       themes because it sits on the photo, not the page.
+       Fallback values come first for browsers without container units. */
+    .card-plaque{
+      position:absolute; left:0; right:0; bottom:0; display:block;
+      padding:48px 20px 20px;
+      padding:calc(clamp(20px, 4.5cqi, 24px) + 28px) clamp(20px, 4.5cqi, 24px) clamp(20px, 4.5cqi, 24px);
+      background:linear-gradient(to top,
+        rgba(6,20,34,.92) 0%,
+        rgba(6,20,34,.74) calc(100% - 28px),
+        rgba(6,20,34,.3) calc(100% - 12px),
+        rgba(6,20,34,0) 100%);
+      color:#fff; text-align:left; pointer-events:none;
+      opacity:0; transform:translateY(14px);
+      transition:transform .4s var(--ease-out-soft), opacity .4s var(--ease-out-soft);
+    }
+    .card:is(:hover, :focus-visible) .card-plaque{ opacity:1; transform:translateY(0); }
 
+    /* Optional first line: buildGrid renders it only when the title does not
+       already name the category. */
+    .card-cat{
+      display:block; margin:0 0 5px;
+      font-family:var(--font-mono); font-size:10.5px; font-weight:500; line-height:1.2;
+      letter-spacing:.12em; text-transform:uppercase; color:var(--brass-soft);
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    /* 15px on the smallest cards up to 20px, also capped by the card's height
+       (100cqi / --ar) so short, wide cards stay compact. Two lines at most;
+       the full title is in the aria-label and the lightbox. */
+    .card-title{
+      display:block;
+      display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; line-clamp:2;
+      overflow:hidden; max-height:2.4em; overflow-wrap:break-word;
+      font-family:var(--font-display); font-weight:700; line-height:1.2;
+      letter-spacing:-.005em; text-transform:none; color:#fff;
+      font-size:16px;
+      font-size:clamp(15px, min(2.6cqi + 7px, 100cqi / var(--ar) * .085), 20px);
+    }
+    .card-foot{
+      display:flex; align-items:center; gap:8px;
+      margin-top:8px; margin-top:clamp(8px, 2.2cqi, 12px);
+    }
+    /* Client and year are separate so a long client name gives way first:
+       "Fox Advert... - 2019", never "Fox Advertising -" with the year cut off. */
+    .card-year{
+      flex:1 1 auto; min-width:0; display:flex;
+      font-family:var(--font-mono); font-size:11px; line-height:1.3;
+      color:rgba(255,255,255,.74); white-space:nowrap;
+    }
+    .card-client{ min-width:0; overflow:hidden; text-overflow:ellipsis; }
+    .card-when{ flex:none; white-space:pre; }
+    .card-view{
+      flex:none; display:flex; align-items:center; justify-content:center;
+      width:26px; height:26px;
+      width:clamp(26px, 7cqi, 30px); height:clamp(26px, 7cqi, 30px);
+      border-radius:50%; border:1px solid rgba(255,255,255,.55); color:#fff;
+      transform:rotate(0deg);
+      transition:transform .35s var(--ease), background-color .3s var(--ease), border-color .3s var(--ease);
+    }
+    .card-view svg{ width:12px; height:12px; }
+    .card:is(:hover, :focus-visible) .card-view{ background:var(--brass); border-color:var(--brass); transform:rotate(45deg); }
+
+    /* Corner brackets: 18px x 2px arms. The previous gradients
+       (colour 2px, transparent 2px on an 18px tile) only ever painted a 2x2
+       dot per corner, and --paper made them near-invisible in dark theme. */
     .card::after{
       content:""; position:absolute; inset:14px; pointer-events:none;
       background:
-        linear-gradient(to right, var(--paper) 2px, transparent 2px) top left/18px 2px no-repeat,
-        linear-gradient(to bottom, var(--paper) 2px, transparent 2px) top left/2px 18px no-repeat,
-        linear-gradient(to left, var(--paper) 2px, transparent 2px) top right/18px 2px no-repeat,
-        linear-gradient(to bottom, var(--paper) 2px, transparent 2px) top right/2px 18px no-repeat,
-        linear-gradient(to right, var(--paper) 2px, transparent 2px) bottom left/18px 2px no-repeat,
-        linear-gradient(to top, var(--paper) 2px, transparent 2px) bottom left/2px 18px no-repeat,
-        linear-gradient(to left, var(--paper) 2px, transparent 2px) bottom right/18px 2px no-repeat,
-        linear-gradient(to top, var(--paper) 2px, transparent 2px) bottom right/2px 18px no-repeat;
+        linear-gradient(var(--card-mark), var(--card-mark)) top left/18px 2px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) top left/2px 18px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) top right/18px 2px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) top right/2px 18px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) bottom left/18px 2px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) bottom left/2px 18px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) bottom right/18px 2px no-repeat,
+        linear-gradient(var(--card-mark), var(--card-mark)) bottom right/2px 18px no-repeat;
       opacity:0;
       transition:opacity .35s var(--ease-out-soft), inset .35s var(--ease-out-soft);
     }
-    .card:hover::after, .card:focus-visible::after{ opacity:.9; inset:10px; }
+    .card:is(:hover, :focus-visible)::after{ opacity:.9; inset:10px; }
 
-    .card-plaque{
-      position:absolute; left:0; right:0; bottom:0; padding:20px;
-      transform:translateY(14px); opacity:0;
-      transition:transform .4s var(--ease-out-soft), opacity .4s var(--ease-out-soft);
+    /* Narrow portrait cards (a phone row can make one ~120px wide) have room
+       for the title and the icon only: the category and client-year lines
+       would be cut to "EXHIBITIO..." and "Fox Ad...". Both are still in the
+       aria-label and the lightbox. */
+    @container (max-width: 179.98px){
+      .card-cat, .card-year{ display:none; }
+      .card-plaque{ padding:40px 14px 14px; }
+      .card-foot{ justify-content:flex-end; margin-top:6px; }
+      .card-title{ font-size:15px; }
     }
-    .card:hover .card-plaque, .card:focus-visible .card-plaque{ transform:translateY(0); opacity:1; }
 
-    .card-cat{
-      font-family:var(--font-mono); font-size:10.5px; letter-spacing:.12em;
-      text-transform:uppercase; color:var(--brass); display:block; margin-bottom:6px;
+    /* Reduced motion: the same end state with no zoom, slide, rotation or
+       bracket travel. Only opacity fades remain, overriding the page-wide
+       0.001ms transition rule (higher specificity, also !important). */
+    @media (prefers-reduced-motion: reduce){
+      .card .card-plaque,
+      .card:is(:hover, :focus-visible) .card-plaque,
+      .card:is(:hover, :focus-visible) .card-art,
+      .card:is(:hover, :focus-visible) .card-art img,
+      .card:is(:hover, :focus-visible) .card-view{ transform:none; }
+      .card::after,
+      .card:is(:hover, :focus-visible)::after{ inset:10px; }
+      .card .card-veil,
+      .card .card-overlay,
+      .card .card-plaque,
+      .card::after{ transition:opacity .2s linear !important; }
     }
-    .card-title{
-      font-family:var(--font-display); font-weight:700; font-size:19px;
-      text-transform:none; letter-spacing:0; line-height:1.15;
-      color: var(--text);
-    }
-    .card-foot{
-      display:flex; align-items:center; justify-content:space-between; margin-top:10px;
-    }
-    .card-year{ font-family:var(--font-mono); font-size:11px; color:var(--text); opacity:0.45; }
-    .card-view{
-      width:30px; height:30px; border-radius:50%; border:1px solid var(--slate);
-      display:flex; align-items:center; justify-content:center;
-      transform:rotate(0deg); transition:transform .35s var(--ease), background .3s, border-color .3s;
-    }
-    .card:hover .card-view{ background:var(--brass); border-color:var(--brass); transform:rotate(45deg); }
-    .card-view svg{ width:12px; height:12px; }
-    .card:hover .card-view svg{ color:#fff; }
-
-    .card-idx{
-      position:absolute; top:16px; right:18px;
-      font-family:var(--font-mono); font-size:11px; color:var(--slate);
-      opacity:.8;
-    }
-    .card-idx-cat{
-      position:absolute; top:16px; left:18px;
-      font-family:var(--font-mono); font-size:10px; letter-spacing:.1em;
-      color:var(--brass); text-transform:uppercase;
-      padding:4px 9px; border:1px solid rgba(6,30,50,0.06); border-radius:100px;
-      background:rgba(255,255,255,0.9);
-      opacity:0; transition:opacity .3s var(--ease);
-    }
-    .card:hover .card-idx-cat, .card:focus-visible .card-idx-cat{ opacity:1; }
 
     .card{ transition-delay: calc(var(--stagger,0) * 40ms); }
 
@@ -1105,21 +1169,12 @@
     @media (max-width: 600px)  { .gallery-grid { --rh: 150px; --gap: 12px; } .card { border-radius: 12px; } }
     @media (max-width: 400px)  { .gallery-grid { --rh: 140px; } }
 
-    /* The hover plaque used to set dark text straight onto the photo while the
-       veil behind it faded out, so titles were hard to read on busy images. It
-       now carries its own scrim and light text. Same slide-up animation. */
-    .card-plaque{
-      padding-top: 46px;
-      background: linear-gradient(0deg, rgba(6,20,34,.9) 0%, rgba(6,20,34,.6) 55%, rgba(6,20,34,0) 100%);
-    }
-    .card-plaque .card-cat   { color: var(--brass-soft); }
-    .card-plaque .card-title { color: #fff; }
-    .card-plaque .card-year  { color: #fff; opacity: .72; }
-    .card-plaque .card-view  { border-color: rgba(255,255,255,.55); color: #fff; }
-
-    /* Cards are buttons: give keyboard users a clear ring that the rounded,
-       overflow-hidden card cannot clip. */
-    .card:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+    /* Cards are buttons. Keyboard focus shows exactly the hover state (see
+       GALLERY GRID) plus this ring, drawn outside the rounded, overflow-hidden
+       card so nothing clips it. --ink rather than --brass: #169FDB is 2.99:1
+       on the white page, under the 3:1 a focus indicator needs; --ink is
+       #004471 (~10:1) in light and #7fd9fb (~11:1 on #0b1724) in dark. */
+    .card:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
     /* ==========================================================
        PAGE-TO-PAGE NAVIGATION
@@ -2073,19 +2128,23 @@
       // --ar sizes the card in the justified rows; --ph tints it until the
       // image arrives.
       var style = "--stagger:"+(i%6)+";--ar:"+shape.ar.toFixed(4)+(shape.ph ? ";--ph:"+shape.ph : "");
+      // Each fact once. When the title already names the category
+      // ("Branding 04"), skip the category line; real project names get it back.
+      // Case-insensitive: the label is "Printing materials", titles say "Printing Materials".
+      var catInTitle = item.title.toLowerCase().indexOf(meta.label.toLowerCase()) !== -1;
+      // 46 projects have no year: no dangling "Fox Advertising —" or trailing comma.
+      var label = "View project: "+item.title+(catInTitle ? "" : ", "+meta.label)+", "+item.client+(item.year ? ", "+item.year : "");
       html +=
-        '<button class="card reveal g-size-'+item.size+'" data-cat="'+item.cat+'" data-id="'+item.id+'" style="'+style+'" aria-label="View project: '+item.title+', '+meta.label+', '+item.year+'">'+
+        '<button type="button" class="card reveal g-size-'+item.size+'" data-cat="'+item.cat+'" data-id="'+item.id+'" style="'+style+'" aria-label="'+escapeAttr(label)+'">'+
           '<span class="card-art">'+renderArt(item, cardSizes(shape.ar))+'</span>'+
-          '<span class="card-veil"></span>'+
-          '<span class="card-overlay"><span class="overlay-title">'+item.title+'</span><span class="overlay-cat">'+meta.label+'</span></span>'+
-          '<span class="card-idx-cat">'+meta.label+'</span>'+
-          '<span class="card-idx">'+String(i+1).padStart(2,"0")+'</span>'+
-          '<span class="card-plaque">'+
-            '<span class="card-cat">'+meta.label+'</span>'+
+          '<span class="card-veil" aria-hidden="true"></span>'+
+          '<span class="card-overlay" aria-hidden="true"></span>'+
+          '<span class="card-plaque" aria-hidden="true">'+
+            (catInTitle ? '' : '<span class="card-cat">'+meta.label+'</span>')+
             '<span class="card-title">'+item.title+'</span>'+
             '<span class="card-foot">'+
-              '<span class="card-year">'+item.client+' — '+item.year+'</span>'+
-              '<span class="card-view"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6"/></svg></span>'+
+              '<span class="card-year"><span class="card-client">'+item.client+'</span>'+(item.year ? '<span class="card-when"> — '+item.year+'</span>' : '')+'</span>'+
+              '<span class="card-view"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6"/></svg></span>'+
             '</span>'+
           '</span>'+
         '</button>';
@@ -2135,7 +2194,7 @@
     lb.art.innerHTML = renderArt(item, SIZES_LIGHTBOX);
     lb.cat.textContent = meta.label;
     lb.title.textContent = item.title;
-    lb.client.textContent = item.client + " — " + item.year;
+    lb.client.textContent = item.client + (item.year ? " — " + item.year : "");
     lb.desc.textContent = item.desc;
     lb.services.innerHTML = meta.services.map(function(s){
       return '<li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3.5 3.5L13 5" stroke="currentColor" stroke-width="1.6"/></svg>'+s+'</li>';

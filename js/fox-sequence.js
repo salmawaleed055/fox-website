@@ -225,9 +225,10 @@
     var queued = 0;
     var inFlight = 0;
     var errors = 0;
-    // Six is the HTTP/1.1 per-host ceiling. Over HTTP/2 more would be in
-    // flight at once but each would be slower, and the middle-out order
-    // already makes early frames the useful ones.
+    // Six is the HTTP/1.1 per-host ceiling. Measured on the live HTTP/2 site
+    // (4 interleaved runs each), 10 and 16 were no faster than 6 once nothing
+    // else competed for the connection - and more parallel requests split the
+    // bandwidth, so the middle-out frames that matter first arrive later.
     var CONCURRENCY = 6;
 
     function settle(i, img) {

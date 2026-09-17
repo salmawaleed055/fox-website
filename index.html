@@ -559,10 +559,360 @@
     }
 
     /* SHOWREEL, WHO, CLIENTS, SERVICES, CTA, FOOTER – styles kept */
-    .showreel { padding: 60px 0 100px; background: var(--bg); }
-    .showreel h2 { font-size: clamp(1.8rem, 3.6vw, 2.8rem); color: var(--text); margin: 16px 0 34px; max-width: 16ch; }
-    .showreel-frame { position: relative; aspect-ratio: 16/9; width: 100%; border-radius: 20px; overflow: hidden; background: var(--ink-800); box-shadow: 0 12px 32px -12px rgba(0, 0, 0, .18); }
-    .showreel-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; display: block; }
+    /* ===== SHOWREEL · cinematic stage =====================================
+       A dark "screen" (bezel + 16:9 viewport + caption plate) lit by a soft
+       FOX-blue spill. The screen stays dark in BOTH themes: a product shot on
+       the white page, a lit screen on the star field. Screen colours are
+       literal on purpose - the site tokens invert in dark theme (--ink-800
+       turns pale). The showreel script (end of <body>) drives
+       #reel[data-state]: idle | loading | playing | paused | ended | error. */
+    .showreel {
+      --reel-glow: 22, 159, 219;          /* #169FDB as r,g,b */
+      --reel-shade: 3, 38, 66;            /* navy-tinted shadow on white */
+      --reel-spill: .16;
+      --reel-floor: .22;
+      --reel-pocket: 255, 255, 255;
+      --reel-pocket-a: 0;                 /* no star pocket on the white page */
+      --reel-edge: rgba(127, 217, 251, .30);
+      --reel-bezel-top: #0d2233;
+      --reel-bezel-bottom: #07131f;
+      --reel-pad: 12px;
+      --reel-r: 26px;
+      --reel-r-in: calc(var(--reel-r) - var(--reel-pad) - 1px);
+      padding: clamp(64px, 7vw, 96px) 0 clamp(88px, 9vw, 128px);
+      background: var(--bg);
+      overflow-x: clip;                   /* the light spill may reach past the gutters */
+    }
+    [data-theme="dark"] .showreel {
+      --reel-shade: 0, 0, 0;
+      --reel-spill: .26;
+      --reel-floor: .32;
+      --reel-pocket: 11, 23, 36;          /* = --bg #0b1724: dims the stars right around the screen */
+      --reel-pocket-a: .9;
+      --reel-edge: rgba(127, 217, 251, .42);
+      --reel-bezel-top: #0f2234;
+      --reel-bezel-bottom: #050c15;
+    }
+    /* --brass-soft (#7fd9fb) on white is ~1.9:1, so light theme uses --ink,
+       the same fix .fox-build-headline already uses. Dark theme is unchanged. */
+    .showreel .eyebrow { color: var(--ink); }
+    .showreel .eyebrow::before { background: var(--ink); }
+    [data-theme="dark"] .showreel .eyebrow { color: var(--brass-soft); }
+    [data-theme="dark"] .showreel .eyebrow::before { background: var(--brass-soft); }
+
+    .reel-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 36ch);
+      align-items: end;
+      gap: 18px clamp(32px, 6vw, 96px);
+      margin-bottom: clamp(36px, 4.4vw, 60px);
+    }
+    .showreel h2 { font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1.04; color: var(--text); margin: 16px 0 0; max-width: 16ch; }
+    /* colour, not opacity: .reveal.is-visible forces opacity:1 */
+    .reel-lede { font-size: 15.5px; line-height: 1.65; color: var(--slate-dim); padding-bottom: .2em; }
+
+    /* z-index 3 lifts the film above the fixed star field (z1) and the fixed
+       hero headline (z2), both of which currently draw over the black frame.
+       Width: the whole picture must fit under the scrolled 64px header (plus
+       28px of air) on every landscape screen - a 1366x768 laptop only has
+       ~650px of viewport, and a full-column 16:9 picture there is 683px tall. */
+    .reel-stage {
+      --reel-fit: calc((100vh - 92px) * 16 / 9 + 2 * var(--reel-pad) + 2px);
+      --reel-w: min(100%, var(--reel-fit));
+      position: relative;
+      z-index: 3;
+      width: var(--reel-w);
+      margin-inline: calc((100% - var(--reel-w)) / 2);
+    }
+    @supports (height: 100svh) {
+      .reel-stage { --reel-fit: calc((100svh - 92px) * 16 / 9 + 2 * var(--reel-pad) + 2px); }
+    }
+    .reel-stage::before {                 /* star pocket (dark theme only, see --reel-pocket-a) */
+      content: "";
+      position: absolute;
+      inset: -7% -4% -9%;
+      z-index: -2;
+      pointer-events: none;
+      background: radial-gradient(closest-side, rgba(var(--reel-pocket), var(--reel-pocket-a)) 72%, rgba(var(--reel-pocket), 0) 100%);
+    }
+    /* Every gradient fades out inside its own box, so there is no hard edge.
+       The box reaches 14% below the stage, which stays inside the section's
+       bottom padding at every width: the light never lands on "Who we are". */
+    .reel-spill {
+      position: absolute;
+      inset: -18% -14% -14%;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(closest-side, rgba(var(--reel-glow), var(--reel-spill)) 55%, rgba(var(--reel-glow), 0) 100%),
+        radial-gradient(40% 7% at 50% 91%, rgba(var(--reel-glow), var(--reel-floor)) 0%, rgba(var(--reel-glow), 0) 100%);
+      opacity: 0;
+      transition: opacity 1.8s var(--ease-out) .25s;
+    }
+    .reel-stage.is-visible .reel-spill { opacity: .85; }
+    .reel-stage.is-visible[data-state="playing"] .reel-spill { opacity: 1; }
+
+    .reel-screen {
+      position: relative;
+      margin: 0;
+      padding: var(--reel-pad);
+      border: 1px solid transparent;
+      border-radius: var(--reel-r);
+      background:
+        linear-gradient(180deg, var(--reel-bezel-top), var(--reel-bezel-bottom)) padding-box,
+        linear-gradient(160deg, var(--reel-edge) 0%, rgba(127, 217, 251, .05) 34%, rgba(127, 217, 251, .03) 66%, rgba(var(--reel-glow), .38) 100%) border-box;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .06),
+        0 2px 6px rgba(var(--reel-shade), .12),
+        0 28px 56px -24px rgba(var(--reel-shade), .42),
+        0 70px 130px -60px rgba(var(--reel-shade), .5),
+        0 40px 160px -70px rgba(var(--reel-glow), .55);
+      color: #eaf3fc;
+    }
+    .reel-screen::before {                /* faint glass sheen across the top of the bezel */
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, 0) 22%);
+      pointer-events: none;
+    }
+    .reel-viewport {
+      container: reel / inline-size;      /* overlay sizes follow the picture, not the window */
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: var(--reel-r-in);
+      background: #02070d;
+      isolation: isolate;                 /* keeps Safari clipping the playing video to the radius */
+    }
+    .reel-viewport::after {               /* inner rim, drawn over the picture */
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      border-radius: inherit;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .07);
+      pointer-events: none;
+    }
+    .reel-video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; border: 0; object-fit: contain; background: #02070d; }
+    .reel-video:focus-visible { outline: 2px solid #fff; outline-offset: -4px; border-radius: var(--reel-r-in); }
+
+    /* The whole poster is one <button>; the disc and label are its visuals.
+       Each cqi value is preceded by a px fallback for browsers without
+       container queries. */
+    .reel-play {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity .45s var(--ease-out), visibility 0s linear 0s;
+    }
+    .reel-play-lockup {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      left: clamp(12px, 2.4cqi, 32px);
+      bottom: clamp(12px, 2.3cqi, 30px);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      gap: clamp(10px, 1.6cqi, 22px);
+      max-width: calc(100% - 24px);
+    }
+    .reel-play-disc {
+      position: relative;
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 56px;
+      height: 56px;
+      width: clamp(44px, 4.6cqi + 22px, 84px);
+      height: clamp(44px, 4.6cqi + 22px, 84px);
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 24%, #ffffff 0%, #eef8fe 55%, #d7eefb 100%);
+      color: #0a6fa5;
+      box-shadow:
+        0 0 0 6px rgba(255, 255, 255, .16),
+        0 12px 30px -8px rgba(2, 10, 18, .6),
+        0 0 44px -4px rgba(var(--reel-glow), .8);
+      transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+    }
+    .reel-play-disc svg { grid-area: 1 / 1; width: 40%; height: 40%; transition: opacity .2s linear; }
+    .reel-icon-play { fill: currentColor; }
+    .reel-icon-replay { display: none; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+    .reel-play-disc::after {              /* halo: pulses three times when the screen appears, then rests */
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, .75);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .reel-stage.is-visible[data-state="idle"] .reel-play-disc::after { animation: reelHalo 3.2s var(--ease-out) 1.2s 3; }
+    @keyframes reelHalo { 0% { transform: scale(1); opacity: .75; } 60%, 100% { transform: scale(1.55); opacity: 0; } }
+    .reel-play-spinner {
+      grid-area: 1 / 1;
+      width: 46%;
+      height: 46%;
+      border-radius: 50%;
+      border: 2px solid rgba(10, 111, 165, .2);
+      border-top-color: #0a6fa5;
+      opacity: 0;
+      transition: opacity .2s linear;
+    }
+    @keyframes reelSpin { to { transform: rotate(360deg); } }
+    .reel-play-text { display: grid; gap: 4px; gap: clamp(3px, .45cqi, 6px); min-width: 0; text-shadow: 0 1px 14px rgba(2, 10, 18, .55); }
+    .reel-play-title {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 14px;
+      font-size: clamp(12.5px, 1cqi + 6px, 18px);
+      line-height: 1.1;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .reel-play-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-size: clamp(10.5px, .55cqi + 5px, 12.5px);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .86);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .reel-play-sound::before { content: "·"; margin: 0 .55em; opacity: .7; }
+    @container reel (max-width: 359px) {
+      .reel-play-sound { display: none; }
+    }
+    /* On the narrowest phones the label would sit on the founder's shirt and
+       the white logo: keep the disc, and keep the text for screen readers. */
+    @container reel (max-width: 299px) {
+      .reel-play-text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    }
+
+    @media (hover: hover) {
+      .reel-play:hover .reel-play-disc {
+        transform: scale(1.06);
+        box-shadow:
+          0 0 0 10px rgba(255, 255, 255, .22),
+          0 16px 36px -8px rgba(2, 10, 18, .6),
+          0 0 64px -2px rgba(var(--reel-glow), .95);
+      }
+      .reel-play:hover ~ .reel-cover img { transform: scale(1.03); }
+    }
+    .reel-play:focus-visible { outline: none; }
+    .reel-play:focus-visible::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: max(6px, calc(var(--reel-r-in) - 8px));
+      box-shadow: inset 0 0 0 2px #fff, 0 0 0 3px rgba(var(--reel-glow), .95);
+      pointer-events: none;
+    }
+    .reel-play:focus-visible .reel-play-disc { transform: scale(1.06); }
+
+    .reel-cover { position: absolute; inset: 0; z-index: 1; transition: opacity .45s var(--ease-out), visibility 0s linear 0s; }
+    .reel-cover picture, .reel-cover img { display: block; width: 100%; height: 100%; max-width: none; }
+    .reel-cover img { object-fit: cover; transition: transform 1.6s var(--ease); }
+    .reel-cover::after {                  /* letterbox the grey bands, vignette, and shade the label corner */
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-color: rgba(2, 10, 18, 0);
+      background-image:
+        radial-gradient(60% 75% at 0% 100%, rgba(2, 10, 18, .62) 0%, rgba(2, 10, 18, .26) 45%, rgba(2, 10, 18, 0) 75%),
+        radial-gradient(125% 95% at 50% 45%, rgba(2, 10, 18, 0) 55%, rgba(2, 10, 18, .42) 100%),
+        linear-gradient(180deg, rgba(2, 10, 18, .5) 0%, rgba(2, 10, 18, 0) 16%, rgba(2, 10, 18, 0) 74%, rgba(2, 10, 18, .55) 100%);
+      transition: background-color .4s var(--ease-out);
+    }
+
+    /* States */
+    .reel-stage:not(.is-enhanced) .reel-play,
+    .reel-stage:not(.is-enhanced) .reel-cover { display: none; }
+    .reel-stage[data-state="playing"] .reel-play,
+    .reel-stage[data-state="playing"] .reel-cover,
+    .reel-stage[data-state="paused"] .reel-play,
+    .reel-stage[data-state="paused"] .reel-cover {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .6s var(--ease-out), visibility 0s linear .6s;
+    }
+    .reel-stage[data-state="loading"] .reel-play { cursor: progress; }
+    .reel-stage[data-state="loading"] .reel-cover::after { background-color: rgba(2, 10, 18, .22); }
+    .reel-stage[data-state="loading"] .reel-play-disc svg { opacity: 0; transition-delay: .35s; }
+    .reel-stage[data-state="loading"] .reel-play-spinner { opacity: 1; transition-delay: .35s; animation: reelSpin .9s linear infinite; }
+    .reel-stage[data-state="ended"] .reel-icon-play,
+    .reel-stage[data-state="error"] .reel-icon-play { display: none; }
+    .reel-stage[data-state="ended"] .reel-icon-replay,
+    .reel-stage[data-state="error"] .reel-icon-replay { display: block; }
+
+    /* Caption plate, inside the same bezel */
+    .reel-caption {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px 20px;
+      padding: clamp(12px, 1.4vw, 18px) clamp(6px, 1vw, 12px) clamp(2px, .4vw, 6px);
+    }
+    .reel-cap-title { display: grid; gap: 5px; min-width: 0; }
+    .reel-cap-kicker { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: #7fd9fb; }
+    .reel-cap-kicker::before { content: ""; flex: none; width: 6px; height: 6px; border-radius: 50%; background: #4fc3ff; box-shadow: 0 0 0 3px rgba(79, 195, 255, .18), 0 0 10px rgba(79, 195, 255, .9); }
+    .reel-cap-name { font-family: var(--font-display); font-weight: 600; font-size: clamp(16px, 1.45vw, 20px); line-height: 1.15; letter-spacing: -.01em; color: #fff; overflow-wrap: anywhere; }
+    .reel-cap-meta { display: flex; align-items: center; gap: 8px; flex: none; }
+    .reel-cap-meta li { padding: 5px 11px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 999px; background: rgba(255, 255, 255, .035); font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; line-height: 1.2; color: rgba(234, 243, 252, .86); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+    /* Responsive */
+    @media (max-width: 880px) {
+      .reel-head { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+      .reel-lede { max-width: 54ch; padding-bottom: 0; }
+    }
+    @media (max-width: 720px) {
+      .showreel { --reel-pad: 6px; --reel-r: 18px; }
+      .reel-caption { gap: 8px 14px; padding: 11px 8px 5px; }
+      .reel-cap-kicker { font-size: 10.5px; letter-spacing: .14em; }
+      .reel-cap-meta li { padding: 4px 9px; font-size: 11px; }
+    }
+    @media (max-width: 400px) {
+      .reel-cap-meta li + li { display: none; }
+    }
+    /* Wide screens: the screen breaks out of the text column a little - still
+       never taller than the viewport allows (see .reel-stage). */
+    @media (min-width: 1440px) {
+      .reel-stage { --reel-w: min(1440px, 100vw - 120px, var(--reel-fit)); }
+    }
+    /* The global reduced-motion rule shortens durations but keeps infinite
+       animations cycling, so they are switched off explicitly. */
+    @media (prefers-reduced-motion: reduce) {
+      .reel-play-disc::after,
+      .reel-stage.is-visible[data-state="idle"] .reel-play-disc::after { animation: none; opacity: .4; transform: scale(1.22); }
+      .reel-stage[data-state="loading"] .reel-play-spinner { animation: none; border-color: #0a6fa5 rgba(10, 111, 165, .2) rgba(10, 111, 165, .2) #0a6fa5; }
+      .reel-play:hover ~ .reel-cover img { transform: none; }
+      .reel-play:hover .reel-play-disc,
+      .reel-play:focus-visible .reel-play-disc { transform: none; }
+    }
+    @media (forced-colors: active) {
+      .reel-play-disc { border: 2px solid ButtonText; }
+      .reel-play-text { background: Canvas; color: CanvasText; padding: 2px 6px; }
+      .reel-play:focus-visible::after { box-shadow: none; outline: 3px solid Highlight; outline-offset: -3px; }
+      .reel-cap-meta li { border-color: CanvasText; }
+    }
 
     .who { padding: 80px 0 60px; background: var(--bg); border-top: 1px solid rgba(6, 30, 50, .04); }
     .who h2 { font-size: clamp(2rem, 4vw, 3.2rem); color: var(--text); margin: 18px 0 40px; }
@@ -720,7 +1070,7 @@
     .back-top:hover { color: var(--brass); }
     @media (max-width: 880px) { .footer-top { grid-template-columns: 1fr 1fr; row-gap: 36px; } }
     @media (max-width: 560px) { .footer-top { grid-template-columns: 1fr; } }
-    @media (max-width: 720px) { .showreel { padding: 30px 0 60px; } .services-preview { padding: 50px 0 60px; } .cta { padding: 60px 0; } .client-logo { flex: 0 0 140px; width: 140px; height: 120px; padding: 12px 8px; } .client-logo img { max-height: 44px; } }
+    @media (max-width: 720px) { .showreel { padding: 44px 0 80px; } .services-preview { padding: 50px 0 60px; } .cta { padding: 60px 0; } .client-logo { flex: 0 0 140px; width: 140px; height: 120px; padding: 12px 8px; } .client-logo img { max-height: 44px; } }
 
     /* Reduced motion runs no scroll loop, so nothing is there to fade the
        headline out. It is position:fixed, which would leave it pinned over
@@ -1142,12 +1492,61 @@
       </div>
     </section>
 
-    <section class="showreel" id="showreel">
+    <section class="showreel" id="showreel" aria-labelledby="showreelTitle">
       <div class="container">
-        <span class="eyebrow reveal">Showreel</span>
-        <h2 class="reveal">See the work in motion.</h2>
-        <div class="showreel-frame reveal">
-          <video src="Images/Video/fox%20video%20jan%202021.mp4" controls playsinline preload="metadata">Your browser does not support the video tag.</video>
+        <div class="reel-head">
+          <div>
+            <span class="eyebrow reveal">Showreel</span>
+            <h2 class="reveal" id="showreelTitle">See the work in motion.</h2>
+          </div>
+          <p class="reel-lede reveal">The exhibition stands we build for healthcare brands, the mission behind them and the team that delivers every project, in one short film.</p>
+        </div>
+
+        <!-- Poster-first player. preload="none": nothing from the 53 MB film is
+             requested until the visitor presses play. `controls` is the no-JS
+             fallback; the showreel script before </body> removes it and adds
+             .is-enhanced, which shows the poster and play button. -->
+        <div class="reel-stage reveal" id="reel" data-state="idle">
+          <div class="reel-spill" aria-hidden="true"></div>
+          <figure class="reel-screen">
+            <div class="reel-viewport">
+              <video class="reel-video" id="reelVideo" src="Images/Video/fox%20video%20jan%202021.mp4" controls playsinline preload="none" aria-label="FOX brand film">
+                Your browser can't play this video. <a href="Images/Video/fox%20video%20jan%202021.mp4">Download the film (MP4, 53&nbsp;MB)</a>.
+              </video>
+              <button type="button" class="reel-play" id="reelPlay">
+                <span class="reel-play-lockup">
+                  <span class="reel-play-disc" aria-hidden="true">
+                    <svg class="reel-icon-play" viewBox="0 0 24 24" focusable="false"><path d="M8.5 5.2v13.6a1 1 0 0 0 1.5.86l11.2-6.8a1 1 0 0 0 0-1.72L10 4.34a1 1 0 0 0-1.5.86Z"/></svg>
+                    <svg class="reel-icon-replay" viewBox="0 0 24 24" focusable="false"><path d="M4.5 12a7.5 7.5 0 1 0 2.2-5.3M4 3.5v4.8h4.8"/></svg>
+                    <span class="reel-play-spinner"></span>
+                  </span>
+                  <span class="reel-play-text">
+                    <span class="reel-play-title">Play the film</span>
+                    <span class="reel-play-meta"><span aria-hidden="true">2:18</span><span class="visually-hidden">, 2 minutes 18 seconds, with sound</span><span class="reel-play-sound" aria-hidden="true">Sound on</span></span>
+                  </span>
+                </span>
+              </button>
+              <div class="reel-cover" aria-hidden="true">
+                <picture>
+                  <source type="image/webp"
+                    srcset="img/showreel/poster-640.webp 640w, img/showreel/poster-960.webp 960w, img/showreel/poster-1280.webp 1280w, img/showreel/poster-1920.webp 1920w"
+                    sizes="auto, (max-width: 720px) calc(100vw - 58px), (max-width: 1320px) calc(100vw - 106px), (max-width: 1439px) 1214px, (max-width: 1560px) calc(100vw - 146px), 1414px">
+                  <img src="img/showreel/poster-1280.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async">
+                </picture>
+              </div>
+            </div>
+            <figcaption class="reel-caption">
+              <div class="reel-cap-title">
+                <span class="reel-cap-kicker">Brand film <span aria-hidden="true">&middot;</span> 2021</span>
+                <span class="reel-cap-name">Success is a journey</span>
+              </div>
+              <ul class="reel-cap-meta" aria-label="Film details">
+                <li><time datetime="PT2M18S">2:18</time></li>
+                <li>1080p</li>
+              </ul>
+            </figcaption>
+          </figure>
+          <p class="visually-hidden" id="reelStatus" role="status" aria-live="polite"></p>
         </div>
       </div>
     </section>
@@ -1175,10 +1574,10 @@
             <div class="client-logo"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
             <div class="client-logo"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async" /><span class="sector">Beverage</span></div>
-            <div class="client-logo"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/dammam_pharma_logo-removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" loading="lazy" decoding="async" /><span class="sector">Food</span></div>
             <div class="client-logo"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo"><img src="clients logos/ellaithy-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
             <div class="client-logo"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
@@ -1194,7 +1593,7 @@
             <div class="client-logo"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/sanofi.png" alt="Sanofi" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
-            <div class="client-logo"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo"><img src="clients logos/spimaco addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo"><img src="clients logos/watan-removebg-preview.png" alt="Watan" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
             <div class="client-logo"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
@@ -1204,10 +1603,10 @@
             <div class="client-logo" aria-hidden="true"><img src="clients logos/arac-removebg-preview.png" alt="ARAC" loading="lazy" decoding="async" /><span class="sector">Hospitality</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/astrazeneca.png" alt="AstraZeneca" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/cocacola.png" alt="Coca-Cola" loading="lazy" decoding="async" /><span class="sector">Beverage</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/dammam_pharma_logo_removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/dammam_pharma_logo-removebg-preview.png" alt="Dammam Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/DANONE_LOGO_HORIZONTAL.png" alt="Danone" loading="lazy" decoding="async" /><span class="sector">Food</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/elixir-removebg-preview.png" alt="Elixir" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/ellaihty-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/ellaithy-removebg-preview.png" alt="Ellaihty" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/enlighten-removebg-preview.png" alt="Enlighten" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/eva-pharma-logo-removebg-preview.png" alt="Eva Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/galderma-removebg-preview.png" alt="Galderma" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
@@ -1223,7 +1622,7 @@
             <div class="client-logo" aria-hidden="true"><img src="clients logos/sandozlogo-removebg-preview.png" alt="Sandoz" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/sanofi.png" alt="Sanofi" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/sovalue_pharma-removebg-preview.png" alt="Sovalue Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
-            <div class="client-logo" aria-hidden="true"><img src="clients logos/spimaco_addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
+            <div class="client-logo" aria-hidden="true"><img src="clients logos/spimaco addwerih.png" alt="Spimaco" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/tabuk-removebg-preview.png" alt="Tabuk Pharmaceuticals" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/watan-removebg-preview.png" alt="Watan" loading="lazy" decoding="async" /><span class="sector">Healthcare</span></div>
             <div class="client-logo" aria-hidden="true"><img src="clients logos/zeta-logo.png" alt="Zeta Pharma" loading="lazy" decoding="async" /><span class="sector">Pharma</span></div>
@@ -1627,6 +2026,187 @@
             submitBtn.classList.remove("is-loading");
           });
       });
+    })();
+  </script>
+  <script>
+    /* -------------------------------------------------------------
+       SHOWREEL - poster-first player
+       The film is 53 MB and ships with preload="none", so nothing but the
+       lazy poster image is fetched until the visitor presses play. The
+       poster and play button cover the video; once it is really playing
+       they fade out and the native controls take over, so seeking, volume,
+       fullscreen and picture-in-picture stay native. At the end the cover
+       returns as "Watch again" - after the viewer has left fullscreen or
+       PiP, never while they are still in it.
+       States on #reel[data-state]: idle | loading | playing | paused | ended | error
+       ------------------------------------------------------------- */
+    (function () {
+      "use strict";
+      var stage = document.getElementById("reel");
+      var video = document.getElementById("reelVideo");
+      var btn = document.getElementById("reelPlay");
+      if (!stage || !video || !btn || typeof video.play !== "function") return;
+
+      var title = btn.querySelector(".reel-play-title");
+      var poster = stage.querySelector(".reel-cover img");
+      var status = document.getElementById("reelStatus");
+      var LABEL = { idle: "Play the film", ended: "Watch again", error: "Try again", loading: "Loading…" };
+      var state = "";
+      var coverPending = false;  // the film ended while fullscreen / picture-in-picture
+      var focusOnPlay = false;   // play was pressed from the keyboard
+      var resumeAt = 0;          // where "Try again" picks up after a failure
+      var slowTimer = 0;
+      var stuckTimer = 0;
+
+      function say(msg) {
+        if (!status) return;
+        status.textContent = "";
+        setTimeout(function () { status.textContent = msg; }, 60);
+      }
+      function focusQuietly(el) {
+        try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); }
+      }
+      function fromKeyboard(e) {
+        if (e && e.detail === 0) return true;
+        try { return btn.matches(":focus-visible"); } catch (err) { return false; }
+      }
+      // True while the film is showing somewhere other than the page.
+      function detached() {
+        var mode = video.webkitPresentationMode;
+        return document.fullscreenElement === video ||
+          document.webkitFullscreenElement === video ||
+          video.webkitDisplayingFullscreen === true ||
+          document.pictureInPictureElement === video ||
+          (!!mode && mode !== "inline");
+      }
+
+      function setState(next) {
+        var covered = next !== "playing" && next !== "paused";
+        clearTimeout(slowTimer);
+        clearTimeout(stuckTimer);
+        if (covered) {
+          // Under the cover the native controls would be invisible tab stops.
+          video.removeAttribute("controls");
+          video.setAttribute("tabindex", "-1");
+          video.setAttribute("inert", "");
+        } else {
+          video.removeAttribute("inert");
+          video.setAttribute("controls", "");
+          video.setAttribute("tabindex", "0");
+        }
+        if (title && next !== "loading") title.textContent = LABEL[next] || LABEL.idle;
+        stage.setAttribute("data-state", next);
+        state = next;
+      }
+
+      // Hide the cover and hand over to the native controls. Focus follows
+      // only for keyboard users (Chrome keeps its controls pinned open while
+      // the video has focus, so mouse users are left alone).
+      function reveal() {
+        var moveFocus = focusOnPlay && document.activeElement === btn;
+        focusOnPlay = false;
+        if (status) status.textContent = "";  // drop a stale "could not be loaded"
+        setState(video.paused ? "paused" : "playing");
+        if (moveFocus) focusQuietly(video);
+        // Firefox keeps focus on a clicked button even once it is hidden, and
+        // Space would then press it again over the running film.
+        else if (document.activeElement === btn) btn.blur();
+      }
+
+      // Bring the cover back; keep anyone who was inside the player on the button.
+      function cover(next) {
+        var hadFocus = stage.contains(document.activeElement);
+        coverPending = false;
+        setState(next);
+        // Two frames: the button has to be visible again before it can take
+        // focus (under reduced motion its visibility still "transitions").
+        if (hadFocus) requestAnimationFrame(function () { requestAnimationFrame(function () { focusQuietly(btn); }); });
+      }
+
+      function rejected(err) {
+        if (state !== "loading") return;
+        if (err && err.name === "AbortError") return;
+        reveal();  // play() refused: never leave the visitor stuck behind the poster
+      }
+
+      function start(e) {
+        if (state === "loading" || state === "playing" || state === "paused") return;
+        focusOnPlay = fromKeyboard(e);
+        if (state === "error") video.load();
+        else if (video.ended) { try { video.currentTime = 0; } catch (err) {} }
+        setState("loading");
+        slowTimer = setTimeout(function () {
+          if (title) title.textContent = LABEL.loading;
+          say("Loading the film.");
+        }, 700);
+        // Slow network: after 10 s show the native controls and their own buffering state.
+        stuckTimer = setTimeout(reveal, 10000);
+        var p;
+        try { p = video.play(); } catch (err) { rejected(err); return; }
+        if (p && typeof p.then === "function") p.then(null, rejected);
+      }
+
+      btn.addEventListener("click", start);
+
+      video.addEventListener("loadedmetadata", function () {
+        if (resumeAt > 0) {
+          var t = resumeAt;
+          resumeAt = 0;
+          try { video.currentTime = t; } catch (err) {}
+        }
+      });
+      video.addEventListener("playing", function () {
+        coverPending = false;
+        if (state !== "playing") reveal();
+      });
+      video.addEventListener("pause", function () {
+        if (state === "playing" && !video.ended) setState("paused");
+      });
+      video.addEventListener("ended", function () {
+        if (detached()) { coverPending = true; return; }
+        cover("ended");
+      });
+      video.addEventListener("error", function () {
+        if (!video.error) return;
+        resumeAt = video.currentTime || 0;
+        cover("error");
+        say("The film could not be loaded. Check your connection and try again.");
+      });
+
+      function afterDetach() {
+        setTimeout(function () {
+          if (!coverPending || detached()) return;
+          if (video.ended) { cover("ended"); return; }
+          coverPending = false;
+          if (video.paused && state === "playing") setState("paused");
+        }, 80);
+      }
+      document.addEventListener("fullscreenchange", afterDetach);
+      document.addEventListener("webkitfullscreenchange", afterDetach);
+      video.addEventListener("webkitendfullscreen", afterDetach);            // iOS native player
+      video.addEventListener("webkitpresentationmodechanged", afterDetach);  // Safari PiP / fullscreen
+      video.addEventListener("leavepictureinpicture", afterDetach);
+
+      // Back/forward cache restore: the browser paused the film, so resync.
+      window.addEventListener("pageshow", function (e) {
+        if (!e.persisted || !video.paused) return;
+        if (state === "loading") setState(video.currentTime > 0 ? "paused" : "idle");
+        else if (state === "playing") { if (video.ended) cover("ended"); else setState("paused"); }
+      });
+
+      // Lend the already-downloaded poster to the video (same URL, served from
+      // cache) so buffering, fullscreen and PiP never show a black frame.
+      function adoptPoster() {
+        if (poster.currentSrc && !video.hasAttribute("poster")) video.setAttribute("poster", poster.currentSrc);
+      }
+      if (poster) {
+        if (poster.complete && poster.naturalWidth) adoptPoster();
+        else poster.addEventListener("load", adoptPoster, { once: true });
+      }
+
+      // Enhance: the cover takes over from the native controls the markup ships with.
+      setState("idle");
+      stage.classList.add("is-enhanced");
     })();
   </script>
 </body>
