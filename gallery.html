@@ -2,6 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Apply the saved theme before the first paint. initTheme() used to do this
+       only after DOMContentLoaded, so dark-theme visitors saw the light page flash
+       on every page switch - and a view transition would animate into the wrong
+       theme. Mirrors initTheme(): system preference, overridden by the saved choice. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("fox-theme");
+        if (!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+        if (t) document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gallery — Fox Advertising | Exhibitions, Branding & Print Work</title>
   <link rel="icon" type="image/svg+xml" href="Images/Logo.svg" />
@@ -9,11 +22,30 @@
   <meta name="theme-color" content="#0A1F38">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- First frame only. The player picks the same tier at runtime from the
-       rig's device-pixel width, so these two never both apply. -->
-  <link rel="preload" as="image" href="anim/gallery/0001.webp" media="(min-width: 481px)" fetchpriority="high">
-  <link rel="preload" as="image" href="anim/gallery-sm/0001.webp" media="(max-width: 480px)" fetchpriority="high">
+  <!-- First frame only. These media queries, the poster's <source> and the
+       player's smallMedia are the same rule verbatim, so exactly one tier is
+       ever fetched: 640px for phone-width or ~1x screens, 960px otherwise. -->
+  <link rel="preload" as="image" href="anim/gallery-960/00000.webp" media="(min-width: 481px) and (min-resolution: 1.26dppx), (min-width: 481px) and (-webkit-min-device-pixel-ratio: 1.26)" fetchpriority="high">
+  <link rel="preload" as="image" href="anim/gallery-640/00000.webp" media="(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)" fetchpriority="high">
+  <!-- The loader fox's first frame, so it is already on screen the instant the
+       loader paints. The full animation is fetched later, only if needed. -->
+  <link rel="preload" as="image" href="anim/loader-first.webp" fetchpriority="high">
   <script src="js/fox-sequence.js" defer></script>
+  <!-- Prerender the other page as soon as a link to it is hovered (or pressed,
+       on touch), so the click swaps in a page that is already rendered.
+       Chromium browsers; js/site-nav.js falls back to a hover prefetch elsewhere.
+       selector_matches rather than href_matches, so links carrying a #hash
+       (index.html#services) match too. -->
+  <script type="speculationrules">
+  {
+    "prerender": [{
+      "source": "document",
+      "where": { "selector_matches": "a[href^='gallery.html'], a[href^='index.html']" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+  <script src="js/site-nav.js" defer></script>
   <script src="js/gallery-images.js" defer></script>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -534,39 +566,67 @@
     .results-status{ position:absolute; width:1px; height:1px; overflow:hidden; }
 
     /* ============================================================
-       GALLERY GRID – responsive, hover overlay shows arrangement
-       ============================================================ */
+       GALLERY GRID – justified rows
+       ============================================================
+       Every row runs edge to edge at one height, and every image keeps its
+       real proportions, uncropped. Each card is a flex item whose grow factor
+       AND basis are both proportional to its aspect ratio (--ar, set per card
+       in buildGrid). When a row stretches to fill the width, every card in it
+       therefore gains the same height, so the row stays level with no script.
+
+       This replaces a CSS multi-column masonry. Multi-column re-balances every
+       column whenever a card is shown or hidden: measured at 50-167ms of layout
+       per filter-tab switch on a desktop. Flex wrapping is a single pass. */
     .gallery{ padding:64px 0 120px; position:relative; }
     .gallery-grid{
-      column-width:320px;
-      column-gap:22px;
+      --rh: 240px;            /* target row height - rows grow a little past it to fill */
+      --gap: 18px;
+      display:flex; flex-wrap:wrap; gap:var(--gap);
     }
+    /* Soaks up the leftover width of the final, partial row, so its last few
+       cards stay at the target height instead of stretching huge. */
+    .gallery-grid::after{ content:""; flex:999999 1 0; }
 
     .card{
-      display:inline-block; width:100%; margin:0 0 22px; position:relative;
-      border-radius:14px; overflow:hidden; background:var(--bg); border:1px solid rgba(6,30,50,0.06);
-      text-align:left; transition:transform .45s var(--ease-out-soft), opacity .35s var(--ease), background 0.3s, border-color 0.3s;
-      break-inside:avoid; -webkit-column-break-inside:avoid; -moz-column-break-inside:avoid;
-      cursor:pointer;
-      color: var(--text);
+      --ar: 1.5;
+      flex: var(--ar) 1 calc(var(--ar) * var(--rh));
+      aspect-ratio: var(--ar);
+      min-width:0;
+      position:relative; display:block; padding:0; border:0;
+      border-radius:16px; overflow:hidden;
+      /* The image's own average colour until it loads (see renderArt). */
+      background: var(--ph, var(--paper));
+      box-shadow: 0 1px 2px rgba(6,30,50,.06), 0 10px 24px -14px rgba(6,30,50,.28);
+      text-align:left; cursor:pointer; color:var(--text);
+      transition:transform .45s var(--ease-out-soft), opacity .35s var(--ease);
+      /* Off-screen cards skip rendering until scrolled near. Their size comes
+         from flex + aspect-ratio, never from their content, so nothing shifts
+         when they render. */
+      content-visibility:auto;
+      contain-intrinsic-size:auto 280px;
     }
-    [data-theme="dark"] .card {
-      border-color: rgba(255,255,255,0.08);
+    [data-theme="dark"] .card{
+      box-shadow: 0 1px 2px rgba(0,0,0,.35), 0 12px 28px -16px rgba(0,0,0,.7);
     }
-    .card.is-hidden{
-      opacity:0; transform:scale(.92);
-      position:absolute; pointer-events:none; visibility:hidden;
-      height:0; grid-row-end:span 0; margin:0;
-    }
+    /* display:none rather than the old absolutely-positioned fade: a hidden
+       card drops out of layout entirely, so a tab switch only lays out the
+       cards that are actually shown. The grid fades in as a whole instead
+       (see applyFilter). */
+    .card.is-hidden{ display:none; }
+
     .card-art{
-      position:relative; width:100%; display:block; overflow:hidden; transition:transform .6s var(--ease-out-soft);
+      position:absolute; inset:0; display:block; overflow:hidden;
+      transition:transform .6s var(--ease-out-soft);
     }
     .card:hover .card-art, .card:focus-visible .card-art{ transform:scale(1.01); }
+    /* No will-change here: on 186 cards it held 186 GPU layers alive
+       permanently. The hover transform is promoted on its own when it runs. */
     .card-art img{
-      width:100%; height:auto; object-fit:contain; display:block;
-      transition:transform .6s var(--ease-out-soft), filter .6s var(--ease-out-soft);
-      will-change:transform, filter;
+      width:100%; height:100%; object-fit:cover; display:block;
+      opacity:0;
+      transition:transform .6s var(--ease-out-soft), filter .6s var(--ease-out-soft), opacity .45s var(--ease);
     }
+    .card-art img.is-loaded{ opacity:1; }
     .card:hover .card-art img, .card:focus-visible .card-art img{ transform:scale(1.08); filter:saturate(1.05) contrast(1.03); }
 
     .card-veil{
@@ -580,10 +640,17 @@
       position:absolute; inset:0; display:flex; flex-direction:column;
       align-items:center; justify-content:center; padding:18px;
       background:rgba(22,159,219,0.14); color:#fff; text-align:center; opacity:0;
-      backdrop-filter: blur(6px) saturate(120%);
-      transition:opacity .22s var(--ease), transform .22s var(--ease);
+      /* backdrop-filter is listed so the blur fades out with the overlay rather
+         than snapping off the moment the pointer leaves. */
+      transition:opacity .22s var(--ease), transform .22s var(--ease), backdrop-filter .22s var(--ease);
     }
-    .card:hover .card-overlay, .card:focus-visible .card-overlay{ opacity:1; }
+    /* The blur is applied only while hovered: sitting on all 186 overlays at
+       opacity 0 it still cost compositing work. It comes in with the overlay's
+       fade, so the switch is never visible. */
+    .card:hover .card-overlay, .card:focus-visible .card-overlay{
+      opacity:1;
+      backdrop-filter: blur(6px) saturate(120%);
+    }
     .card-overlay .overlay-title{
       font-family:var(--font-display); font-size:16px; font-weight:700; line-height:1.05;
       text-transform:none; background:rgba(0,0,0,0.5); padding:6px 14px; border-radius:30px;
@@ -999,9 +1066,202 @@
       .back-top { padding: 10px 0; }
       .mobile-nav a { padding-block: 6px; }
     }
+
+    /* LOADER - same fox loader as index.html, so either page can be the first
+       one a visitor lands on and page switches look the same in both directions. */
+    .loader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #032f46;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .loader.is-done { opacity: 0; visibility: hidden; }
+    .loader-fox {
+      width: 132px;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .28));
+    }
+
+
+    /* ==========================================================
+       GALLERY GRID - breakpoints and card polish
+       ========================================================== */
+
+    /* Row heights are tuned to the container widths so rows hold about three
+       cards on desktop, two on tablets and large phones, and one full-width
+       card on small phones. (A 300px target left room for only two cards per
+       row at 1280px, each 439px tall.) With images at a median 1.4 aspect:
+         1240px content, 240px -> 3 per row, ~287px tall
+         1120px content, 200px -> 3 per row, ~258px tall
+          820px content, 180px -> 2 per row, ~286px tall
+          356px content, 140px -> 1 per row, full width                     */
+    @media (max-width: 1200px) { .gallery-grid { --rh: 200px; } }
+    @media (max-width: 900px)  { .gallery-grid { --rh: 180px; --gap: 14px; } }
+    @media (max-width: 600px)  { .gallery-grid { --rh: 150px; --gap: 12px; } .card { border-radius: 12px; } }
+    @media (max-width: 400px)  { .gallery-grid { --rh: 140px; } }
+
+    /* The hover plaque used to set dark text straight onto the photo while the
+       veil behind it faded out, so titles were hard to read on busy images. It
+       now carries its own scrim and light text. Same slide-up animation. */
+    .card-plaque{
+      padding-top: 46px;
+      background: linear-gradient(0deg, rgba(6,20,34,.9) 0%, rgba(6,20,34,.6) 55%, rgba(6,20,34,0) 100%);
+    }
+    .card-plaque .card-cat   { color: var(--brass-soft); }
+    .card-plaque .card-title { color: #fff; }
+    .card-plaque .card-year  { color: #fff; opacity: .72; }
+    .card-plaque .card-view  { border-color: rgba(255,255,255,.55); color: #fff; }
+
+    /* Cards are buttons: give keyboard users a clear ring that the rounded,
+       overflow-hidden card cannot clip. */
+    .card:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+    /* ==========================================================
+       PAGE-TO-PAGE NAVIGATION
+       ========================================================== */
+
+    /* Crossfade between index.html and gallery.html. Both pages opt in, which
+       cross-document view transitions require. The header gets its own name
+       so it holds still while the page content crossfades beneath it.
+       Unsupported browsers ignore all of this and navigate normally. */
+    @view-transition { navigation: auto; }
+    .site-header { view-transition-name: site-header; }
+    /* The loader needs its own name too. Transition groups stack in paint
+       order, so naming it (z-index 9999) keeps it above the header group.
+       Unnamed, it was flattened into the root snapshot and the header floated
+       over the full-screen loader for the length of the crossfade. */
+    .loader { view-transition-name: fox-loader; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation-duration: .26s; }
+    @media (prefers-reduced-motion: reduce) {
+      @view-transition { navigation: none; }
+    }
+
+    /* Until the full animation is needed and has arrived, the first frame
+       drifts gently so the loader never reads as frozen. Costs no bytes. */
+    .loader-fox { animation: loaderFloat 1.6s ease-in-out infinite; }
+    .loader-fox.is-animated { animation: none; }
+    @keyframes loaderFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    /* Explicitly off. index.html's global reduced-motion rule shortens
+       durations but does not stop iteration, so an infinite animation keeps
+       cycling every 0.001ms - which reads as jitter, not stillness. */
+    @media (prefers-reduced-motion: reduce) {
+      .loader-fox { animation: none; }
+    }
+
+    /* Loader states driven by the page's dismiss script and js/site-nav.js.
+       is-instant: hide with no fade - used for a prerendered page, which is
+         activated already rendered, and for a back/forward cache restore.
+       is-leaving: re-shown because a navigation is taking a moment. Fades in
+         quickly, and wins over is-done if a late window.load handler adds it. */
+    .loader.is-instant { transition: none; }
+    .loader.is-leaving,
+    .loader.is-leaving.is-done {
+      opacity: 1;
+      visibility: visible;
+      transition-duration: .18s;
+    }
   </style>
 </head>
 <body>
+<!-- Full-screen fox loader, first in <body> so it is what the first paint shows.
+     Same loader as index.html: whichever page a visitor lands on or switches to,
+     the wait looks the same. -->
+<div class="loader" id="loader" aria-hidden="true">
+  <img class="loader-fox" id="loaderFox" src="anim/loader-first.webp" width="191" height="280" alt="" fetchpriority="high">
+</div>
+<script>
+  // First frame shows instantly (16 KB, preloaded) with a CSS float. The full
+  // 42-frame animation (~590 KB) is shown only when it is already in the
+  // browser cache - a page switch or a repeat visit - and it is fetched once, at
+  // idle priority, after a page has FULLY loaded, never during a load.
+  // Measured on a throttled connection: fetching it mid-load could never finish
+  // before the loader's own 1.8s dismissal, so it downloaded for nothing on
+  // exactly the connections that can least afford it.
+  // js/site-nav.js calls __foxLoaderAnimate() too when a page switch is slow.
+  (function () {
+    var KEY = "fox-loader-cached";
+    var MAX_AGE = 6 * 864e5; // inside the 7-day Cache-Control on /anim/ in vercel.json
+    var img = document.getElementById("loaderFox");
+    var started = false;
+    function reduced() {
+      return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    }
+    function cachedRecently() {
+      try { var t = +localStorage.getItem(KEY); return t > 0 && Date.now() - t < MAX_AGE; }
+      catch (e) { return false; }
+    }
+    function sheetUp() {
+      var l = document.getElementById("loader");
+      return !!l && (!l.classList.contains("is-done") || l.classList.contains("is-leaving"));
+    }
+    window.__foxLoaderAnimate = function () {
+      if (started || !img || reduced() || !cachedRecently()) return;
+      started = true;
+      var anim = new Image();
+      // Swap in only a fully decoded animation, and only while the sheet is
+      // still up: never a half-loaded file, never onto a page already shown.
+      anim.onload = function () {
+        // Sheet already gone: un-latch, so a later page switch can swap it in
+        // (from cache) instead of never animating again.
+        if (!sheetUp()) { started = false; return; }
+        img.src = anim.src;
+        img.classList.add("is-animated");
+      };
+      anim.src = "anim/loader.webp";
+    };
+    // Not in a background tab: nobody can see the loader there.
+    setTimeout(function () {
+      if (sheetUp() && !document.hidden) window.__foxLoaderAnimate();
+    }, 700);
+
+    // Warm the cache after the page has fully loaded (the load event waits for
+    // the hero frames, so this never competes with them), so the next page
+    // switch can play the real animation. Skipped for data-saver and 2G/3G.
+    window.addEventListener("load", function () {
+      if (cachedRecently() || reduced()) return;
+      var c = navigator.connection;
+      if (c && (c.saveData || /2g|3g/.test(c.effectiveType || ""))) return;
+      var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1500); };
+      idle(function () {
+        var warm = new Image();
+        if ("fetchPriority" in warm) warm.fetchPriority = "low";
+        warm.onload = function () {
+          try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+        };
+        warm.src = "anim/loader.webp";
+      }, { timeout: 5000 });
+    });
+  })();
+  // Runs during parsing, not deferred. Dismiss once the document is parsed and
+  // has painted, never on window.load (image requests hold that event back).
+  (function () {
+    var el = document.getElementById("loader");
+    if (!el) return;
+    function dismiss() { el.classList.add("is-done"); }
+    // Prerendered on hover: activated already rendered, and it gets no
+    // animation frames until then, so the rAF path would hold the sheet up.
+    if (document.prerendering) { el.classList.add("is-done", "is-instant"); return; }
+    function afterPaint() {
+      requestAnimationFrame(function () { requestAnimationFrame(dismiss); });
+    }
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", afterPaint);
+    } else {
+      afterPaint();
+    }
+    // Covers a hidden tab, where rAF never fires.
+    setTimeout(dismiss, 1800);
+  })();
+</script>
 
   <!-- LET'S TALK — contact modal (client-side only, delivered via FormSubmit) -->
   <div class="talk-overlay" id="talkOverlay" role="dialog" aria-modal="true" aria-labelledby="talkTitle" hidden>
@@ -1176,13 +1436,13 @@
 
         <div class="fb-rig" id="fbRig">
           <!-- The 66-frame sequence is drawn into a canvas injected by
-               js/fox-sequence.js. Frames live in anim/gallery/.
+               js/fox-sequence.js. Frames live in anim/gallery-960/ and anim/gallery-640/.
                The poster is the already-preloaded first frame: it fills the rig
                before the canvas has anything, and is what remains if the player
                script never loads. The player hides it on first paint. -->
           <picture class="fb-poster">
-            <source media="(max-width: 480px)" srcset="anim/gallery-sm/0001.webp">
-            <img src="anim/gallery/0001.webp" alt="" aria-hidden="true" width="864" height="496" fetchpriority="high" decoding="async">
+            <source media="(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)" srcset="anim/gallery-640/00000.webp">
+            <img src="anim/gallery-960/00000.webp" alt="" aria-hidden="true" width="960" height="540" fetchpriority="high" decoding="async">
           </picture>
           <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
         </div>
@@ -1564,11 +1824,37 @@
 
   ITEMS.forEach(function(it, i){ it.id = i; it.seed = 1000 + i * 37; });
 
-  // Grid cards live in a multi-column layout with column-width:320px inside a
-  // 1320px container: one column up to ~745px wide, two up to ~1084px, three
-  // above that, capping around 400px per card.
-  var SIZES_CARD = "(max-width: 745px) calc(100vw - 44px), " +
-                   "(max-width: 1083px) calc((100vw - 102px) / 2), 420px";
+  // Card proportions and placeholder tint, from js/gallery-images.js. Clamped
+  // so a freak panorama or sliver cannot wreck a row; every real image today
+  // sits between 0.75 and 2.36.
+  function cardShape(item){
+    var rec = item && item.image && window.FOX_IMAGES && window.FOX_IMAGES[item.image];
+    var ar = rec ? rec[1] / rec[2] : 1.5;
+    ar = Math.max(0.6, Math.min(2.6, ar));
+    return { ar: ar, ph: rec && rec[4] ? rec[4] : "" };
+  }
+
+  // Tells the browser how wide each card will be laid out, so it can pick the
+  // 480/960/1600 variant for the device pixel ratio. Mirrors the --rh
+  // breakpoints in the CSS:
+  //  - Up to 600px a landscape card is usually alone on its row and stretches
+  //    to the full content width, so say exactly that.
+  //  - 601-900px: two per row usually, but a wide image can end up alone and
+  //    grow ~2.5x past its basis; capped at the content width.
+  //  - Wider: rows hold ~3 cards, which grow at most ~45% past their basis.
+  // Phones at 2.5x density and up are asked for 2x-equivalent pixels: at a
+  // ~350px card that lands on the 960px variant instead of 1600px, a large
+  // byte saving that is not visible on a photograph that size.
+  function cardSizes(ar){
+    var full = "calc(100vw - 44px)";
+    return "(max-width: 600px) and (min-resolution: 2.5dppx) calc((100vw - 44px) * 0.67), " +
+           "(max-width: 600px) and (-webkit-min-device-pixel-ratio: 2.5) calc((100vw - 44px) * 0.67), " +
+           "(max-width: 600px) " + full + ", " +
+           "(max-width: 900px) min(" + full + ", " + Math.round(ar * 180 * 2.5) + "px), " +
+           "(max-width: 1200px) " + Math.round(ar * 200 * 1.45) + "px, " +
+           Math.round(ar * 240 * 1.45) + "px";
+  }
+  var SIZES_CARD = cardSizes(1.5);
   // The lightbox art panel is 1.2fr of a two-column 1080px grid, and goes
   // full-width below 820px.
   var SIZES_LIGHTBOX = "(max-width: 820px) 92vw, 590px";
@@ -1593,18 +1879,20 @@
         // Not in the generated table (new artwork, table not regenerated yet).
         // Fall back to the original file rather than rendering nothing.
         return '<img src="'+escapeAttr(encodeURI(item.image))+'" alt="'+alt+
-               '" loading="lazy" decoding="async">';
+               '" loading="lazy" decoding="async" onload="this.classList.add(\'is-loaded\')">';
       }
       var base = rec[0], w = rec[1], h = rec[2], variants = rec[3];
       var srcset = variants.map(function(v){
         return base + "-" + v[0] + ".webp " + v[1] + "w";
       }).join(", ");
       var fallback = base + "-" + variants[variants.length - 1][0] + ".webp";
-      // width/height carry the intrinsic aspect ratio so the masonry grid
-      // reserves the right space before the image decodes.
+      // width/height carry the intrinsic aspect ratio so the image reserves
+      // the right space before it decodes. is-loaded fades it in over the
+      // card's placeholder tint (see .card-art img in the CSS).
       return '<img src="'+fallback+'" srcset="'+srcset+'" sizes="'+
              escapeAttr(sizes || SIZES_CARD)+'" width="'+w+'" height="'+h+
-             '" alt="'+alt+'" loading="lazy" decoding="async">';
+             '" alt="'+alt+'" loading="lazy" decoding="async"'+
+             ' onload="this.classList.add(\'is-loaded\')">';
     }
     // fallback generative art if needed
     return '<div style="background:#0F2942;height:200px;display:flex;align-items:center;justify-content:center;color:#7fd9fb;">'+item.title+'</div>';
@@ -1675,6 +1963,15 @@
     });
 
     setTheme(currentTheme);
+    // A page prerendered on hover ran this before the visitor arrived, and a
+    // page restored from the back/forward cache ran it before they left. If the
+    // theme was toggled on another page in between, pick that up.
+    function syncSavedTheme() {
+      var s = localStorage.getItem('fox-theme');
+      if (s && s !== currentTheme) setTheme(s);
+    }
+    document.addEventListener('prerenderingchange', syncSavedTheme);
+    window.addEventListener('pageshow', function (e) { if (e.persisted) syncSavedTheme(); });
   }
 
   // ============================================================
@@ -1727,23 +2024,32 @@
     });
   }
 
+  var gridSwap = null;
   function applyFilter(slug, updateHash){
     state.filter = slug;
     document.querySelectorAll(".chip").forEach(function(chip){
       chip.setAttribute("aria-pressed", chip.getAttribute("data-filter") === slug ? "true" : "false");
     });
-    var cards = document.querySelectorAll(".card");
+    var grid = document.getElementById("galleryGrid");
+    var cards = grid.querySelectorAll(".card");
     var visibleCount = 0;
-    cards.forEach(function(card, i){
+    // Only class toggles here. The old version also rewrote --stagger on every
+    // visible card, a style write per card on each switch for an entrance
+    // delay that already-revealed cards never replay.
+    cards.forEach(function(card){
       var match = slug === "all" || card.getAttribute("data-cat") === slug;
-      if(match){
-        card.classList.remove("is-hidden");
-        card.style.setProperty("--stagger", visibleCount % 6);
-        visibleCount++;
-      } else {
-        card.classList.add("is-hidden");
-      }
+      card.classList.toggle("is-hidden", !match);
+      if(match) visibleCount++;
     });
+    // Fade the new set in as one piece. The Web Animations API needs no forced
+    // reflow to restart, unlike toggling a CSS animation class, and CSS's
+    // reduced-motion rule does not reach it, so that is checked here.
+    if(grid.animate && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+      if(gridSwap) gridSwap.cancel();
+      gridSwap = grid.animate(
+        [{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }],
+        { duration: 260, easing: "cubic-bezier(.16,.84,.44,1)" });
+    }
     var label = slug === "all" ? "all work" : CATEGORY_META[slug].label;
     document.getElementById("resultsStatus").textContent = "Showing "+visibleCount+" of "+ITEMS.length+" projects — "+label+".";
     if(updateHash){ history.replaceState(null, "", slug === "all" ? "#gallery" : "#"+slug); }
@@ -1763,9 +2069,13 @@
     var html = "";
     ITEMS.forEach(function(item, i){
       var meta = CATEGORY_META[item.cat];
+      var shape = cardShape(item);
+      // --ar sizes the card in the justified rows; --ph tints it until the
+      // image arrives.
+      var style = "--stagger:"+(i%6)+";--ar:"+shape.ar.toFixed(4)+(shape.ph ? ";--ph:"+shape.ph : "");
       html +=
-        '<button class="card reveal g-size-'+item.size+'" data-cat="'+item.cat+'" data-id="'+item.id+'" style="--stagger:'+(i%6)+'" aria-label="View project: '+item.title+', '+meta.label+', '+item.year+'">'+
-          '<span class="card-art">'+renderArt(item)+'</span>'+
+        '<button class="card reveal g-size-'+item.size+'" data-cat="'+item.cat+'" data-id="'+item.id+'" style="'+style+'" aria-label="View project: '+item.title+', '+meta.label+', '+item.year+'">'+
+          '<span class="card-art">'+renderArt(item, cardSizes(shape.ar))+'</span>'+
           '<span class="card-veil"></span>'+
           '<span class="card-overlay"><span class="overlay-title">'+item.title+'</span><span class="overlay-cat">'+meta.label+'</span></span>'+
           '<span class="card-idx-cat">'+meta.label+'</span>'+
@@ -1923,14 +2233,20 @@
   // Fox build scrub - canvas frame sequence, see js/fox-sequence.js
   document.addEventListener("DOMContentLoaded", function(){
     if (!window.initFoxSequence) return;
-    var MILESTONES = { 0:"Begin", 16:"Construct", 33:"Refine", 49:"Defined", 65:"Brand" };
-    function n(i){ return ("000" + (i + 1)).slice(-4) + ".webp"; }
+    // Evenly spaced across all 89 frames so "Brand" lands on the final frame.
+    var MILESTONES = { 0:"Begin", 22:"Construct", 44:"Refine", 66:"Defined", 88:"Brand" };
+    // Zero-indexed, 5 digits: 00000.webp .. 00088.webp. The old 1-indexed,
+    // 4-digit name skipped the first frame, and count:66 never reached the
+    // last 22 frames - the end of the build was never shown.
+    function n(i){ return ("0000" + i).slice(-5) + ".webp"; }
     window.initFoxSequence({
-      count: 66,
+      count: 89,
       framesEnd: 0.875,
-      full:  { src: function(i){ return "anim/gallery/" + n(i); },    width: 864, height: 496 },
-      small: { src: function(i){ return "anim/gallery-sm/" + n(i); }, width: 540, height: 310 },
+      full:  { src: function(i){ return "anim/gallery-960/" + n(i); },    width: 960, height: 540 },
+      small: { src: function(i){ return "anim/gallery-640/" + n(i); }, width: 640, height: 360 },
       smallUpTo: 700,
+      // Same query as the first-frame preload and poster above, verbatim.
+      smallMedia: "(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)",
       still: "anim/gallery-still.png",
       label: function(i){ return MILESTONES[i] || "Frame " + (i + 1); }
     });

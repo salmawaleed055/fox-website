@@ -1,101 +1,144 @@
-"""Re-encode the fox animation PNG sequences into the WebP sets the site uses.
+"""Build the deployable animation assets from the high-resolution sources.
 
 Run from the repo root after changing any frame artwork:
 
     python tools/encode-frames.py
 
-Sources are 864x496 RGBA PNGs extracted from Video/*.mp4, which is itself
-864x496 - that is the hard ceiling on this animation's resolution.
+Sources live in anim-src/ and are NOT deployed (see .vercelignore):
 
-Two tiers are written per page:
+    anim-src/home/      73 frames, 3840x2160 RGBA WebP  (index.html hero)
+    anim-src/gallery/   89 frames, 1920x1080 RGBA WebP  (gallery.html hero)
+    anim-src/loading/   42 frames,  191x280  RGBA WebP  (loader fox)
 
-    anim/<page>/      864x496, quality 90  - tablets and desktops
-    anim/<page>-sm/   540x310, quality 86  - phones
+The original PNG frame folders were deleted upstream, so these are now the only
+high-resolution copies. Never regenerate them from the anim/ outputs.
 
-540x310 is an exact 1.741 aspect match for the source, and lands within 8% of
-the device pixels a phone actually shows the rig at. The point of the small tier
-is less about bandwidth than about decoded bitmap memory: 80 frames at 864x496
-is ~137MB of RGBA, enough that a low-end phone starts discarding and re-decoding
-mid-scrub. At 540x310 it is ~54MB.
+Outputs in anim/ (all names are 5-digit, zero-indexed: 00000.webp ...):
 
-Quality 90 was picked by measurement, not feel. Compositing each decoded frame
-over the page background and comparing against the source PNG:
+    anim/<seq>-960/  960x540, quality 90  - dense screens (>1.25x) wider than 480px
+    anim/<seq>-640/  640x360, quality 88  - phones and ~1x screens
+    anim/<seq>-still.png                  - finished mark for browsers without WebP
+    anim/loader.webp                      - the loader fox as ONE animated WebP,
+                                            fetched only when a load is slow
+    anim/loader-first.webp                - its first frame: shown instantly, and
+                                            all that reduced motion ever gets
 
-    q72  45.1 dB    q86  49.0 dB
-    q80  46.8 dB    q90  50.9 dB   <- +35% bytes over q72, +5.8 dB
-    q94  53.2 dB (+57% bytes)
+Why these sizes: the hero rig is at most 640 CSS px wide and the player caps the
+canvas at 1.5x device pixels, so 960 px is the most it can ever use. The 4K
+sources were 16x the pixels and ~100 MB for the home sequence alone, and the
+"small" tier was a byte-identical copy of the large one.
+
+Why these qualities, measured on 8 frames spread across each sequence, decoded
+and composited over BOTH page backgrounds (#FFFFFF and #0b1724), comparing with
+the source downscaled to the same size. Worst case of the two backgrounds:
+
+                    q84       q88       q92
+    home  960x540   47.8 dB   49.3 dB   51.2 dB
+    home  640x360   46.7 dB   48.2 dB   50.2 dB
+    gall. 960x540   45.4 dB   46.9 dB   48.9 dB
+    gall. 640x360   44.2 dB   45.6 dB   47.4 dB
 
 Alpha is stored losslessly at every quality so the cut-out edges stay clean.
 
-A single still of the finished mark is also written per page. Browsers without
-WebP get that instead of the sequence - roughly 3% of traffic, and far better
-for them than 19MB of PNGs.
+If a frame count changes, update `count` in the initFoxSequence() call of the
+page that uses it.
 
 Requires Pillow:  pip install Pillow
 """
+import glob
+import multiprocessing as mp
 import os
 import sys
 
 from PIL import Image
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(ROOT, "anim-src")
+OUT = os.path.join(ROOT, "anim")
 
-# (source dir, first frame number, last frame number, output slug)
-# The first/last numbers are the range each page actually animated; the leading
-# frames in Home-Frames were never part of the sequence.
-JOBS = [
-    ("Home-Frames", 3, 82, "home"),     # index.html   - 80 frames
-    ("Frames", 2, 67, "gallery"),       # gallery.html - 66 frames
-]
+SEQUENCES = ["home", "gallery"]
 
-# (output suffix, width, height, quality). Sizes keep the source 1.741 aspect
-# exactly: 540*496 == 310*864.
+# (folder suffix, width, height, quality)
+# The folder carries the width, so a re-encode at a different size gets new URLs
+# automatically. anim/ is served with a 7-day Cache-Control: reusing a URL for
+# different bytes leaves returning visitors on the old frames for a week - which
+# is exactly what happened when the 4K frames were replaced in place. If you
+# re-encode at the SAME size with different artwork, bump the folder name.
 TIERS = [
-    ("", 864, 496, 90),
-    ("-sm", 540, 310, 86),
+    ("-960", 960, 540, 90),
+    ("-640", 640, 360, 88),
 ]
 
+LOADER_FPS = 15
 METHOD = 6  # slowest, smallest
 
 
+def encode_frame(job):
+    src_path, dst_path, size, quality = job
+    im = Image.open(src_path).convert("RGBA")
+    if im.size != size:
+        im = im.resize(size, Image.LANCZOS)
+    im.save(dst_path, "WEBP", quality=quality, alpha_quality=100, method=METHOD)
+    return os.path.getsize(dst_path)
+
+
 def main():
-    for src_dir, first, last, slug in JOBS:
-        frames = []
-        for i in range(first, last + 1):
-            src = os.path.join(ROOT, src_dir, "frame_%03d_no_bg.png" % i)
-            if not os.path.isfile(src):
-                sys.exit("missing source frame: " + src)
-            frames.append(src)
+    jobs = []
+    plan = []
+    for seq in SEQUENCES:
+        frames = sorted(glob.glob(os.path.join(SRC, seq, "*.webp")))
+        if not frames:
+            sys.exit("no source frames in anim-src/" + seq)
+        src_total = sum(os.path.getsize(f) for f in frames)
+        for suffix, w, h, q in TIERS:
+            out_dir = os.path.join(OUT, seq + suffix)
+            os.makedirs(out_dir, exist_ok=True)
+            for old in glob.glob(os.path.join(out_dir, "*.webp")):
+                os.remove(old)
+            start = len(jobs)
+            for i, f in enumerate(frames):
+                jobs.append((f, os.path.join(out_dir, "%05d.webp" % i), (w, h), q))
+            plan.append((seq, suffix, w, h, q, len(frames), src_total, start, len(jobs)))
 
-        total_in = sum(os.path.getsize(f) for f in frames)
+    workers = max(2, (os.cpu_count() or 4) - 2)
+    with mp.Pool(workers) as pool:
+        sizes = pool.map(encode_frame, jobs, chunksize=2)
 
-        for suffix, w, h, quality in TIERS:
-            out_path = os.path.join(ROOT, "anim", slug + suffix)
-            os.makedirs(out_path, exist_ok=True)
-            total_out = 0
-            for n, src in enumerate(frames, 1):
-                im = Image.open(src).convert("RGBA")
-                if im.size != (w, h):
-                    im = im.resize((w, h), Image.LANCZOS)
-                dst = os.path.join(out_path, "%04d.webp" % n)
-                im.save(dst, "WEBP", quality=quality, alpha_quality=100,
-                        method=METHOD)
-                total_out += os.path.getsize(dst)
-            print("%-12s %3d frames  %4dx%-4d q%-3d %6.1f MB -> %5.2f MB  anim/%s"
-                  % (src_dir, len(frames), w, h, quality,
-                     total_in / 1048576, total_out / 1048576, slug + suffix),
-                  flush=True)
+    for seq, suffix, w, h, q, n, src_total, a, b in plan:
+        out_total = sum(sizes[a:b])
+        print("%-8s %2d frames  %4dx%-4d q%-2d  %6.1f MB -> %5.2f MB  anim/%s"
+              % (seq, n, w, h, q, src_total / 1048576, out_total / 1048576, seq + suffix),
+              flush=True)
 
-        # Non-WebP still: the finished mark, palette-reduced to keep it small.
-        still = Image.open(frames[-1]).convert("RGBA")
-        still = still.quantize(colors=256, method=Image.FASTOCTREE)
-        still_path = os.path.join(ROOT, "anim", slug + "-still.png")
-        still.save(still_path, "PNG", optimize=True)
-        print("%-12s still  %.0f KB  anim/%s-still.png"
-              % ("", os.path.getsize(still_path) / 1024, slug))
+    # Still of the finished mark for browsers without WebP. PNG, palette-reduced.
+    for seq in SEQUENCES:
+        last = sorted(glob.glob(os.path.join(SRC, seq, "*.webp")))[-1]
+        still = Image.open(last).convert("RGBA").resize((640, 360), Image.LANCZOS)
+        still = still.quantize(colors=256, method=Image.Quantize.FASTOCTREE)
+        path = os.path.join(OUT, seq + "-still.png")
+        still.save(path, "PNG", optimize=True)
+        print("%-8s still        %5.0f KB  anim/%s-still.png"
+              % (seq, os.path.getsize(path) / 1024, seq))
 
-    print("\nIf the frame count changes, update the `count` passed to "
-          "initFoxSequence() in index.html and gallery.html.")
+    # Loader: one animated WebP instead of 42 separate requests.
+    lframes = sorted(glob.glob(os.path.join(SRC, "loading", "*.webp")))
+    imgs = [Image.open(f).convert("RGBA") for f in lframes]
+    anim_path = os.path.join(OUT, "loader.webp")
+    # Quality 75 / alpha 80: the source frames are already lossy, and at 90/100
+    # re-encoding them produced a file LARGER than the 42 separate frames
+    # (792 KB vs 658 KB). The fox moves across the frame, so frames share little
+    # and one file saves few bytes anyway - which is why the pages fetch this
+    # only when a load is actually slow (see the loader script in each page).
+    imgs[0].save(anim_path, "WEBP", save_all=True, append_images=imgs[1:],
+                 duration=round(1000 / LOADER_FPS), loop=0, quality=75,
+                 alpha_quality=80, method=METHOD, minimize_size=True)
+    first_path = os.path.join(OUT, "loader-first.webp")
+    imgs[0].save(first_path, "WEBP", quality=90, alpha_quality=100, method=METHOD)
+    src_bytes = sum(os.path.getsize(f) for f in lframes)
+    print("loader   %2d frames -> 1 file  %5.0f KB (was %d requests, %.0f KB)  anim/loader.webp"
+          % (len(imgs), os.path.getsize(anim_path) / 1024, len(lframes), src_bytes / 1024))
+    print("loader   first frame          %5.0f KB  anim/loader-first.webp"
+          % (os.path.getsize(first_path) / 1024))
 
 
 if __name__ == "__main__":

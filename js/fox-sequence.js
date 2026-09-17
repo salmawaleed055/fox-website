@@ -86,7 +86,10 @@
       framesEnd:  scroll fraction at which the last frame lands,
       full:       { src: function (i) -> url, width, height },
       small:      { src: function (i) -> url, width, height },  // optional
-      smallUpTo:  use `small` when displayed device-pixel width is <= this,
+      smallMedia: use `small` when this media query matches. Preferred: the page
+                  can put the SAME query on its first-frame preload and poster,
+                  so all three always pick the same tier,
+      smallUpTo:  fallback - use `small` when displayed device-pixel width <= this,
       still:      url of a single non-WebP image, shown where WebP is unsupported,
       label:      function (i, count) -> stage caption
     }
@@ -120,10 +123,20 @@
     function rigWidth() {
       return Math.round(rig.getBoundingClientRect().width) || 640;
     }
-    var set = (cfg.small && rigWidth() * Math.min(window.devicePixelRatio || 1, 2)
-                 <= (cfg.smallUpTo || 620))
-      ? cfg.small
-      : cfg.full;
+    // A media query when the page supplies one: the page's <link rel=preload>
+    // and poster <source> carry the identical query, so the first frame is
+    // never fetched from one tier while the player loads the other. (Choosing
+    // by rig width here while the HTML chose by screen width downloaded the
+    // first frame twice on ordinary 1x desktops.)
+    var set;
+    if (cfg.small && cfg.smallMedia && window.matchMedia) {
+      set = window.matchMedia(cfg.smallMedia).matches ? cfg.small : cfg.full;
+    } else {
+      set = (cfg.small && rigWidth() * Math.min(window.devicePixelRatio || 1, 2)
+               <= (cfg.smallUpTo || 620))
+        ? cfg.small
+        : cfg.full;
+    }
     var ASPECT = set.width / set.height;
 
     // ---- canvas ------------------------------------------------------
@@ -440,6 +453,10 @@
       if (!document.hidden) { drawn = -1; remeasure(); }
     });
     window.addEventListener("pageshow", function () { drawn = -1; remeasure(); });
+    // A page prerendered on hover runs no animation frames until the visitor
+    // actually arrives. Frames keep loading meanwhile; paint the moment the
+    // prerender is activated instead of waiting for the first scroll.
+    document.addEventListener("prerenderingchange", function () { drawn = -1; remeasure(); });
 
     if (window.IntersectionObserver) {
       new IntersectionObserver(function (entries) {

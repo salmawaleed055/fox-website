@@ -30,3 +30,7 @@
 /Images/Giveaways
 /Images/Packaging
 /Images/Printing Materials
+
+# High-resolution animation sources (4K home, 1080p gallery, loader frames).
+# tools/encode-frames.py builds the deployable anim/ tiers from these.
+/anim-src

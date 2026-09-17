@@ -2,21 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- Apply the saved theme before the first paint. initTheme() used to do this
+       only after DOMContentLoaded, so dark-theme visitors saw the light page flash
+       on every page switch - and a view transition would animate into the wrong
+       theme. Mirrors initTheme(): system preference, overridden by the saved choice. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("fox-theme");
+        if (!t && window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches) t = "dark";
+        if (t) document.documentElement.setAttribute("data-theme", t);
+      } catch (e) {}
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fox Advertising · Healthcare & Pharma Marketing, Cairo</title>
   <link rel="icon" type="image/svg+xml" href="Images/Logo.svg" />
   <meta name="description" content="Fox Advertising is a full-service agency with 15+ years of experience delivering 360° marketing solutions for pharmaceutical and healthcare companies across local, regional, and multinational markets." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- First frame only. The player picks the same tier at runtime from the
-       rig's device-pixel width, so these two never both apply. -->
-  <link rel="preload" as="image" href="anim/home/00000.webp" media="(min-width: 481px)" fetchpriority="high" />
-  <link rel="preload" as="image" href="anim/home-sm/00000.webp" media="(max-width: 480px)" fetchpriority="high" />
-  <!-- Loader's first frame, so the fox is already on screen the instant the
-       loader paints instead of popping in a beat later. -->
-  <link rel="preload" as="image" href="anim/Loading/00000.webp" fetchpriority="high" />
+  <!-- First frame only. These media queries, the poster's <source> and the
+       player's smallMedia are the same rule verbatim, so exactly one tier is
+       ever fetched: 640px for phone-width or ~1x screens, 960px otherwise. -->
+  <link rel="preload" as="image" href="anim/home-960/00000.webp" media="(min-width: 481px) and (min-resolution: 1.26dppx), (min-width: 481px) and (-webkit-min-device-pixel-ratio: 1.26)" fetchpriority="high" />
+  <link rel="preload" as="image" href="anim/home-640/00000.webp" media="(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)" fetchpriority="high" />
+  <!-- The loader fox's first frame, so it is already on screen the instant the
+       loader paints. The full animation is fetched later, only if needed. -->
+  <link rel="preload" as="image" href="anim/loader-first.webp" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <script src="js/fox-sequence.js" defer></script>
+  <!-- Prerender the other page as soon as a link to it is hovered (or pressed,
+       on touch), so the click swaps in a page that is already rendered.
+       Chromium browsers; js/site-nav.js falls back to a hover prefetch elsewhere.
+       selector_matches rather than href_matches, so links carrying a #hash
+       (index.html#services) match too. -->
+  <script type="speculationrules">
+  {
+    "prerender": [{
+      "source": "document",
+      "where": { "selector_matches": "a[href^='gallery.html'], a[href^='index.html']" },
+      "eagerness": "moderate"
+    }]
+  }
+  </script>
+  <script src="js/site-nav.js" defer></script>
   <style>
     /* -------------------------------------------------------------
        TOKENS – cyanotype / blueprint
@@ -212,9 +241,6 @@
       display: block;
       filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .28));
     }
-    /* Only used as a fallback when prefers-reduced-motion stops the frame
-       sequence below from starting, so the loader isn't a dead static image. */
-    .loader-fox.is-static { animation: pulseMark 1.1s ease-in-out infinite; }
     @keyframes pulseMark { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
 
     /* HEADER */
@@ -821,6 +847,55 @@
       .back-top { padding: 10px 0; }
       .mobile-nav a { padding-block: 6px; }
     }
+
+    /* ==========================================================
+       PAGE-TO-PAGE NAVIGATION
+       ========================================================== */
+
+    /* Crossfade between index.html and gallery.html. Both pages opt in, which
+       cross-document view transitions require. The header gets its own name
+       so it holds still while the page content crossfades beneath it.
+       Unsupported browsers ignore all of this and navigate normally. */
+    @view-transition { navigation: auto; }
+    .site-header { view-transition-name: site-header; }
+    /* The loader needs its own name too. Transition groups stack in paint
+       order, so naming it (z-index 9999) keeps it above the header group.
+       Unnamed, it was flattened into the root snapshot and the header floated
+       over the full-screen loader for the length of the crossfade. */
+    .loader { view-transition-name: fox-loader; }
+    ::view-transition-old(root),
+    ::view-transition-new(root) { animation-duration: .26s; }
+    @media (prefers-reduced-motion: reduce) {
+      @view-transition { navigation: none; }
+    }
+
+    /* Until the full animation is needed and has arrived, the first frame
+       drifts gently so the loader never reads as frozen. Costs no bytes. */
+    .loader-fox { animation: loaderFloat 1.6s ease-in-out infinite; }
+    .loader-fox.is-animated { animation: none; }
+    @keyframes loaderFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    /* Explicitly off. index.html's global reduced-motion rule shortens
+       durations but does not stop iteration, so an infinite animation keeps
+       cycling every 0.001ms - which reads as jitter, not stillness. */
+    @media (prefers-reduced-motion: reduce) {
+      .loader-fox { animation: none; }
+    }
+
+    /* Loader states driven by the page's dismiss script and js/site-nav.js.
+       is-instant: hide with no fade - used for a prerendered page, which is
+         activated already rendered, and for a back/forward cache restore.
+       is-leaving: re-shown because a navigation is taking a moment. Fades in
+         quickly, and wins over is-done if a late window.load handler adds it. */
+    .loader.is-instant { transition: none; }
+    .loader.is-leaving,
+    .loader.is-leaving.is-done {
+      opacity: 1;
+      visibility: visible;
+      transition-duration: .18s;
+    }
   </style>
 </head>
 <body>
@@ -912,67 +987,71 @@
   <div class="stars-container" id="starsContainer" aria-hidden="true"></div>
 
   <div class="loader" id="loader" aria-hidden="true">
-    <img class="loader-fox" id="loaderFox" src="anim/Loading/00000.webp" width="191" height="280" alt="" decoding="async">
+    <img class="loader-fox" id="loaderFox" src="anim/loader-first.webp" width="191" height="280" alt="" fetchpriority="high">
   </div>
   <script>
-    // Runs immediately during parsing (not deferred) so the fox starts
-    // "thinking" the instant the loader paints, same reasoning as the
-    // rel=preload above it: don't make the loader wait on anything else.
-    // Frames live in anim/Loading/, 42 of them (00000.webp - 00041.webp),
-    // sampled down from the full 168-frame render. Cheap, best-effort:
-    // frames are requested up front but a tick simply holds the last
-    // frame that's actually finished loading, so nothing ever shows a
-    // broken image or stalls waiting on the network.
-    (function () {
-      var FRAME_COUNT = 42, FPS = 15;
-      var img = document.getElementById("loaderFox");
-      if (!img) return;
+  // First frame shows instantly (16 KB, preloaded) with a CSS float. The full
+  // 42-frame animation (~590 KB) is shown only when it is already in the
+  // browser cache - a page switch or a repeat visit - and it is fetched once, at
+  // idle priority, after a page has FULLY loaded, never during a load.
+  // Measured on a throttled connection: fetching it mid-load could never finish
+  // before the loader's own 1.8s dismissal, so it downloaded for nothing on
+  // exactly the connections that can least afford it.
+  // js/site-nav.js calls __foxLoaderAnimate() too when a page switch is slow.
+  (function () {
+    var KEY = "fox-loader-cached";
+    var MAX_AGE = 6 * 864e5; // inside the 7-day Cache-Control on /anim/ in vercel.json
+    var img = document.getElementById("loaderFox");
+    var started = false;
+    function reduced() {
+      return !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    }
+    function cachedRecently() {
+      try { var t = +localStorage.getItem(KEY); return t > 0 && Date.now() - t < MAX_AGE; }
+      catch (e) { return false; }
+    }
+    function sheetUp() {
+      var l = document.getElementById("loader");
+      return !!l && (!l.classList.contains("is-done") || l.classList.contains("is-leaving"));
+    }
+    window.__foxLoaderAnimate = function () {
+      if (started || !img || reduced() || !cachedRecently()) return;
+      started = true;
+      var anim = new Image();
+      // Swap in only a fully decoded animation, and only while the sheet is
+      // still up: never a half-loaded file, never onto a page already shown.
+      anim.onload = function () {
+        // Sheet already gone: un-latch, so a later page switch can swap it in
+        // (from cache) instead of never animating again.
+        if (!sheetUp()) { started = false; return; }
+        img.src = anim.src;
+        img.classList.add("is-animated");
+      };
+      anim.src = "anim/loader.webp";
+    };
+    // Not in a background tab: nobody can see the loader there.
+    setTimeout(function () {
+      if (sheetUp() && !document.hidden) window.__foxLoaderAnimate();
+    }, 700);
 
-      var reduceMotion = window.matchMedia &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduceMotion) { img.className += " is-static"; return; }
-
-      function n(i) { return ("0000" + i).slice(-5) + ".webp"; }
-
-      var pool = new Array(FRAME_COUNT);
-      var loaded = new Array(FRAME_COUNT);
-      for (var i = 0; i < FRAME_COUNT; i++) {
-        (function (idx) {
-          var frame = new Image();
-          frame.onload = function () { loaded[idx] = true; };
-          frame.src = "anim/Loading/" + n(idx);
-          pool[idx] = frame;
-        })(i);
-      }
-
-      var cur = 0;
-      var running = true;
-      var lastT = 0;
-      var acc = 0;
-      var interval = 1000 / FPS;
-
-      // Same rAF + delta-time pacing fox-sequence.js uses for the hero scrub,
-      // instead of setInterval: it lines up with paint, doesn't drift, and -
-      // unlike setInterval - simply stops firing when the tab is backgrounded
-      // rather than burning cycles no one will ever see.
-      function tick(now) {
-        if (!running) return;
-        var dt = lastT ? Math.min(now - lastT, 100) : interval;
-        lastT = now;
-        acc += dt;
-        while (acc >= interval) {
-          acc -= interval;
-          cur = (cur + 1) % FRAME_COUNT;
-          if (loaded[cur]) img.src = pool[cur].src;
-        }
-        requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-
-      // dismissLoader() below calls this so the loop doesn't keep
-      // ticking in the background after the loader is gone.
-      window.__stopLoaderFox = function () { running = false; };
-    })();
+    // Warm the cache after the page has fully loaded (the load event waits for
+    // the hero frames, so this never competes with them), so the next page
+    // switch can play the real animation. Skipped for data-saver and 2G/3G.
+    window.addEventListener("load", function () {
+      if (cachedRecently() || reduced()) return;
+      var c = navigator.connection;
+      if (c && (c.saveData || /2g|3g/.test(c.effectiveType || ""))) return;
+      var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 1500); };
+      idle(function () {
+        var warm = new Image();
+        if ("fetchPriority" in warm) warm.fetchPriority = "low";
+        warm.onload = function () {
+          try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+        };
+        warm.src = "anim/loader.webp";
+      }, { timeout: 5000 });
+    });
+  })();
   </script>
 
   <header class="site-header" id="siteHeader">
@@ -1049,13 +1128,13 @@
 
           <div class="fb-rig" id="fbRig">
             <!-- The 80-frame sequence is drawn into a canvas injected by
-                 js/fox-sequence.js. Frames live in anim/home/.
+                 js/fox-sequence.js. Frames live in anim/home-960/ and anim/home-640/.
                  The poster is the already-preloaded first frame: it fills the
                  rig before the canvas has anything, and is what remains if the
                  player script never loads. The player hides it on first paint. -->
             <picture class="fb-poster">
-              <source media="(max-width: 480px)" srcset="anim/home-sm/00000.webp">
-              <img src="anim/home/00000.webp" alt="" aria-hidden="true" width="864" height="496" fetchpriority="high" decoding="async">
+              <source media="(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)" srcset="anim/home-640/00000.webp">
+              <img src="anim/home-960/00000.webp" alt="" aria-hidden="true" width="960" height="540" fetchpriority="high" decoding="async">
             </picture>
             <div class="fb-ground-shadow" id="fbGround" aria-hidden="true"></div>
           </div>
@@ -1298,11 +1377,26 @@
       // sequence only once the loader is actually dismissed lets the loader's
       // frames clear the queue first instead of racing the hero for bandwidth.
       (function() {
-        function dismissLoader() {
+        function dismissLoader(instant) {
           var el = document.getElementById("loader");
           if (el) el.classList.add("is-done");
-          if (window.__stopLoaderFox) window.__stopLoaderFox();
+          if (el && instant === true) el.classList.add("is-instant");
           startFoxAnimOnce();
+        }
+        // A page prerendered on hover (see the speculation rules in <head>) is
+        // activated already rendered, so it never needs the loader. It also
+        // gets no animation frames while prerendering, so the rAF path below
+        // would leave the sheet up until the 1800ms cap - after the visitor
+        // had already arrived. Hide it at once and start loading the hero
+        // frames now, so they arrive during the prerender.
+        if (document.prerendering) {
+          // Hide the sheet now, not at DOMContentLoaded: a prerender can be
+          // activated before parsing finishes, and this path skips the 1800ms
+          // cap below. Only starting the hero has to wait for the player script.
+          var sheet = document.getElementById("loader");
+          if (sheet) sheet.classList.add("is-done", "is-instant");
+          startFoxAnimOnce();
+          return;
         }
         function afterPaint() {
           requestAnimationFrame(function() { requestAnimationFrame(dismissLoader); });
@@ -1364,6 +1458,15 @@
         toggle.addEventListener('click', function() { var next = currentTheme === 'dark' ? 'light' : 'dark';
           setTheme(next); });
         setTheme(currentTheme);
+        // A page prerendered on hover ran this before the visitor arrived, and a
+        // page restored from the back/forward cache ran it before they left. If
+        // the theme was toggled on another page in between, pick that up.
+        function syncSavedTheme() {
+          var s = localStorage.getItem('fox-theme');
+          if (s && s !== currentTheme) setTheme(s);
+        }
+        document.addEventListener('prerenderingchange', syncSavedTheme);
+        window.addEventListener('pageshow', function (e) { if (e.persisted) syncSavedTheme(); });
       }
 
       // FOX BUILD ANIMATION – canvas frame sequence, see js/fox-sequence.js
@@ -1373,6 +1476,18 @@
       var foxAnimStarted = false;
       function startFoxAnimOnce() {
         if (foxAnimStarted) return;
+        // js/fox-sequence.js is deferred, so on a slow link the loader's 1800ms
+        // cap can fire before it has run. Latching the flag then (as this used
+        // to) meant the DOMContentLoaded call returned early and the hero never
+        // started at all. Wait for the player instead. No readyState check:
+        // readyState is already "interactive" while deferred scripts are still
+        // pending, which is exactly this window.
+        if (!window.initFoxSequence) {
+          if (document.readyState !== "complete") {
+            document.addEventListener("DOMContentLoaded", startFoxAnimOnce, { once: true });
+          }
+          return;
+        }
         foxAnimStarted = true;
         initFoxAnim();
       }
@@ -1382,9 +1497,13 @@
         window.initFoxSequence({
           count: 73,
           framesEnd: 0.85,
-          full:  { src: function (i) { return "anim/home/" + n(i); },    width: 864, height: 496 },
-          small: { src: function (i) { return "anim/home-sm/" + n(i); }, width: 540, height: 310 },
+          // 960x540 / 640x360 must match the files tools/encode-frames.py writes:
+          // the player sizes its canvas from this aspect ratio.
+          full:  { src: function (i) { return "anim/home-960/" + n(i); },    width: 960, height: 540 },
+          small: { src: function (i) { return "anim/home-640/" + n(i); }, width: 640, height: 360 },
           smallUpTo: 700,
+          // Same query as the first-frame preload and poster above, verbatim.
+          smallMedia: "(max-width: 480px), (max-resolution: 1.25dppx), (-webkit-max-device-pixel-ratio: 1.25)",
           still: "anim/home-still.png",
           label: function (i) { return "Frame " + (i + 1); }
         });
