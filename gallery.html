@@ -1032,13 +1032,19 @@
     @media (max-width: 560px) { .footer-top { grid-template-columns: 1fr; } }
 
     /* The headline is position:fixed and the rig sits in the same 100vh sticky
-       frame, so on a phone they overlapped by ~195px. Give them separate
-       bands: headline on top, fox pinned to the bottom. max-height on the rig
-       makes it yield first as the screen gets shorter. */
+       frame, so on a phone they overlapped by ~195px. They get separate
+       bands: headline on top, fox centred in the space below it (see the
+       same rule in index.html; js/fox-sequence.js supplies --fb-head).
+       max-height on the rig makes it yield first as the screen gets shorter. */
     @media (max-width: 880px) and (orientation: portrait) {
       .fox-build-camera {
-        align-items: flex-end;
-        padding-bottom: clamp(20px, 5vh, 64px);
+        align-items: center;
+        align-items: safe center;
+        padding-top: calc(var(--fb-head, 45vh) + 12px);
+        padding-bottom: clamp(12px, 3vh, 28px);
+      }
+      @supports (height: 100svh) {
+        .fox-build-camera { padding-bottom: calc(100vh - 100svh + clamp(12px, 3vh, 28px)); }
       }
       .fb-rig {
         width: min(68vw, 440px);

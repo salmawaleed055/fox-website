@@ -1102,15 +1102,26 @@
        border on every phone. gallery.html already had this rule. */
     button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
-    /* The headline is position:fixed and the rig is centred in the same 100vh
-       sticky frame, so on a phone they were landing on top of each other
-       (measured 114px of overlap at 360x780). Give them separate bands: the
-       headline keeps the top, the fox is pinned to the bottom. max-height on
-       the rig makes it yield first as the screen gets shorter. */
+    /* The headline is position:fixed and the rig sits in the same 100vh
+       sticky frame, so on a phone they landed on top of each other (114px of
+       overlap at 360x780). They get separate bands: the headline keeps the
+       top and the fox is centred in the space left below it. (Pinning the fox
+       to the bottom left it 40-190px low, the gap above it up to five times
+       the gap below.) js/fox-sequence.js writes the headline's bottom edge
+       to --fb-head - its height depends on the width, the fonts and the wrap;
+       45vh is close on most phones until it does. The band ends at the small
+       viewport (100svh): at the top of the page a phone's URL bar covers the
+       bottom of 100vh. max-height on the rig still makes it yield first as
+       the screen gets shorter. */
     @media (max-width: 880px) and (orientation: portrait) {
       .fox-build-camera {
-        align-items: flex-end;
-        padding-bottom: clamp(20px, 5vh, 64px);
+        align-items: center;
+        align-items: safe center;
+        padding-top: calc(var(--fb-head, 45vh) + 12px);
+        padding-bottom: clamp(12px, 3vh, 28px);
+      }
+      @supports (height: 100svh) {
+        .fox-build-camera { padding-bottom: calc(100vh - 100svh + clamp(12px, 3vh, 28px)); }
       }
       .fb-rig {
         width: min(68vw, 440px);

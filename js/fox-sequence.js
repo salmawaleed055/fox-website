@@ -102,6 +102,51 @@
       label:      function (i, count) -> stage caption
     }
   */
+  /*
+    Portrait phones and tablets stack the hero: the headline is position:fixed
+    across the top and the fox sits in the band below it. The page CSS centres
+    the rig in that band, but only script knows where the headline ends - its
+    height depends on the screen width, the webfonts and how the text wraps -
+    so its bottom edge goes to --fb-head on the camera. This runs on its own as
+    soon as the (deferred) script executes: before initFoxSequence(), and with
+    reduced motion too, so the fox is already in place under the loader.
+    Layouts that do not stack (desktop, landscape) ignore the variable.
+  */
+  function syncHeroBand() {
+    var section = document.getElementById("foxBuild");
+    var headline = document.getElementById("fbHeadline");
+    var camera = document.getElementById("fbCamera");
+    if (!section || !headline || !camera) return;
+    var last = -1;
+    function place() {
+      var r = headline.getBoundingClientRect();
+      // A fixed headline's box is viewport-relative, like the sticky camera.
+      // Reduced motion takes it out of the fixed layer so it scrolls with the
+      // section; measure it from the section top then.
+      var origin = getComputedStyle(headline).position === "fixed"
+        ? 0
+        : section.getBoundingClientRect().top;
+      var edge = Math.round(r.bottom - origin);
+      if (edge !== last) {
+        last = edge;
+        camera.style.setProperty("--fb-head", edge + "px");
+      }
+    }
+    place();
+    window.addEventListener("resize", place, { passive: true });
+    window.addEventListener("orientationchange", place);
+    window.addEventListener("load", place);
+    if (window.ResizeObserver) new ResizeObserver(place).observe(headline);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(place).catch(function () {});
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", syncHeroBand);
+  } else {
+    syncHeroBand();
+  }
+
   window.initFoxSequence = function (cfg) {
     var section = document.getElementById("foxBuild");
     var rig = document.getElementById("fbRig");
