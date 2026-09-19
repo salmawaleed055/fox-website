@@ -1111,8 +1111,8 @@
        to --fb-head - its height depends on the width, the fonts and the wrap;
        45vh is close on most phones until it does. The band ends at the small
        viewport (100svh): at the top of the page a phone's URL bar covers the
-       bottom of 100vh. max-height on the rig still makes it yield first as
-       the screen gets shorter. */
+       bottom of 100vh. The rig is sized from that band
+       (below), so it yields first as the screen gets shorter. */
     @media (max-width: 880px) and (orientation: portrait) {
       .fox-build-camera {
         align-items: center;
@@ -1123,14 +1123,35 @@
       @supports (height: 100svh) {
         .fox-build-camera { padding-bottom: calc(100vh - 100svh + clamp(12px, 3vh, 28px)); }
       }
-      .fb-rig {
-        width: min(68vw, 440px);
-        max-height: 32vh;
-        margin: 0 auto;
+      /* The band the fox is centred in, as a length: from the headline's edge
+         to the bottom of the visible viewport. */
+      .fox-build-camera { --fb-band: calc(100vh - var(--fb-head, 45vh) - 12px - clamp(12px, 3vh, 28px)); }
+      @supports (height: 100svh) {
+        .fox-build-camera { --fb-band: calc(100svh - var(--fb-head, 45vh) - 12px - clamp(12px, 3vh, 28px)); }
       }
-    }
-    @media (max-width: 480px) and (orientation: portrait) {
-      .fb-rig { width: 72vw; }
+      /* The fox is sized from that band, not from the screen width, so it
+         fills the space it has: the frame takes 68% of the band's height (the
+         fox itself is ~88% of the frame, so ~60% of the band, with even space
+         above and below). Short phones get a smaller fox instead of one that
+         runs into the headline. The rig is exactly the frame's 16:9, so
+         nothing is letterboxed; it may be wider than the screen - the art only
+         spans the middle ~40-50% of the frame, the rest is transparent and the
+         camera clips it - so it is centred by justify-content, not auto
+         margins (which stop centring once an item overflows), and flex:none
+         keeps flexbox from squeezing it back to the screen width.
+         Caps: 64vw keeps the fox's width comfortably inside the screen, and
+         340px (a 604px-wide frame) keeps tablets from ballooning. Up to ~430px
+         of frame width a phone loses no sharpness: the canvas is drawn at
+         1.5x and the phone tier is 640px wide. */
+      .fb-rig {
+        --fb-rig-h: min(var(--fb-band) * 0.68, 64vw, 340px);
+        flex: none;
+        height: var(--fb-rig-h);
+        width: calc(var(--fb-rig-h) * 16 / 9);
+        aspect-ratio: auto;
+        max-height: none;
+        margin: 0;
+      }
     }
 
     /* A phone in landscape has ~390px of height - not enough for a 245px
@@ -1167,7 +1188,6 @@
       .fox-build-headline h1 { font-size: clamp(1.6rem, 6.4vw, 2.3rem); margin: 10px 0 12px; }
       .fox-build-headline .lede { font-size: 13px; }
       .fox-build-headline .hero-meta { margin-top: 12px; }
-      .fb-rig { max-height: 26vh; }
     }
 
     /* .fox-build-headline h1 carries max-width:16ch. Once the font shrinks on
