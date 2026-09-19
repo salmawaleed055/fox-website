@@ -369,13 +369,18 @@
 
     /* FOX BUILD – fully responsive */
     .fox-build { position: relative; background: var(--bg); }
-    /* The sequence has ~80 frames. The scrollable part of this section
-       (height - 100vh) is divided between them, so it has to stay long
-       enough that each frame gets real scroll distance – at 160vh a phone
-       gave every frame about 6px, which reads as a blur, not an animation. */
-    .fox-build-stage { position: relative; height: 260vh; }
-    @media (max-width: 880px) { .fox-build-stage { height: 210vh; } }
-    @media (max-width: 480px) { .fox-build-stage { height: 190vh; } }
+    /* The 73 frames share the first 85% of this section's scrollable part
+       (height - 100vh). js/fox-sequence.js plays ordinary scrolling at no more
+       than one frame per 60Hz refresh, so the height no longer sets how fast
+       the fox builds - but scrolling arrives in pixels (a wheel notch is
+       ~100px, a phone flick ~1000px), so the section also needs a floor of
+       ~1100px of scroll whatever the screen height. Below it a flick carried
+       the page out of the section mid-build: at 190vh a phone had 760px
+       (9px per frame) and a landscape phone at 210vh just 430px (5px).
+       The vh values are Salma's; the floor only lifts short screens. */
+    .fox-build-stage { position: relative; height: max(260vh, 100vh + 1100px); }
+    @media (max-width: 880px) { .fox-build-stage { height: max(210vh, 100vh + 1100px); } }
+    @media (max-width: 480px) { .fox-build-stage { height: max(190vh, 100vh + 1100px); } }
 
     .fox-build-headline {
       position: fixed;

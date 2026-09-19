@@ -18,11 +18,15 @@
      lands. Loading front-to-back gives the opposite: the fox stalls partway
      through and then jumps.
 
-  2. The scroll position is damped, not followed raw, and the damping is
-     frame-rate independent. Touch and trackpad scrolling arrive in coarse
-     jumps; easing turns them into continuous motion. Deriving the easing
-     coefficient from elapsed time rather than per-callback means a 120Hz
-     display plays it at the same speed as a 60Hz one.
+  2. The scroll position is eased and speed-limited, not followed raw.
+     Touch and trackpad scrolling arrive in coarse jumps and a wheel notch
+     arrives all at once; easing turns them into continuous motion, and a
+     limit of 60 sequence frames a second (one per 60Hz refresh) stops a
+     flick or a fast wheel from racing through several frames per refresh.
+     Only a big gap (a flick, a scrollbar drag, Page Down) is closed faster,
+     as a short even fast-forward. Every step derives from elapsed time
+     rather than callback count, so a 120Hz display plays it at the same
+     speed as a 60Hz one.
 
   3. The canvas backing store matches the device pixels it occupies, so the
      browser resamples once, at drawImage, with high-quality filtering —
@@ -43,7 +47,11 @@
 
   var SKIP = {};        // stands in for a frame that failed to load
   var MAX_BACKING = 1600;
-  var RESPONSE = 0.38;  // fraction of the remaining distance closed per 60Hz frame
+  // Scroll pacing - see follow() in the scrub section.
+  var RESPONSE = 0.38;  // ease: fraction of the remaining distance closed per 60Hz frame
+  var MAX_FPS = 60;     // top build speed for ordinary scrolling, frames/s: one per 60Hz refresh
+  var CATCH_UP = 300;   // ms: a gap bigger than MAX_FPS * CATCH_UP is closed at gap / CATCH_UP,
+  var PEAK_FPS = 120;   // but never faster than this, frames/s: two per 60Hz refresh
   var SETTLE = 0.0002;  // scroll-fraction delta below which the loop parks
   var DECODE_TIMEOUT = 1200;
   var REQUEST_TIMEOUT = 12000;
@@ -312,6 +320,9 @@
     var inView = true;
     var needsRead = true;
     var lastT = 0;
+    var PER_FRAME = FRAMES_END / COUNT; // scroll fraction per sequence frame
+    var catchFps = 0;   // catch-up speed held while a big gap closes, frames/s
+    var primed = false; // false until the first scroll read
 
     function measure() {
       needsRead = true;
@@ -362,7 +373,12 @@
       }
 
       if (headline) {
-        var h = p < FRAMES_END ? 1 : 1 - smooth(band(p, FRAMES_END, 1));
+        // Faded on the real scroll position too, not only the paced current:
+        // the headline is position:fixed, and after a hard flick the fox can
+        // still be finishing while the section scrolls away. It must not
+        // linger over the next section meanwhile.
+        var hp = Math.max(p, target);
+        var h = hp < FRAMES_END ? 1 : 1 - smooth(band(hp, FRAMES_END, 1));
         if (Math.abs(h - lastHead) > 0.004) {
           headline.style.opacity = h.toFixed(3);
           lastHead = h;
@@ -388,21 +404,61 @@
 
     var smoothQuality = null; // tracks what ctx is currently set to, avoid redundant writes
 
+    /*
+      Where current goes this refresh. The ease alone plays the build exactly as
+      fast as the page scrolls, so a wheel notch or a flick shot through two to
+      twenty frames per refresh - the fox racing ahead. So the ease is held to
+      MAX_FPS sequence frames a second: every frame is shown. A gap too big to
+      close at that pace within CATCH_UP ms (a flick, a scrollbar drag, Page
+      Down) raises the speed to gap / CATCH_UP, up to PEAK_FPS, and holds it
+      until the gap closes: a jump is a short even fast-forward, not a lurch
+      and not a crawl. No paint moves more than one 60Hz refresh's worth, so a
+      refresh the browser dropped costs a little lag instead of a jump. Past
+      FRAMES_END no frame changes, only the zoom and the headline fade, so
+      nothing is paced there.
+    */
+    function follow(dt) {
+      var next = current + (target - current) * (1 - Math.pow(1 - RESPONSE, dt / 16.667));
+      var from = Math.min(current, FRAMES_END);
+      var gap = Math.abs(Math.min(target, FRAMES_END) - from) / PER_FRAME;
+      if (gap === 0) { catchFps = 0; return next; }
+      catchFps = Math.max(catchFps, gap * 1000 / CATCH_UP);
+      var fps = Math.min(Math.max(MAX_FPS, catchFps), PEAK_FPS);
+      // x 0.999: a move of exactly N frames can straddle N + 1 frame
+      // boundaries through floating-point rounding.
+      var allow = fps * Math.min(dt, 16.667) / 1000 * PER_FRAME * 0.999;
+      var moved = Math.min(next, FRAMES_END) - from;
+      if (moved > allow) return from + allow;
+      if (moved < -allow) return from - allow;
+      // The ease has slowed below the held speed on the final approach: let the
+      // held speed fall with it, so catch-up hands back to the ease smoothly.
+      catchFps = Math.min(catchFps, Math.abs(moved) / PER_FRAME * 1000 / dt);
+      return next;
+    }
+
     function tick(now) {
       // Cleared first so a throw anywhere below cannot strand the flag as true
       // with no frame pending, which would kill the loop for good.
       running = false;
 
-      // Elapsed time, not callback count, drives the easing - otherwise the
-      // animation plays twice as fast on a 120Hz display as on a 60Hz one.
-      // Clamp the step so a backgrounded tab does not resume with one huge jump.
+      // Elapsed time, not callback count, drives the motion - otherwise it
+      // plays twice as fast on a 120Hz display as on a 60Hz one. Clamp the step
+      // so a backgrounded tab does not resume with one huge jump. lastT is 0
+      // only when the loop is (re)starting: drop any catch-up speed left over
+      // from before it parked or the section was left.
+      if (!lastT) catchFps = 0;
       var dt = lastT ? Math.min(now - lastT, 100) : 16.667;
       lastT = now;
 
-      if (needsRead) { target = readScroll(); needsRead = false; }
+      if (needsRead) {
+        target = readScroll();
+        needsRead = false;
+        // Start where the page already is. Reloading mid-section would
+        // otherwise fast-forward the build from frame 0 on its own.
+        if (!primed) { current = target; primed = true; }
+      }
 
-      var d = target - current;
-      var moving = Math.abs(d) >= SETTLE;
+      var moving = Math.abs(target - current) >= SETTLE;
 
       // High-quality resampling is the single most expensive part of each
       // drawImage call. Pay for it only on the settled frame the eye actually
@@ -412,10 +468,14 @@
       if (wantQuality !== smoothQuality) {
         ctx.imageSmoothingQuality = wantQuality;
         smoothQuality = wantQuality;
+        // The frame the scroll comes to rest on was last drawn with the cheap
+        // filter, and paint() skips a frame that is already on the canvas -
+        // so without this the resting image never got the sharp resample.
+        if (wantQuality === "high") drawn = -1;
       }
 
-      if (moving) current += d * (1 - Math.pow(1 - RESPONSE, dt / 16.667));
-      else current = target;
+      if (!moving) { current = target; catchFps = 0; }
+      else if (dt > 0) current = follow(dt);
 
       render();
 

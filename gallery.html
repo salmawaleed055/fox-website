@@ -410,9 +410,11 @@
        FOX BUILD – responsive hero (80 frames)
        ============================================================ */
     .fox-build{ position:relative; background:var(--bg); }
-    .fox-build-stage{ position:relative; height:440vh; }
-    @media (max-width:880px){ .fox-build-stage{ height:300vh; } }
-    @media (max-width:480px){ .fox-build-stage{ height:280vh; } }
+    /* Same ~1100px scroll floor as index.html: it only lifts short screens
+       (a landscape phone had ~780px here). */
+    .fox-build-stage{ position:relative; height:max(440vh, 100vh + 1100px); }
+    @media (max-width:880px){ .fox-build-stage{ height:max(300vh, 100vh + 1100px); } }
+    @media (max-width:480px){ .fox-build-stage{ height:max(280vh, 100vh + 1100px); } }
 
     .fox-build-headline{
       position:fixed;
