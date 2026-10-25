@@ -1744,7 +1744,7 @@
           <div class="reel-spill" aria-hidden="true"></div>
           <figure class="reel-screen">
             <div class="reel-viewport">
-              <video class="reel-video" id="reelVideo" src="Video/fox-film.mp4" controls playsinline preload="metadata" aria-label="FOX brand film">
+              <video class="reel-video" id="reelVideo" src="Video/fox-film.mp4" poster="Images/showreel.png" controls playsinline preload="metadata" aria-label="FOX brand film">
                 Your browser can't play this video. <a href="Video/fox-film.mp4">Download the film (MP4)</a>.
               </video>
               <button type="button" class="reel-play" id="reelPlay">
@@ -1761,6 +1761,7 @@
                 </span>
               </button>
               <div class="reel-cover" aria-hidden="true">
+                <picture><img src="Images/showreel.png" alt="" decoding="async"></picture>
               </div>
             </div>
           </figure>
@@ -2412,8 +2413,9 @@
         });
         try { video.currentTime = Math.min(COVER_AT, video.duration - 0.2); } catch (err) {}
       }
-      video.addEventListener("loadedmetadata", showLastFrame, { once: true });
-      if (video.readyState >= 1) showLastFrame();
+      // showLastFrame disabled: Images/showreel.png is the default cover.
+      // video.addEventListener("loadedmetadata", showLastFrame, { once: true });
+      // if (video.readyState >= 1) showLastFrame();
 
       btn.addEventListener("click", start);
 
