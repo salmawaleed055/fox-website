@@ -29,7 +29,7 @@
   <!-- The loader fox's first frame, so it is already on screen the instant the
        loader paints. The full animation is fetched later, only if needed. -->
   <link rel="preload" as="image" href="anim/loader-first.webp" fetchpriority="high" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="js/fox-sequence.js" defer></script>
   <!-- Prerender the other page as soon as a link to it is hovered (or pressed,
        on touch), so the click swaps in a page that is already rendered.
@@ -1460,6 +1460,34 @@
     /* Footer contact picture (logo + details) */
     .footer-contact-img { display: block; width: 100%; max-width: 440px; height: auto; }
     .reel-play-meta [data-dur]:empty ~ .reel-play-sound::before { content: none; }
+  
+    /* ==========================================================
+       FOOTER v6: typography + icon style matched to the contact picture
+       (geometric sans, wide-tracked caps, thin white outlines)
+       ========================================================== */
+    .site-footer { --font-footer: 'Poppins', 'Inter', system-ui, sans-serif; font-family: var(--font-footer); }
+    @media (min-width: 1101px) {
+      .footer-top { grid-template-columns: minmax(290px, 1.15fr) minmax(0, 1.25fr) minmax(0, 1.5fr); gap: 56px; }
+    }
+    .footer-contact-img { max-width: 400px; }
+    .footer-links-cols { gap: 24px; }
+    .site-footer .footer-col h4,
+    .site-footer .footer-follow h4 { font-family: var(--font-footer); font-size: 13px; font-weight: 600; letter-spacing: .2em; color: #fff; padding-bottom: 16px; margin-bottom: 22px; }
+    .site-footer .footer-col h4::after,
+    .site-footer .footer-follow h4::after { width: 36px; height: 2px; background: #4fc3ff; }
+    .site-footer .footer-col a { font-family: var(--font-footer); font-size: 14px; font-weight: 400; color: #e4eef7; padding: 7px 0; }
+    .site-footer .footer-col a:hover { color: #7fd9fb; }
+    .site-footer .footer-col ul { gap: 2px; }
+    .footer-follow { margin-top: 44px; }
+    .site-footer .footer-social { gap: 14px; }
+    .site-footer .footer-social a { width: 46px; height: 46px; border: 1.5px solid rgba(255,255,255,.85); background: transparent; color: #fff; }
+    .site-footer .footer-social svg { width: 18px; height: 18px; stroke-width: 1.5; }
+    .site-footer .footer-social a:hover { background: #4fc3ff; border-color: #4fc3ff; color: #032f46; }
+    .site-footer .footer-col .footer-map a { font-family: var(--font-footer); font-size: 13px; font-weight: 500; letter-spacing: .04em; color: #fff; border: 1.5px solid rgba(255,255,255,.85); padding: 10px 22px; }
+    .site-footer .footer-col .footer-map a:hover { background: #4fc3ff; border-color: #4fc3ff; color: #032f46; }
+    .footer-map iframe { border: 1.5px solid rgba(255,255,255,.2); }
+    .site-footer .footer-bottom { font-family: var(--font-footer); font-size: 13px; letter-spacing: .02em; opacity: .9; border-top-color: rgba(255,255,255,.16); }
+    .site-footer .back-top { font-family: var(--font-footer); border: 1.5px solid rgba(255,255,255,.85); padding: 9px 18px; }
   </style>
 </head>
 <body>
