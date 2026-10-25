@@ -1409,6 +1409,33 @@
       .footer-links-cols { gap: 20px; }
       .footer-map iframe { height: 300px; }
     }
+      /* SLOGAN IMAGE (Slogan/fox slogan-01 (1).svg)
+       Sized from the headline column so it scales with the viewport instead
+       of relying on font-size. height:auto keeps the SVG's own proportions. */
+    .fox-build-headline h1.slogan { max-width: none; margin: 20px 0 24px; font-size: 0; line-height: 0; letter-spacing: 0; }
+    .fox-build-headline h1.slogan img { display: block; width: 100%; max-width: 560px; height: auto; }
+    /* Tablet / phone, portrait: centred under the eyebrow */
+    @media (max-width: 880px) and (orientation: portrait) {
+      .fox-build-headline h1.slogan { margin: 14px auto 16px; }
+      .fox-build-headline h1.slogan img { width: min(84vw, 360px); max-width: 100%; margin: 0 auto; }
+    }
+    /* Short phones: leave room for the fox below */
+    @media (max-width: 880px) and (orientation: portrait) and (max-height: 700px) {
+      .fox-build-headline h1.slogan { margin: 10px auto 12px; }
+      .fox-build-headline h1.slogan img { width: min(74vw, 300px); max-height: 15vh; object-fit: contain; }
+    }
+    /* Phone, landscape: sits left, beside the fox */
+    @media (max-width: 880px) and (orientation: landscape) {
+      .fox-build-headline h1.slogan { margin: 10px 0 12px; }
+      .fox-build-headline h1.slogan img { width: 100%; max-width: 320px; max-height: 30vh; object-fit: contain; object-position: left center; }
+    }
+
+    /* Slogan: light / dark versions */
+    .fox-build-headline h1.slogan img.slogan-dark { display: none; }
+    [data-theme="dark"] .fox-build-headline h1.slogan img.slogan-light { display: none; }
+    [data-theme="dark"] .fox-build-headline h1.slogan img.slogan-dark { display: block; }
+    /* Footer contact picture (logo + details) */
+    .footer-contact-img { display: block; width: 100%; max-width: 440px; height: auto; }
   </style>
 </head>
 <body>
@@ -1664,7 +1691,7 @@
   <section class="fox-build" id="foxBuild" aria-label="Intro animation: the Fox mark being built">
     <div class="fox-build-headline container" id="fbHeadline">
       <span class="eyebrow reveal">Gallery — Fox Advertising</span>
-      <h1 class="reveal">Work built to fill <em>rooms</em>,<br>not just pages.</h1>
+      <h1 class="reveal slogan"><img class="slogan-light" src="Images/ROOMS-01.svg" alt="Work built to fill rooms, not just pages." decoding="async" /><img class="slogan-dark" src="Images/ROOMS-02.svg" alt="" aria-hidden="true" decoding="async" /></h1>
     </div>
 
     <div class="fox-build-stage">
@@ -1738,14 +1765,7 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-main">
-          <a href="#top" class="footer-logo" aria-label="Fox Integrated Solutions, back to top"><img src="Images/Logo-white.svg" width="230" height="152" alt="Fox Integrated Solutions" /></a>
-          <ul class="footer-contacts">
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 18s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z"/><circle cx="10" cy="8" r="2.2"/></svg><a href="https://www.google.com/maps/search/?api=1&query=Crystal+Plaza+Tower+B+Kattameya+Ring+Road+Cairo+Egypt" target="_blank" rel="noopener noreferrer">Crystal Plaza - Tower B - 10<sup>th</sup> floor - Apartment 1.<br>Ring Rd., Kattameya, Cairo, Egypt.</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h2.5l1.2 3.6-1.7 1.2a10 10 0 0 0 4.7 4.7l1.2-1.7 3.6 1.2V14a2 2 0 0 1-2.2 2C8.4 15.6 4.4 11.6 4 5.2A2 2 0 0 1 5 2.5z"/></svg><a href="tel:+20267900888">02 6790 0888</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="8" height="16" rx="2"/><path d="M9 15.5h2"/></svg><a href="tel:+201000341263">+201 000 341263</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 6l7 5 7-5"/></svg><a href="mailto:fox@foxadv.net">fox@foxadv.net</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M2.5 10h15M10 2.5c2.5 2.2 2.5 12.8 0 15M10 2.5c-2.5 2.2-2.5 12.8 0 15"/></svg><a href="https://www.foxadv.com" target="_blank" rel="noopener noreferrer">www.foxadv.com</a></li>
-              </ul>
+          <img class="footer-contact-img" src="Images/contact_white.png" alt="Fox Integrated Solutions. Crystal Plaza, Tower B, 10th floor, Apartment 1, Ring Rd., Kattameya, Cairo, Egypt. Phone 02 6790 0888. Mobile +201 000 341263. Email fox@foxadv.net. Website www.foxadv.com" loading="lazy" decoding="async" />
         </div>
         <div class="footer-links">
           <div class="footer-links-cols">

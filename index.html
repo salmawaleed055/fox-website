@@ -1453,6 +1453,13 @@
     .ct-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); opacity: .55; }
     .ct-value { font-weight: 600; font-size: 15.5px; color: var(--text); overflow-wrap: anywhere; }
     @media (max-width: 560px) { .contact-tiles { grid-template-columns: 1fr; } }
+      /* Slogan: light / dark versions */
+    .fox-build-headline h1.slogan img.slogan-dark { display: none; }
+    [data-theme="dark"] .fox-build-headline h1.slogan img.slogan-light { display: none; }
+    [data-theme="dark"] .fox-build-headline h1.slogan img.slogan-dark { display: block; }
+    /* Footer contact picture (logo + details) */
+    .footer-contact-img { display: block; width: 100%; max-width: 440px; height: auto; }
+    .reel-play-meta [data-dur]:empty ~ .reel-play-sound::before { content: none; }
   </style>
 </head>
 <body>
@@ -1673,7 +1680,7 @@
     <section class="fox-build" id="foxBuild" aria-label="Intro animation: the Fox mark being built">
       <div class="fox-build-headline container" id="fbHeadline">
         <span class="eyebrow reveal">Fox Advertising</span>
-        <h1 class="reveal slogan"><img src="Slogan/fox%20slogan-01%20(1).svg" alt="What the lion cannot manage to do.. the fox can" decoding="async" /></h1>
+        <h1 class="reveal slogan"><img class="slogan-light" src="Slogan/fox%20slogan-01%20(1).svg" alt="What the lion cannot manage to do.. the fox can" decoding="async" /><img class="slogan-dark" src="Images/fox%20slogan-white.svg" alt="" aria-hidden="true" decoding="async" /></h1>
         <!-- <p class="lede reveal">The physical output of a studio that designs for exhibition halls, shelves, and hands, as much as for screens.</p> -->
         <!-- <p class="hero-meta reveal"><strong>7</strong> Disciplines &nbsp;·&nbsp; Cairo, Egypt</p> -->
       </div>
@@ -1721,25 +1728,13 @@
                   </span>
                   <span class="reel-play-text">
                     <span class="reel-play-title">Play the film</span>
-                    <span class="reel-play-meta"><span aria-hidden="true">2:18</span><span class="visually-hidden">, 2 minutes 18 seconds, with sound</span><span class="reel-play-sound" aria-hidden="true">Sound on</span></span>
+                    <span class="reel-play-meta"><span aria-hidden="true" data-dur></span><span class="visually-hidden" data-dur-sr>, with sound</span><span class="reel-play-sound" aria-hidden="true">Sound on</span></span>
                   </span>
                 </span>
               </button>
               <div class="reel-cover" aria-hidden="true">
-                <picture>
-                  <source type="image/webp"
-                    srcset="img/showreel/poster-640.webp 640w, img/showreel/poster-960.webp 960w, img/showreel/poster-1280.webp 1280w, img/showreel/poster-1920.webp 1920w"
-                    sizes="auto, (max-width: 720px) calc(100vw - 58px), (max-width: 1320px) calc(100vw - 106px), (max-width: 1439px) 1214px, (max-width: 1560px) calc(100vw - 146px), 1414px">
-                  <img src="img/showreel/poster-1280.jpg" alt="" width="1920" height="1080" loading="lazy" decoding="async">
-                </picture>
               </div>
             </div>
-            <figcaption class="reel-caption">
-              <ul class="reel-cap-meta" aria-label="Film details">
-                <li><time datetime="PT2M18S">2:18</time></li>
-                <li>1080p</li>
-              </ul>
-            </figcaption>
           </figure>
           <p class="visually-hidden" id="reelStatus" role="status" aria-live="polite"></p>
         </div>
@@ -1866,14 +1861,7 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-main">
-          <a href="#top" class="footer-logo" aria-label="Fox Integrated Solutions, back to top"><img src="Images/Logo-white.svg" width="230" height="152" alt="Fox Integrated Solutions" /></a>
-          <ul class="footer-contacts">
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 18s6-5.2 6-10a6 6 0 1 0-12 0c0 4.8 6 10 6 10z"/><circle cx="10" cy="8" r="2.2"/></svg><a href="https://www.google.com/maps/search/?api=1&query=Crystal+Plaza+Tower+B+Kattameya+Ring+Road+Cairo+Egypt" target="_blank" rel="noopener noreferrer">Crystal Plaza - Tower B - 10<sup>th</sup> floor - Apartment 1.<br>Ring Rd., Kattameya, Cairo, Egypt.</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 2.5h2.5l1.2 3.6-1.7 1.2a10 10 0 0 0 4.7 4.7l1.2-1.7 3.6 1.2V14a2 2 0 0 1-2.2 2C8.4 15.6 4.4 11.6 4 5.2A2 2 0 0 1 5 2.5z"/></svg><a href="tel:+20267900888">02 6790 0888</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="8" height="16" rx="2"/><path d="M9 15.5h2"/></svg><a href="tel:+201000341263">+201 000 341263</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="15" height="11" rx="2"/><path d="M3 6l7 5 7-5"/></svg><a href="mailto:fox@foxadv.net">fox@foxadv.net</a></li>
-                <li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7.5"/><path d="M2.5 10h15M10 2.5c2.5 2.2 2.5 12.8 0 15M10 2.5c-2.5 2.2-2.5 12.8 0 15"/></svg><a href="https://www.foxadv.com" target="_blank" rel="noopener noreferrer">www.foxadv.com</a></li>
-              </ul>
+          <img class="footer-contact-img" src="Images/contact_white.png" alt="Fox Integrated Solutions. Crystal Plaza, Tower B, 10th floor, Apartment 1, Ring Rd., Kattameya, Cairo, Egypt. Phone 02 6790 0888. Mobile +201 000 341263. Email fox@foxadv.net. Website www.foxadv.com" loading="lazy" decoding="async" />
         </div>
         <div class="footer-links">
           <div class="footer-links-cols">
@@ -2268,7 +2256,6 @@
       if (!stage || !video || !btn || typeof video.play !== "function") return;
 
       var title = btn.querySelector(".reel-play-title");
-      var poster = stage.querySelector(".reel-cover img");
       var status = document.getElementById("reelStatus");
       var LABEL = { idle: "Play the film", ended: "Watch again", error: "Try again", loading: "Loading…" };
       var state = "";
@@ -2367,10 +2354,23 @@
         if (p && typeof p.then === "function") p.then(null, rejected);
       }
 
-      // Cover = the film's frame at 2:59. The video itself is paused there
-      // (only metadata + that bit is fetched); the old poster image stays as the
-      // fallback until the frame is really on screen. To change the frame, edit
+      // Cover = the film's own frame at 2:59 (no separate poster image, so
+      // nothing from any earlier film can show). Only metadata + that bit is fetched.
+      // To change the frame, edit COVER_AT (seconds); a shorter film uses its last frame. To change the frame, edit
       // COVER_AT (seconds). If the film is shorter, its last frame is used.
+      // Real length of the film, read from the file itself.
+      var durEl = btn.querySelector("[data-dur]");
+      var durSr = btn.querySelector("[data-dur-sr]");
+      function showDuration() {
+        var d = video.duration;
+        if (!isFinite(d) || d <= 0) return;
+        var m = Math.floor(d / 60), sec = Math.round(d % 60);
+        if (sec === 60) { m++; sec = 0; }
+        if (durEl) durEl.textContent = m + ":" + (sec < 10 ? "0" : "") + sec;
+        if (durSr) durSr.textContent = ", " + m + " minute" + (m === 1 ? "" : "s") + " " + sec + " second" + (sec === 1 ? "" : "s") + ", with sound";
+      }
+      video.addEventListener("loadedmetadata", showDuration, { once: true });
+      if (video.readyState >= 1) showDuration();
       var coverEl = stage.querySelector(".reel-cover");
       var frameCover = false;
       var COVER_AT = 2 * 60 + 59;  // 2:59
@@ -2434,16 +2434,6 @@
         if (state === "loading") setState(video.currentTime > 0 ? "paused" : "idle");
         else if (state === "playing") { if (video.ended) cover("ended"); else setState("paused"); }
       });
-
-      // Lend the already-downloaded poster to the video (same URL, served from
-      // cache) so buffering, fullscreen and PiP never show a black frame.
-      function adoptPoster() {
-        if (poster.currentSrc && !video.hasAttribute("poster")) video.setAttribute("poster", poster.currentSrc);
-      }
-      if (poster) {
-        if (poster.complete && poster.naturalWidth) adoptPoster();
-        else poster.addEventListener("load", adoptPoster, { once: true });
-      }
 
       // Enhance: the cover takes over from the native controls the markup ships with.
       setState("idle");
